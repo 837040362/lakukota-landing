@@ -1,5 +1,5 @@
 // --- INISIALISASI SUPABASE ---
-const supabaseUrl = 'https://tihixoswhxlihrsatfft.supabase.co/rest/v1/';
+const supabaseUrl = 'https://tihixoswhxlihrsatfft.supabase.co';
 // Ganti dengan hasil COPY UTUH dari dashboard Supabase sampeyan:
 const supabaseKey = 'sb_publishable_vzlNczrbFT5sBTa-kNT3Bg_4vDvXbxG'; 
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
