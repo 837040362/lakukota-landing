@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAKUKOTA - Dunia di Balik Kota</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- STICKY NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">LAKUKOTA</div>
+        <div class="nav-links">
+            <a href="#hero">Prolog</a>
+            <a href="#lore">Dunia</a>
+            <a href="#kit">Pusaka</a>
+            <a href="#register" class="btn-nav">Gerbang Masuk</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION (Prolog) -->
+    <section id="hero" class="cinematic-section">
+        <div class="content">
+            <h1>LAKUKOTA</h1>
+            <p class="subtitle">Memanggil Selaku...</p>
+            <a href="#lore" class="btn-primary">Pahami Ritual</a>
+        </div>
+    </section>
+
+    <!-- LORE SECTION (Cerita) -->
+    <section id="lore" class="cinematic-section bg-alt">
+        <div class="content left-align">
+            <h2>Dunia di Balik Kota</h2>
+            <p>Kota bukan sekadar beton dan aspal. Ia adalah kumpulan memori, sejarah, dan artefak yang hidup. LAKUKOTA mengajakmu melihat wujud asli kotamu melalui kacamata seorang <strong>Selaku</strong>.</p>
+        </div>
+    </section>
+
+    <!-- STARTER KIT SECTION (Pusaka) -->
+    <section id="kit" class="cinematic-section">
+        <div class="content">
+            <h2>Perlengkapan Ritual</h2>
+            <p>Untuk berinteraksi dengan sistem, seorang Selaku membutuhkan medium fisik pelengkap.</p>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Atmaka & Lanyard</h3>
+                    <div class="img-placeholder small">[ Mockup Fisik Atmaka ]</div>
+                    <p>Kunci fisik berteknologi NFC. Identitas dan nyawa dari setiap transaksimu di lapangan.</p>
+                </div>
+                <div class="card">
+                    <h3>1.000 Arta</h3>
+                    <div class="img-placeholder small">[ Ilustrasi Saldo Arta ]</div>
+                    <p>Logistik utamamu. Gunakan untuk mengidentifikasi fragment langka sesuai Weton-mu.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GATEWAY SECTION (Form Pendaftaran & Top Up) -->
+    <section id="register" class="cinematic-section bg-alt" style="padding-bottom: 120px;">
+        <div class="content">
+            <h2>Gerbang Utama</h2>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('reg-form', this)">Starter Kit (299k)</button>
+                <button class="tab-btn" onclick="switchTab('topup-form', this)">Top Up Arta</button>
+            </div>
+
+            <!-- FORM DAFTAR -->
+            <form id="reg-form" class="form-box" onsubmit="event.preventDefault(); alert('Membuka Gateway Pembayaran Starter Kit...');">
+                <input type="text" id="reg-nama" placeholder="Nama Selaku (Tanpa Spasi)" required>
+                <input type="email" id="reg-email" placeholder="Alamat Email" required>
+                <input type="password" id="reg-password" placeholder="Kata Sandi Batin" required>
+                
+                <!-- Pilihan Wujud -->
+                <select id="reg-gender" required style="margin-bottom: 15px;">
+                    <option value="" disabled selected>-- Gender --</option>
+                    <option value="L">Maskulin</option>
+                    <option value="P">Feminin</option>
+                </select>
+
+                <!-- Kalkulator Weton Otomatis -->
+                <div style="text-align: left; margin-bottom: 25px; background: rgba(0,0,0,0.4); padding: 15px; border-left: 3px solid #d4af37;">
+                    <label style="font-size: 0.75rem; color: #d4af37; text-transform: uppercase; letter-spacing: 2px;">Tanggal Lahir</label>
+                    <input type="date" id="reg-tgl-lahir" required style="margin-top: 10px; margin-bottom: 5px; color: #f4eee0;" onchange="hitungWetonDummy()">
+                    <div id="hasil-weton" style="font-size: 0.9rem; color: #2ecc71; font-weight: bold; text-align: center; min-height: 20px; margin-top: 10px; font-family: 'Cinzel', serif; letter-spacing: 1px;"></div>
+                </div>
+
+                <button type="submit" class="btn-primary" style="width:100%">Bayar & Aktifkan</button>
+            </form>
+
+            <!-- FORM TOP UP -->
+            <form id="topup-form" class="form-box hidden" onsubmit="event.preventDefault(); alert('Membuka Gateway Top Up...');">
+                <input type="text" placeholder="Masukkan LAKU-CODE" required>
+                <select required>
+                    <option value="" disabled selected>-- Pilih Nominal Arta --</option>
+                    <option value="50000">500 Arta (Rp 50.000)</option>
+                    <option value="100000">1.000 Arta (Rp 100.000)</option>
+                    <option value="250000">2.500 Arta (Rp 250.000)</option>
+                </select>
+                <button type="submit" class="btn-primary" style="width:100%">Lanjutkan</button>
+            </form>
+            
+            <p style="margin-top:25px; font-size:0.8rem; color:#d4af37; cursor:pointer; text-decoration:underline;" onclick="alert('Ini akan redirect ke app.lakukota.id')">Sudah punya ID? Masuk Aplikasi Peta</p>
+        </div>
+    </section>
+
+    <!-- STICKY MOBILE CTA (Hanya Muncul di HP) -->
+    <div class="mobile-cta">
+        <a href="#register" class="btn-primary" style="width:100%; text-align:center;">Daftar Ritual (299k)</a>
+    </div>
+
+    <!-- Panggil File JS -->
+    <script src="js/main.js"></script>
+</body>
+</html>
