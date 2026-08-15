@@ -1,8 +1,7 @@
 // --- INISIALISASI SUPABASE ---
-const supabaseUrl = 'https://tihixoswhxlihrsatfft.supabase.co';
-// Ganti dengan hasil COPY UTUH dari dashboard Supabase sampeyan:
-const supabaseKey = 'sb_publishable_vzlNczrbFT5sBTa-kNT3Bg_4vDvXbxG'; 
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+const SUPABASE_PROJECT_URL = 'https://tihixoswhxlihrsatfft.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_vzlNczrbFT5sBTa-kNT3Bg_4vDvXbxG'; 
+const supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_PUBLISHABLE_KEY);
 
 // --- RITUAL PENDAFTARAN SELAKU ---
 document.getElementById('reg-form').addEventListener('submit', async function(event) {
@@ -40,7 +39,7 @@ document.getElementById('reg-form').addEventListener('submit', async function(ev
         // ========================================================
         // TAHAP 1: Daftarkan ke Brankas Rahasia (Supabase Auth)
         // ========================================================
-        const { data: authData, error: authError } = await supabase.auth.signUp({
+        const { data: authData, error: authError } = await supabaseClient.auth.signUp({
             email: email,
             password: password,
         });
@@ -57,7 +56,7 @@ document.getElementById('reg-form').addEventListener('submit', async function(ev
         // ========================================================
         // TAHAP 2: Catat di Buku Profil (public.users)
         // ========================================================
-        const { error: profileError } = await supabase
+        const { error: profileError } = await supabaseClient    
             .from('users')
             .insert([
                 {
