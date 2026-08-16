@@ -53,26 +53,22 @@ document.getElementById('reg-form').addEventListener('submit', async function(ev
         // Ambil Kunci UUID dari brankas rahasia
         const newUserId = authData.user.id;
         
-        // Bikin LAKU-CODE acak (Contoh: LKU-8X2F)
-        //const randomHex = Math.random().toString(16).substring(2, 6).toUpperCase();
-        //const generatedUserCode = 'LKU-' + randomHex;
+    // ========================================================
+    // TAHAP 2: Lengkapi profil yang sudah dibuat oleh TRIGGER
+    // ========================================================
+    const { error: profileError } = await supabaseClient
+        .from('users')
+        .update({
+            username: nama,
+            gender: gender,
+            tanggal_lahir: tglLahir,
+            weton_hari: wetonHari,
+            weton_pasaran: wetonPasaran,
+            neptu_total: parseInt(neptuTotal)
+        })
+        .eq('user_id', newUserId);
 
-        // ========================================================
-        // TAHAP 2: Catat di Buku Profil (public.users)
-        // ========================================================
-        const { error: profileError } = await supabaseClient
-            .from('users')
-            .update({
-                username: nama,
-                email: email,
-                gender: gender,
-                tanggal_lahir: tglLahir,
-                weton_hari: wetonHari,
-                weton_pasaran: wetonPasaran,
-                neptu_total: parseInt(neptuTotal)
-            })
-    .eq('user_id', newUserId);
-
+if (profileError) throw profileError;
 
         if (profileError) throw profileError;
 
