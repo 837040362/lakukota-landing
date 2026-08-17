@@ -151,3 +151,22 @@ select option { background: #0a0a0a; color: #d4af37; }
     .nav-prev { left: 0px; }
     .nav-next { right: 0px; }
 }
+
+/* =========================================
+   RUANG NAPAS KHUSUS HP (MOBILE FIX)
+   ========================================= */
+@media (max-width: 768px) {
+    .content p {
+        font-size: 0.85rem; /* Mengecilkan teks cerita sedikit */
+        line-height: 1.8;   /* Merenggangkan jarak antar baris */
+    }
+    
+    .cinematic-section h2 {
+        font-size: 1.5rem;  /* Mengecilkan judul agar tidak mendominasi layar */
+        margin-bottom: 20px;
+    }
+    
+    .cinematic-section {
+        padding: 50px 15px; /* Mengurangi jarak kosong (padding) di pinggir kiri-kanan */
+    }
+}
