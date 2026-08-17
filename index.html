@@ -182,7 +182,7 @@
                 <input type="password" id="reg-password" placeholder="Kata Sandi Batin" required>
                 
                 <select id="reg-gender" required style="margin-bottom: 15px;">
-                    <option value="" disabled selected>-- Wujud --</option>
+                    <option value="" disabled selected>-- Gender --</option>
                     <option value="L">Maskulin</option>
                     <option value="P">Feminin</option>
                 </select>
@@ -196,9 +196,11 @@
                 <button type="submit" class="btn-primary" style="width:100%">Masuk ke LAKUKOTA</button>
             </form>
 
-            <!-- FORM TOP UP -->
+<!-- FORM TOP UP -->
             <form id="topup-form" class="form-box hidden">
-                <input type="text" placeholder="Masukkan LAKU-CODE" required>
+                <!-- KITA GANTI JADI EMAIL BIAR GAMPANG -->
+                <input type="email" id="topup-email" placeholder="Alamat Email Selaku" required>
+                
                 <select required>
                     <option value="" disabled selected>-- Pilih Nominal Arta --</option>
                     <option value="50000">500 Arta (Rp 50.000)</option>
@@ -208,7 +210,10 @@
                 <button type="submit" class="btn-primary" style="width:100%">Lanjutkan</button>
             </form>
             
-            <p style="margin-top:25px; font-size:0.8rem; color:#d4af37; cursor:pointer; text-decoration:underline;" onclick="alert('Ini akan redirect ke app.lakukota.id')">Sudah punya ID? Masuk Aplikasi Peta</p>
+            <p style="margin-top:25px; font-size:0.8rem; color:#d4af37; cursor:pointer; text-decoration:underline;" 
+               onclick="tampilkanPesan('MEMASUKI PETA', 'Sistem akan mengarahkan Anda ke dimensi Peta Lakukota...', 'Lanjutkan', function(){ window.location.href = 'https://lakukota.vercel.app/'; })">
+                Sudah punya ID? Masuk Aplikasi Peta
+            </p>
         </div>
     </section>
 
@@ -216,6 +221,19 @@
     <div class="mobile-cta">
         <a href="#register" class="btn-primary" style="width:100%; text-align:center;">Daftar Selaku (299k)</a>
     </div>
+
+    <!-- =========================================
+         CUSTOM MODAL UNIVERSAL
+         ========================================= -->
+    <div id="custom-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3 id="modal-title" style="color: #d4af37; margin-top: 0; border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 15px; font-family: 'Cinzel', serif;">INFO</h3>
+            <p id="modal-message" style="color: #f4eee0; line-height: 1.6; font-size: 0.95rem; font-family: 'Special Elite', sans-serif; margin-bottom: 25px;"></p>
+            <!-- Tombolnya pakai ID biar teksnya bisa diganti-ganti -->
+            <button id="modal-btn" onclick="tutupModal()" class="btn-primary" style="width:100%;">Mengerti</button>
+        </div>
+    </div>
+
 
     <!-- Panggil Library Supabase & Script -->
     <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>

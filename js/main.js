@@ -123,12 +123,17 @@ document.getElementById('reg-form').addEventListener('submit', async function(ev
         // ========================================================
         const userCode = profileData.user_code;
 
-        alert(
-            `Ritual Berhasil!\n\n` +
-            `Selamat datang, ${nama}.\n` +
-            `LAKU-CODE Anda: ${userCode}\n\n` +
-            `Silakan cek email untuk konfirmasi ` +
-            `(jika diaktifkan), atau langsung masuk ke Aplikasi Peta.`
+        tampilkanPesan(
+            "RITUAL BERHASIL", 
+            `Selamat datang, <strong style="color:#d4af37;">${nama}</strong>.<br><br>` +
+            `LAKU-CODE Anda: <span style="color:#d4af37;">${userCode}</span><br>` +
+            `<span style="font-size:0.8rem; color:#aaa;">(Gunakan Email Anda untuk keperluan Top Up nanti)</span><br><br>` +
+            `Silakan cek email untuk konfirmasi, atau langsung mulai perjalananmu.`, 
+            "Masuk ke Peta", 
+            function() {
+                // Perintah untuk pindah ke app.html setelah tombol diklik
+                window.location.href = 'https://lakukota.vercel.app/';
+            }
         );
 
 
@@ -369,7 +374,7 @@ function geserSlider(trackId, arah) {
 /* =========================================
    SENSOR SCROLL UNTUK EFEK ZOOM BACKGROUND
    ========================================= */
-window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', function() {
     // Jika layar di-scroll lebih dari 50 pixel ke bawah
     if (window.scrollY > 50) {
         document.body.classList.add('is-scrolling');
@@ -378,3 +383,34 @@ window.addEventListener('scroll', function() {
         document.body.classList.remove('is-scrolling');
     }
 });
+
+/* =========================================
+   SISTEM POPUP MODAL UNIVERSAL
+   ========================================= */
+let aksiModalBerikutnya = null; // Variabel penampung kalau butuh pindah halaman
+
+function tampilkanPesan(judul, pesan, teksTombol, fungsiAksi) {
+    // 1. Ganti Judul
+    document.getElementById('modal-title').innerHTML = judul;
+    // 2. Ganti Pesan
+    document.getElementById('modal-message').innerHTML = pesan;
+    // 3. Ganti Teks Tombol (Kalau kosong, defaultnya "Mengerti")
+    document.getElementById('modal-btn').innerHTML = teksTombol ? teksTombol : "Mengerti";
+    
+    // 4. Simpan fungsi (misal untuk redirect) jika disertakan
+    aksiModalBerikutnya = fungsiAksi;
+    
+    // 5. Tampilkan Modal
+    document.getElementById('custom-modal').classList.remove('hidden');
+}
+
+function tutupModal() {
+    // 1. Sembunyikan Modal
+    document.getElementById('custom-modal').classList.add('hidden');
+    
+    // 2. Kalau ada aksi lanjutan (seperti pindah ke app.html), eksekusi sekarang!
+    if (typeof aksiModalBerikutnya === 'function') {
+        aksiModalBerikutnya();
+        aksiModalBerikutnya = null; // Reset setelah dieksekusi
+    }
+}
