@@ -1,7 +1,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Special+Elite&display=swap');
 
-html { scroll-behavior: smooth; }
-body { margin: 0; padding: 0; background: #0a0a0a; font-family: 'Special Elite', sans-serif; color: #f4eee0; overflow-x: hidden; }
+html { 
+    scroll-behavior: smooth; 
+    background-color: #050505; /* Warna dasar dipindah ke sini biar nggak nutupin gambar */
+}
+
+body { 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Special Elite', sans-serif; 
+    color: #f4eee0; 
+    overflow-x: hidden; 
+    background: transparent; /* Body harus transparan biar ::before kelihatan */
+}
+
+/* =========================================
+   BACKGROUND ZOOM OUT SAAT SCROLL
+   ========================================= */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    
+    /* GANTI SESUAI NAMA FILE WEBP SAMPEYAN YAK */
+    background-image: url('../assets/img/jogjaview.webp'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    z-index: -10;
+    transform: scale(1.3);
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+}
+
+body.is-scrolling::before {
+    transform: scale(1);
+    opacity: 0.35; 
+}
 
 h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 3px; color: #d4af37; font-weight: 700; margin-bottom: 15px; }
 
@@ -12,61 +50,7 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 3px; color: #d4af37; 
 .nav-links a:hover { color: #d4af37; }
 .btn-nav { border: 1px solid #d4af37; padding: 8px 15px; }
 
-/* --- HERO SECTION DENGAN BACKGROUND SINEMATIK --- */
-#hero {
-    /* Path diarahkan ke folder public/img */
-/*    background-image: 
-        linear-gradient(to bottom, rgba(10, 10, 10, 0.2) 0%, rgba(10, 10, 10, 1) 100%),
-        url('../assets/img/jogjaview.webp'); 
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: fixed; */
-
-/* =========================================
-   BACKGROUND ZOOM OUT SAAT SCROLL
-   ========================================= */
-body { 
-    margin: 0; 
-    padding: 0; 
-    background-color: #050505; 
-    font-family: 'Special Elite', sans-serif; 
-    color: #f4eee0; 
-    overflow-x: hidden; 
-}
-
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    
-    /* Pastikan formatnya sesuai, pakai .webp lebih bagus untuk loading */
-    background-image: url('../assets/img/jogjaview.webp'); 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    
-    z-index: -10;
-    
-    /* Posisi awal di Home: Perbesaran Maksimal (130%) */
-    transform: scale(1.3);
-    
-    /* Transisi sangat mulus saat discroll */
-    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
-}
-
-body.is-scrolling::before {
-    transform: scale(1);
-    opacity: 0.35; /* Dibuat agak redup saat discroll agar teks gampang dibaca */
-}
-
-/* Pastikan hero section transparan agar gambarnya tembus */
-#hero {
-    background: transparent; 
-}
+#hero { background: transparent; }
 
 /* SECTIONS */
 .cinematic-section { 
@@ -78,14 +62,19 @@ body.is-scrolling::before {
     padding: 80px 20px; 
     box-sizing: border-box; 
     text-align: center; 
-    background: transparent; /* Pastikan transparan secara default */
+    background: transparent; 
 }
 
-/* Efek kaca gelap semi-transparan untuk selang-seling section */
 .bg-alt { 
-    background: rgba(10, 10, 10, 0.7); /* Angka 0.7 adalah tingkat transparansi */
-    backdrop-filter: blur(3px); /* Memberi efek blur sinematik pada gambar di belakangnya */
+    background: rgba(10, 10, 10, 0.7); 
+    backdrop-filter: blur(3px); 
 }
+
+/* =========================================
+   INI KANDANG TEKSNYA YANG HILANG LIK! WKWK
+   ========================================= */
+.content { max-width: 800px; width: 100%; margin: 0 auto; }
+.left-align { text-align: left; }
 
 p { line-height: 1.8; font-size: 1rem; color: #ccc; }
 .subtitle { font-size: 1rem; letter-spacing: 5px; color: #d4af37; text-transform: uppercase; margin-bottom: 30px; }
@@ -93,9 +82,6 @@ p { line-height: 1.8; font-size: 1rem; color: #ccc; }
 /* BUTTONS & IMAGES */
 .btn-primary { background: #0a0a0a; color: #d4af37; border: 1px solid #d4af37; padding: 15px 30px; cursor: pointer; font-weight: bold; font-family: 'Cinzel', serif; transition: 0.4s; display: inline-block; text-decoration: none; text-transform: uppercase; letter-spacing: 2px;}
 .btn-primary:hover { background: #d4af37; color: #0a0a0a; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
-
-.img-placeholder { width: 100%; height: 350px; border: 1px dashed rgba(212, 175, 55, 0.5); display: flex; justify-content: center; align-items: center; color: rgba(212, 175, 55, 0.5); font-size: 0.9rem; margin: 30px 0; background: rgba(212, 175, 55, 0.02); }
-.small { height: 150px; margin: 15px 0; }
 
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; }
 .card { background: rgba(255,255,255,0.02); border: 1px solid rgba(212, 175, 55, 0.2); padding: 30px; transition: 0.3s; }
@@ -123,87 +109,22 @@ select option { background: #0a0a0a; color: #d4af37; }
     .mobile-cta { display: block; }
     .cinematic-section { padding: 100px 20px 60px 20px; }
     h1 { font-size: 2.5rem; }
-    .img-placeholder { height: 200px; }
 }
 
 /* =========================================
    CAROUSEL / SLIDER (Geser Kanan-Kiri)
    ========================================= */
-.carousel-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.carousel-track {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Sembunyikan scrollbar Firefox */
-}
-
-.carousel-track::-webkit-scrollbar {
-    display: none; /* Sembunyikan scrollbar Chrome/Safari */
-}
-
-.carousel-slide {
-    flex: 0 0 100%;
-    scroll-snap-align: center;
-    padding: 0 20px; /* Jarak aman tepi */
-    box-sizing: border-box;
-}
-
-.character-card {
-    background-color: rgba(0, 0, 0, 0.6);
-    border: 1px solid #d4af37;
-    padding: 30px;
-    border-radius: 4px;
-    text-align: center;
-}
-
-.asset-placeholder {
-    width: 100%;
-    height: 350px;
-    border: 1px dashed rgba(212, 175, 55, 0.5);
-    margin-bottom: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Cinzel', serif;
-    font-size: 1.5rem;
-    color: #d4af37;
-    letter-spacing: 2px;
-}
+.carousel-wrapper { position: relative; width: 100%; max-width: 800px; margin: 0 auto; }
+.carousel-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.carousel-track::-webkit-scrollbar { display: none; }
+.carousel-slide { flex: 0 0 100%; scroll-snap-align: center; padding: 0 20px; box-sizing: border-box; }
 
 /* Tombol Navigasi Kanan Kiri */
-.carousel-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: #d4af37;
-    border: 1px solid #d4af37;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    cursor: pointer;
-    z-index: 10;
-    transition: 0.3s;
-}
-
-.carousel-nav:hover {
-    background: #d4af37;
-    color: #000;
-}
-
+.carousel-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.8); color: #d4af37; border: 1px solid #d4af37; width: 45px; height: 45px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; z-index: 10; transition: 0.3s; }
+.carousel-nav:hover { background: #d4af37; color: #000; }
 .nav-prev { left: -15px; }
 .nav-next { right: -15px; }
 
-/* Penyesuaian tombol di layar HP */
 @media (max-width: 768px) {
     .nav-prev { left: 0px; }
     .nav-next { right: 0px; }
@@ -213,92 +134,40 @@ select option { background: #0a0a0a; color: #d4af37; }
    RUANG NAPAS KHUSUS HP (MOBILE FIX)
    ========================================= */
 @media (max-width: 768px) {
-    .content p {
-        font-size: 0.85rem; /* Mengecilkan teks cerita sedikit */
-        line-height: 1.8;   /* Merenggangkan jarak antar baris */
-    }
-    
-    .cinematic-section h2 {
-        font-size: 1.5rem;  /* Mengecilkan judul agar tidak mendominasi layar */
-        margin-bottom: 20px;
-    }
-    
-    .cinematic-section {
-        padding: 50px 15px; /* Mengurangi jarak kosong (padding) di pinggir kiri-kanan */
-    }
+    .content p { font-size: 0.85rem; line-height: 1.8; }
+    .cinematic-section h2 { font-size: 1.5rem; margin-bottom: 20px; }
+    .cinematic-section { padding: 50px 15px; }
 }
 
 /* =========================================
    GAYA GAMBAR KARAKTER (Visual Asset)
    ========================================= */
-.character-img {
-    width: 100%;
-    height: 350px; /* Menyamakan dengan tinggi kotak placeholder sebelumnya */
-    object-fit: contain; /* Menjaga proporsi gambar agar tidak melar */
-    margin-bottom: 25px;
-    filter: drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.6)); /* Efek bayangan biar karakternya pop-out / timbul */
-}
+.character-img { width: 100%; height: 350px; object-fit: contain; margin-bottom: 25px; filter: drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.6)); }
 
 /* =========================================
    GAYA KARAKTER DINAMIS (TANPA KOTAK)
    ========================================= */
-.dynamic-card {
-    background: transparent;
-    border: none;
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    padding: 0 20px;
-}
+.dynamic-card { background: transparent; border: none; display: flex; align-items: center; gap: 40px; padding: 0 20px; }
+.char-image-container { flex: 1; display: flex; justify-content: center; }
+.character-img-dynamic { width: 100%; max-width: 350px; height: 450px; object-fit: contain; filter: drop-shadow(0px 20px 30px rgba(0, 0, 0, 0.9)); }
+.char-text-container { flex: 1; text-align: left; }
+.char-text-container h3 { color: #d4af37; font-size: 2.5rem; margin-top: 0; margin-bottom: 15px; letter-spacing: 3px; text-shadow: 2px 2px 5px rgba(0,0,0,0.8); }
+.char-text-container p { font-size: 1rem; line-height: 1.8; color: #f4eee0; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
+.asset-placeholder { width: 100%; height: 350px; border: 1px dashed rgba(212, 175, 55, 0.5); margin-bottom: 25px; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-size: 1.5rem; color: #d4af37; letter-spacing: 2px; }
 
-.char-image-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-}
-
-.character-img-dynamic {
-    width: 100%;
-    max-width: 350px;
-    height: 450px; /* Dibuat lebih tinggi agar karakternya gagah */
-    object-fit: contain;
-    filter: drop-shadow(0px 20px 30px rgba(0, 0, 0, 0.9)); /* Bayangan dramatis */
-}
-
-.char-text-container {
-    flex: 1;
-    text-align: left;
-}
-
-.char-text-container h3 {
-    color: #d4af37;
-    font-size: 2.5rem;
-    margin-top: 0;
-    margin-bottom: 15px;
-    letter-spacing: 3px;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
-    /* Garis bawah dihilangkan agar lebih bersih */
-}
-
-.char-text-container p {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: #f4eee0;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-}
+/* =========================================
+   GAYA PUSAKA DINAMIS
+   ========================================= */
+.relic-card { background: transparent; border: none; display: flex; align-items: center; gap: 40px; padding: 0 20px; }
+.relic-asset-container { flex: 1; display: flex; justify-content: center; }
+.relic-text-container { flex: 1; text-align: left; }
+.relic-text-container h3 { color: #d4af37; font-size: 2.5rem; margin-top: 0; margin-bottom: 15px; letter-spacing: 3px; text-shadow: 2px 2px 5px rgba(0,0,0,0.8); }
+.relic-text-container p { font-size: 1rem; line-height: 1.8; color: #f4eee0; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
+.asset-placeholder-relic { width: 100%; max-width: 350px; height: 350px; border: 1px dashed rgba(212, 175, 55, 0.5); display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-size: 1.5rem; color: #d4af37; letter-spacing: 2px; }
 
 /* Responsif untuk Layar HP (Ditumpuk Atas-Bawah) */
 @media (max-width: 768px) {
-    .dynamic-card {
-        flex-direction: column;
-        gap: 20px;
-    }
-    
-    .char-text-container {
-        text-align: center; /* Di HP teksnya jadi ke tengah biar rapi */
-    }
-
-    .character-img-dynamic {
-        height: 350px;
-    }
+    .dynamic-card, .relic-card { flex-direction: column; gap: 20px; }
+    .char-text-container, .relic-text-container { text-align: center; }
+    .character-img-dynamic { height: 350px; }
 }
