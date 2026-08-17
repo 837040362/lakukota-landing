@@ -136,11 +136,20 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 .mobile-cta { display: none; position: fixed; bottom: 0; width: 100%; background: rgba(10,10,10,0.95); padding: 15px; box-sizing: border-box; z-index: 2000; border-top: 1px solid rgba(212, 175, 55, 0.3); backdrop-filter: blur(5px);}
 
 @media (max-width: 768px) {
-    .nav-links { display: none; }
-    .grid-2 { grid-template-columns: 1fr; }
-    .mobile-cta { display: block; }
-    .cinematic-section { padding: 100px 20px 60px 20px; }
-    h1 { font-size: 2.5rem; }
+    .title-top, .title-bottom {
+        font-size: 2.2rem; /* Teks agak dikecilkan agar proporsional */
+        line-height: 1.2;  /* Memberi ruang napas atas-bawah */
+    }
+    .title-divider {
+        width: 120px;      /* Garis diperpendek sedikit */
+        margin: 15px 0;    /* Jarak garis ke huruf dijauhkan biar tidak nabrak */
+    }
+    #hero .subtitle {
+        font-size: 0.95rem; /* Subtitle disesuaikan */
+        line-height: 1.6;
+        margin-top: 5px;
+        padding: 0 20px;   /* Biar teks tidak mentok pinggiran layar */
+    }
 }
 
 /* =========================================
