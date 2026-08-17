@@ -15,13 +15,53 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 3px; color: #d4af37; 
 /* --- HERO SECTION DENGAN BACKGROUND SINEMATIK --- */
 #hero {
     /* Path diarahkan ke folder public/img */
-    background-image: 
+/*    background-image: 
         linear-gradient(to bottom, rgba(10, 10, 10, 0.2) 0%, rgba(10, 10, 10, 1) 100%),
-        url('../assets/img/jogjaview.png'); 
+        url('../assets/img/jogjaview.webp'); 
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    background-attachment: fixed; 
+    background-attachment: fixed; */
+
+/* =========================================
+   BACKGROUND ZOOM OUT SAAT SCROLL
+   ========================================= */
+body {
+    background-color: #050505;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    
+    /* GANTI SESUAI NAMA FILE WEBP SAMPEYAN */
+    background-image: url('../assets/img/jogjaview.webp'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    z-index: -10;
+    
+    /* Posisi awal di Home: Perbesaran Maksimal (130%) */
+    transform: scale(1.3);
+    
+    /* Kecepatan efek "sepersekian detik" (0.4 detik) yang sangat mulus */
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+}
+
+/* Class ini akan ditambahkan otomatis oleh JS saat layar di-scroll */
+body.is-scrolling::before {
+    /* Langsung menyusut jadi background normal (100%) */
+    transform: scale(1);
+    
+    /* (Opsional) Gambarnya agak digelapkan dikit biar teks cerita gampang dibaca */
+    opacity: 0.4; 
+}
 }
 
 /* SECTIONS */

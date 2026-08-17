@@ -365,3 +365,16 @@ function geserSlider(trackId, arah) {
         behavior: 'smooth'
     });
 }
+
+/* =========================================
+   SENSOR SCROLL UNTUK EFEK ZOOM BACKGROUND
+   ========================================= */
+window.addEventListener('scroll', function() {
+    // Jika layar di-scroll lebih dari 50 pixel ke bawah
+    if (window.scrollY > 50) {
+        document.body.classList.add('is-scrolling');
+    } else {
+        // Jika kembali ke paling atas (Home/Prolog)
+        document.body.classList.remove('is-scrolling');
+    }
+});
