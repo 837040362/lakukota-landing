@@ -171,3 +171,29 @@ select option { background: #0a0a0a; color: #d4af37; }
     .char-text-container, .relic-text-container { text-align: center; }
     .character-img-dynamic { height: 350px; }
 }
+
+/* =========================================
+   PERBAIKAN TEKS PROLOG (HERO SECTION)
+   ========================================= */
+#hero h1 {
+    font-size: 4.5rem; /* Ukuran raksasa ala poster bioskop */
+    text-shadow: 4px 6px 15px rgba(0, 0, 0, 0.9), 0px 0px 30px rgba(0, 0, 0, 0.7); /* Bayangan ganda biar teksnya benar-benar pop-out */
+    margin-bottom: 15px;
+}
+
+#hero .subtitle {
+    font-size: 1.4rem; /* Diperbesar sedikit agar lebih terbaca */
+    text-shadow: 2px 3px 10px rgba(0, 0, 0, 0.9); /* Bayangan pendukung */
+    margin-bottom: 40px;
+    font-weight: bold; /* Ditebalkan sedikit biar nggak kalah sama bayangannya */
+}
+
+/* Penyesuaian khusus layar HP biar teksnya gak luber ke luar layar */
+@media (max-width: 768px) {
+    #hero h1 {
+        font-size: 2.8rem;
+    }
+    #hero .subtitle {
+        font-size: 1.1rem;
+    }
+}
