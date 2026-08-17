@@ -26,9 +26,13 @@ h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 3px; color: #d4af37; 
 /* =========================================
    BACKGROUND ZOOM OUT SAAT SCROLL
    ========================================= */
-body {
-    background-color: #050505;
-    overflow-x: hidden;
+body { 
+    margin: 0; 
+    padding: 0; 
+    background-color: #050505; 
+    font-family: 'Special Elite', sans-serif; 
+    color: #f4eee0; 
+    overflow-x: hidden; 
 }
 
 body::before {
@@ -39,8 +43,8 @@ body::before {
     width: 100vw;
     height: 100vh;
     
-    /* GANTI SESUAI NAMA FILE WEBP SAMPEYAN */
-    background-image: url('../assets/img/jogjaview.png'); 
+    /* Pastikan formatnya sesuai, pakai .webp lebih bagus untuk loading */
+    background-image: url('../assets/img/jogjaview.webp'); 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -50,25 +54,38 @@ body::before {
     /* Posisi awal di Home: Perbesaran Maksimal (130%) */
     transform: scale(1.3);
     
-    /* Kecepatan efek "sepersekian detik" (0.4 detik) yang sangat mulus */
+    /* Transisi sangat mulus saat discroll */
     transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
 }
 
-/* Class ini akan ditambahkan otomatis oleh JS saat layar di-scroll */
 body.is-scrolling::before {
-    /* Langsung menyusut jadi background normal (100%) */
     transform: scale(1);
-    
-    /* (Opsional) Gambarnya agak digelapkan dikit biar teks cerita gampang dibaca */
-    opacity: 0.4; 
+    opacity: 0.35; /* Dibuat agak redup saat discroll agar teks gampang dibaca */
 }
+
+/* Pastikan hero section transparan agar gambarnya tembus */
+#hero {
+    background: transparent; 
 }
 
 /* SECTIONS */
-.cinematic-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 80px 20px; box-sizing: border-box; text-align: center; }
-.bg-alt { background: linear-gradient(180deg, #0a0a0a 0%, #151515 50%, #0a0a0a 100%); }
-.content { max-width: 800px; width: 100%; }
-.left-align { text-align: left; }
+.cinematic-section { 
+    min-height: 100vh; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    padding: 80px 20px; 
+    box-sizing: border-box; 
+    text-align: center; 
+    background: transparent; /* Pastikan transparan secara default */
+}
+
+/* Efek kaca gelap semi-transparan untuk selang-seling section */
+.bg-alt { 
+    background: rgba(10, 10, 10, 0.7); /* Angka 0.7 adalah tingkat transparansi */
+    backdrop-filter: blur(3px); /* Memberi efek blur sinematik pada gambar di belakangnya */
+}
 
 p { line-height: 1.8; font-size: 1rem; color: #ccc; }
 .subtitle { font-size: 1rem; letter-spacing: 5px; color: #d4af37; text-transform: uppercase; margin-bottom: 30px; }
