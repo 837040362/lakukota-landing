@@ -181,3 +181,67 @@ select option { background: #0a0a0a; color: #d4af37; }
     margin-bottom: 25px;
     filter: drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.6)); /* Efek bayangan biar karakternya pop-out / timbul */
 }
+
+/* =========================================
+   GAYA KARAKTER DINAMIS (TANPA KOTAK)
+   ========================================= */
+.dynamic-card {
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    padding: 0 20px;
+}
+
+.char-image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.character-img-dynamic {
+    width: 100%;
+    max-width: 350px;
+    height: 450px; /* Dibuat lebih tinggi agar karakternya gagah */
+    object-fit: contain;
+    filter: drop-shadow(0px 20px 30px rgba(0, 0, 0, 0.9)); /* Bayangan dramatis */
+}
+
+.char-text-container {
+    flex: 1;
+    text-align: left;
+}
+
+.char-text-container h3 {
+    color: #d4af37;
+    font-size: 2.5rem;
+    margin-top: 0;
+    margin-bottom: 15px;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+    /* Garis bawah dihilangkan agar lebih bersih */
+}
+
+.char-text-container p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #f4eee0;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+}
+
+/* Responsif untuk Layar HP (Ditumpuk Atas-Bawah) */
+@media (max-width: 768px) {
+    .dynamic-card {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .char-text-container {
+        text-align: center; /* Di HP teksnya jadi ke tengah biar rapi */
+    }
+
+    .character-img-dynamic {
+        height: 350px;
+    }
+}
