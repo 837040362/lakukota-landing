@@ -354,3 +354,14 @@ function hitungWetonDummy() {
 
     }
 }
+
+// Fungsi untuk Slider Karakter & Pusaka
+function geserSlider(trackId, arah) {
+    const track = document.getElementById(trackId);
+    // Geser sejauh 1 layar penuh dari lebar kontainer saat itu
+    const jarakGeser = track.clientWidth; 
+    track.scrollBy({
+        left: arah * jarakGeser,
+        behavior: 'smooth'
+    });
+}
