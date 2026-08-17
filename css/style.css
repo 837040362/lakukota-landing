@@ -182,7 +182,7 @@ select option { background: #0a0a0a; color: #d4af37; }
 }
 
 #hero .subtitle {
-    font-size: 1.2rem; /* Diperbesar sedikit agar lebih terbaca */
+    font-size: 1.0rem; /* Diperbesar sedikit agar lebih terbaca */
     text-shadow: 2px 3px 10px rgba(0, 0, 0, 0.9); /* Bayangan pendukung */
     margin-bottom: 40px;
     font-weight: bold; /* Ditebalkan sedikit biar nggak kalah sama bayangannya */
@@ -221,7 +221,7 @@ select option { background: #0a0a0a; color: #d4af37; }
 /* Ini wujud garis pembatas emasnya */
 .title-divider {
     display: block;
-    width: 500px; /* Panjang garis, bisa sampeyan atur nanti */
+    width: 400px; /* Panjang garis, bisa sampeyan atur nanti */
     height: 3px;  /* Ketebalan garis */
     background-color: #d4af37; /* Warna emas LAKUKOTA */
     margin: 10px 0; /* Jarak antara teks atas, garis, dan teks bawah */
