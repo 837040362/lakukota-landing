@@ -92,11 +92,34 @@ p { line-height: 1.8; font-size: 1rem; color: #ccc; }
 .tab-btn { background: transparent; border: none; color: #777; font-family: 'Cinzel', serif; font-size: 1.1rem; cursor: pointer; padding: 10px; border-bottom: 2px solid transparent; transition: 0.3s;}
 .tab-btn.active { color: #d4af37; border-bottom: 2px solid #d4af37; }
 
-.form-box { background: rgba(255,255,255,0.02); padding: 40px; border: 1px solid rgba(212, 175, 55, 0.3); max-width: 400px; margin: 0 auto; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+.form-box { 
+    background: rgba(5, 5, 5, 0.85); /* Latar belakang hitam yang lebih pekat */
+    backdrop-filter: blur(8px); /* Efek kaca buram agar gambar kota tidak ganggu teks */
+    padding: 40px; 
+    border: 1px solid rgba(212, 175, 55, 0.5); /* Garis batas emas sedikit ditebalkan */
+    border-radius: 8px; /* Sedikit lengkungan di ujung kotak biar elegan */
+    max-width: 400px; 
+    margin: 0 auto; 
+    box-shadow: 0 15px 40px rgba(0,0,0,0.9); /* Bayangan luar dipertegas */
+}
 .hidden { display: none; }
-
-input, select { width: 100%; padding: 12px; margin: 10px 0 25px 0; background: transparent; border: none; border-bottom: 1px solid #d4af37; color: #d4af37; font-family: 'Special Elite', sans-serif; outline: none; box-sizing: border-box; text-align: center;}
-input::placeholder { color: rgba(212, 175, 55, 0.4); }
+input, select { 
+    width: 100%; 
+    padding: 12px; 
+    margin: 10px 0 25px 0; 
+    background: transparent; 
+    border: none; 
+    border-bottom: 1px solid rgba(212, 175, 55, 0.5); 
+    color: #f4eee0; /* Warna ketikan diubah jadi putih gading agar kontras */
+    font-family: 'Special Elite', sans-serif; 
+    outline: none; 
+    box-sizing: border-box; 
+    text-align: center;
+    letter-spacing: 1px;
+}
+input::placeholder { 
+    color: rgba(212, 175, 55, 0.7); /* Warna petunjuk isian diterangkan sedikit */
+}
 input:focus, select:focus { border-bottom: 2px solid #fff; color: #fff; }
 select option { background: #0a0a0a; color: #d4af37; }
 
