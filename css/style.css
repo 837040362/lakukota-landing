@@ -122,6 +122,15 @@ input::placeholder {
 }
 input:focus, select:focus { border-bottom: 2px solid #fff; color: #fff; }
 select option { background: #0a0a0a; color: #d4af37; }
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* Mengubah ikon kalender hitam bawaan browser menjadi putih */
+    cursor: pointer;
+}
+
+/* (Opsional) Biar kalau disorot mouse ikonnya jadi keemasan */
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    filter: invert(80%) sepia(30%) saturate(800%) hue-rotate(5deg); 
+}
 
 /* MOBILE ADJUSTMENTS */
 .mobile-cta { display: none; position: fixed; bottom: 0; width: 100%; background: rgba(10,10,10,0.95); padding: 15px; box-sizing: border-box; z-index: 2000; border-top: 1px solid rgba(212, 175, 55, 0.3); backdrop-filter: blur(5px);}
