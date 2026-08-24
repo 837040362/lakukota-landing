@@ -2,241 +2,91 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.5">
-    <title>LAKUKOTA: SANGKAN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SANGKAN - Perjalanan Pertama LAKUKOTA</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* CSS tambahan khusus untuk halaman Sangkan biar cepat */
+        .sangkan-nav {
+            position: fixed; top: 0; width: 100%; padding: 20px 0;
+            background: rgba(5,5,5,0.9); text-align: center; z-index: 1000;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .sangkan-nav .logo {
+            font-family: 'Cinzel', serif; font-size: 1.8rem; 
+            color: #d4af37; font-weight: bold; letter-spacing: 4px;
+        }
+        .sangkan-section {
+            padding: 100px 20px 50px; max-width: 600px; margin: 0 auto; text-align: center;
+        }
+        .timeline { margin: 40px 0; text-align: left; border-left: 2px solid #d4af37; padding-left: 20px; }
+        .timeline-item { margin-bottom: 25px; position: relative; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -26px; top: 5px;
+            width: 10px; height: 10px; background: #050505; 
+            border: 2px solid #d4af37; border-radius: 50%;
+        }
+        .benefit-list { text-align: left; margin: 40px 0; }
+        .benefit-item { margin-bottom: 15px; font-size: 1.1rem; }
+    </style>
 </head>
 <body>
 
-    <!-- STICKY NAVBAR -->
-    <nav class="navbar">
+    <!-- NAVBAR POLOS TANPA MENU -->
+    <nav class="sangkan-nav">
         <div class="logo">LAKUKOTA</div>
-        <div class="nav-links">
-            <a href="#hero">Prolog</a>
-            <a href="#cerita">Cerita</a>
-            <a href="#karakter">Karakter</a>
-            <a href="#pusaka">Pusaka</a>
-            <a href="#register" class="btn-nav">Registrasi</a>
-        </div>
     </nav>
 
-    <!-- HERO SECTION (Prolog) -->
-<!-- HERO SECTION (Prolog) -->
-    <section id="hero" class="cinematic-section">
-        <div class="content">
-            <h1 class="hero-title">
-                <span class="title-top">LAKUKOTA</span>
-                <span class="title-divider"></span>
-                <span class="title-bottom">SANGKAN</span>
-            </h1>
-            <p class="subtitle" style="font-size: 1.2rem; letter-spacing: 2px;">Sebuah perjalanan menemukan asal dan tujuan.</p>
-            <a href="#cerita" class="btn-primary">Mulai Perjalanan</a>
-        </div>
-    </section>
+    <!-- KONTEN UTAMA SANGKAN -->
+    <section class="sangkan-section">
+        <h1 style="font-size: 3rem; margin-bottom: 5px;">SANGKAN</h1>
+        <p class="subtitle" style="font-size: 1.2rem; color: #fff;">5 FRAGMEN. 1 PERJALANAN.</p>
+        
+        <p style="margin-top: 30px; font-size: 1.1rem;">Ada sesuatu yang tertinggal di Yogyakarta. <br>Bantu Kersa menemukannya.</p>
 
-    <!-- LORE SECTION (Cerita & Dunia) -->
-    <section id="cerita" class="cinematic-section bg-alt">
-        <div class="content left-align">
-            <h2>Dunia Lakukota</h2>
-            <p>Setiap kota punya ingatan. Pada jalan-jalan yang dilalui setiap hari. Pada gedung dan bangunan lama. Pada lokasi-lokasi tertentu. Sebagian lagi mungkin hanya diketahui oleh mereka yang mau berhenti sejenak dan memperhatikan.</p>
-            
-            <p>Di dunia LAKUKOTA, kota bukan hanya latar belakang cerita. Kota adalah bagian dari cerita itu sendiri. Jalan yang kamu lewati, tempat yang kamu datangi, benda yang kamu temukan, bahkan cerita yang selama ini dianggap biasa dapat menyimpan sesuatu yang lebih dalam.</p>
-            
-            <p>Petunjuk akan membawamu keluar dari layar. Kamu harus berjalan. Mengamati. Mencari. Dan mungkin... menemukan sesuatu yang sebenarnya sudah ada di depan mata sejak lama.</p>
-            
-            <h2 style="margin-top: 50px;">Sangkan Paraning Dumadi</h2>
-            <p><strong>Sangkan Paraning Dumadi</strong> adalah tentang asal dan tujuan keberadaan manusia—tentang dari mana kita berasal dan ke mana akhirnya kita menuju. Pertanyaan yang terdengar sederhana. Namun semakin dicari jawabannya, semakin banyak hal yang justru menjadi misteri.</p>
-            
-            <p>Di LAKUKOTA, sebuah perjalanan kecil akan membawamu memasuki sesuatu yang jauh lebih besar dari yang kamu bayangkan. Kamu mungkin hanya sedang mencari sesuatu. Tetapi pencarian itu perlahan membawamu pada pertanyaan yang lebih mendasar.</p>
-            <p>Dari mana semuanya bermula? Dan mungkin... ke mana perjalanan ini sebenarnya akan membawamu?</p>
-        </div>
-    </section>
-
-    <!-- KARAKTER SECTION (Slider) - SUDAH RAPI JALI -->
-    <section id="karakter" class="cinematic-section">
-        <div class="content">
-            <h2>Karakter</h2>
-            <!--<p style="margin-bottom: 30px; font-size: 0.9rem;">(Geser untuk melihat karakter lain)</p>
-            -->
-            <div class="carousel-wrapper">
-                <!-- Navigasi -->
-                <button class="carousel-nav nav-prev" onclick="geserSlider('track-karakter', -1)">&#10094;</button>
-                <button class="carousel-nav nav-next" onclick="geserSlider('track-karakter', 1)">&#10095;</button>
-                
-                <!-- Track Container -->
-                <div class="carousel-track" id="track-karakter">
-                    
-                    <!-- Slide LAKU (Layout Dinamis Tanpa Garis Emas) -->
-                    <div class="carousel-slide">
-                        <div class="dynamic-card">
-                            
-                            <!-- Kolom Kiri: Gambar Laku -->
-                            <div class="char-image-container">
-                                <img src="assets/img/Laku_landing.png" alt="Laku" class="character-img-dynamic">
-                            </div>
-
-                            <!-- Kolom Kanan: Teks Melayang -->
-                            <div class="char-text-container">
-                                <h3>LAKU</h3>
-                                <p>Seorang siswa SMA tingkat akhir, sedang menunggu masa kelulusan. Ia sudah lama berada di Yogyakarta dan memiliki hubungan yang unik dengan kota ini. Ada banyak hal tentang dirinya yang sulit dijelaskan, bahkan olehnya sendiri! Namun satu hal pasti: Laku mengenal Jogja dengan caranya sendiri.</p>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Slide SELA (Layout Dinamis - Placeholder) -->
-                    <div class="carousel-slide">
-                        <div class="dynamic-card">
-                            <div class="char-image-container">
-                                <img src="assets/img/Sela_landing.png" alt="Sela" class="character-img-dynamic">
-                            </div>
-                            <div class="char-text-container">
-                                <h3>SELA</h3>
-                                <p>Siswi SMA tingkat akhir, murid pindahan yang kembali tinggal di Yogyakarta. Sebagai keturunan asli Jogja, sejak kecil ia mengikuti orang tuanya berpindah-pindah. Kini ia kembali ke kota asalnya dimana dia merasa asing. Perjalanan ini mempertemukannya dengan Laku.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Slide KERSA (Layout Dinamis - Placeholder) -->
-                    <div class="carousel-slide">
-                        <div class="dynamic-card">
-                            <div class="char-image-container">
-                                <img src="assets/img/Kersa_landing.png" alt="Sela" class="character-img-dynamic">
-                            </div>
-                            <div class="char-text-container">
-                                <h3>KERSA</h3>
-                                <p>Seseorang di balik layar yang akan menemani perjalananmu. Ia hampir terdengar seperti kakek tua yang bijak, walaupun kadang juga menjengkelkan. Tak banyak yang bisa diketahui tentang dirinya selain bahwa ia memiliki pengetahuan yang luas tentang kota ini. Mungkin dialah satu-satunya orang yang mengetahui tentang sejarah Atmaka.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div> <!-- End Track Karakter -->
-            </div> <!-- End Carousel Wrapper -->
-        </div>
-    </section>
-
-    <!-- PUSAKA & FRAGMEN SECTION (Slider) - SUDAH RAPI JALI -->
-    <section id="pusaka" class="cinematic-section bg-alt">
-        <div class="content">
-            <h2>Pusaka</h2>
-        <!--    <p style="margin-bottom: 30px; font-size: 0.9rem;">(Geser untuk melihat pusaka lain)</p>
-        -->    
-            <div class="carousel-wrapper">
-                <!-- Navigasi -->
-                <button class="carousel-nav nav-prev" onclick="geserSlider('track-pusaka', -1)">&#10094;</button>
-                <button class="carousel-nav nav-next" onclick="geserSlider('track-pusaka', 1)">&#10095;</button>
-                
-                <!-- Track Container -->
-                <div class="carousel-track" id="track-pusaka">
-                    
-                    <!-- Slide ATMAKA (Layout Pusaka) -->
-                    <div class="carousel-slide">
-                        <div class="relic-card">
-                            <div class="char-image-container">
-                                <img src="assets/img/atmaka1.png" alt="Sela" class="character-img-dynamic">
-                            </div>
-                            <div class="relic-text-container">
-                                <h3>ATMAKA</h3>
-                                <p>Sesuatu yang tersembunyi di penjuru kota. Sebuah artefak. Atmaka merupakan pusaka yang berkaitan dengan perjalanan dan cerita suatu kota. Untuk mendapatkannya tidak cukup hanya dengan menemukan di satu lokasi, kadang kamu harus menemukan fragmennya terlebih dahulu.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Slide FRAGMEN (Layout Pusaka) -->
-                    <div class="carousel-slide">
-                        <div class="relic-card">
-                        <!--    <div class="relic-asset-container">
-                                <div class="asset-placeholder-relic">[ VISUAL FRAGMEN ]</div>
-                            </div>
-                        -->    <div class="relic-text-container">
-                                <h3>FRAGMEN</h3>
-                                <p>Atmaka tidak selalu hadir dalam bentuk yang utuh. Jejaknya tersebar. Fragmen-fragmen tersebut menunggu untuk ditemukan oleh mereka yang bersedia memperhatikan lebih jauh. Setiap fragmen adalah bagian kecil dari sebuah cerita. Dan ketika fragmen-fragmen itu akhirnya terkumpul... sesuatu yang lebih besar dapat terungkap.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div> <!-- End Track Pusaka -->
-            </div> <!-- End Carousel Wrapper -->
-        </div>
-    </section>
-
-    <!-- GATEWAY SECTION (Form Registrasi) -->
-    <section id="register" class="cinematic-section" style="padding-bottom: 120px;">
-        <div class="content">
-            <h2>Gerbang Registrasi</h2>
-            <p style="margin-bottom: 30px; font-size: 1.1rem; color: #f4eee0;">
-                Siap memulai perjalanan? Daftarkan dirimu sebagai Selaku.<br>
-                Kota pertama yang menunggumu adalah: <strong style="color:#d4af37;">YOGYAKARTA</strong><br>
-                Dan perjalanan pertamamu: <strong style="color:#d4af37;">SANGKAN</strong>.
-            </p>
-
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('reg-form', this)">Starter Kit (299k)</button>
-                <button class="tab-btn" onclick="switchTab('topup-form', this)">Top Up Arta</button>
+        <!-- RUTE PERJALANAN -->
+        <h3 style="margin-top: 50px; font-size: 1.5rem; text-align: left;">APA YANG AKAN KAMU JALANI?</h3>
+        <div class="timeline">
+            <div class="timeline-item">
+                <strong style="color: #d4af37; font-size: 1.2rem;">01 TUGU YOGYAKARTA</strong>
+                <p style="margin: 5px 0 0; font-size: 0.9rem;">Temukan fragmen pertama.</p>
             </div>
+            <div class="timeline-item">
+                <strong style="color: #d4af37; font-size: 1.2rem;">02 MALIOBORO</strong>
+                <p style="margin: 5px 0 0; font-size: 0.9rem;">Ikuti petunjuk berikutnya.</p>
+            </div>
+            <div class="timeline-item">
+                <strong style="color: #d4af37; font-size: 1.2rem;">03 KEPATIHAN</strong>
+                <p style="margin: 5px 0 0; font-size: 0.9rem;">Pecahkan teka-teki kota.</p>
+            </div>
+            <div class="timeline-item">
+                <strong style="color: #d4af37; font-size: 1.2rem;">04 BERINGHARJO</strong>
+                <p style="margin: 5px 0 0; font-size: 0.9rem;">Dengarkan suara masa lalu.</p>
+            </div>
+            <div class="timeline-item">
+                <strong style="color: #d4af37; font-size: 1.2rem;">05 TITIK NOL KM</strong>
+                <p style="margin: 5px 0 0; font-size: 0.9rem;">Fragmen terakhir menantimu.</p>
+            </div>
+        </div>
 
-            <!-- FORM DAFTAR -->
-            <form id="reg-form" class="form-box">
-                <input type="text" id="reg-nama" placeholder="Nama Selaku (Tanpa Spasi)" required>
-                <input type="email" id="reg-email" placeholder="Alamat Email" required>
-                <input type="password" id="reg-password" placeholder="Kata Sandi Batin" required>
-                
-                <select id="reg-gender" required style="margin-bottom: 15px;">
-                    <option value="" disabled selected>-- Gender --</option>
-                    <option value="L">Maskulin</option>
-                    <option value="P">Feminin</option>
-                </select>
+        <!-- BENEFIT -->
+        <h3 style="margin-top: 50px; font-size: 1.5rem; text-align: left;">DENGAN RP 299.000, KAMU MENDAPATKAN:</h3>
+        <div class="benefit-list">
+            <div class="benefit-item">🧭 <strong>Akses Sangkan:</strong> Perjalanan interaktif di pusat Jogja.</div>
+            <div class="benefit-item">🗺️ <strong>Map Fisik:</strong> Peta rahasia petunjuk perjalananmu.</div>
+            <div class="benefit-item">💰 <strong>1.000 Arta:</strong> Bekal awal di semesta Lakukota.</div>
+            <div class="benefit-item">🧿 <strong>Atmaka Tugu:</strong> Manifestasi fisik (Artefak) setelah selesai.</div>
+            <div class="benefit-item">🪢 <strong>Lanyard Eksklusif:</strong> Bagian dari paket Atmaka.</div>
+            <div class="benefit-item">📱 <strong>Akses PWA:</strong> Mulai perjalanan kapan saja secara mandiri.</div>
+        </div>
 
-                <div style="text-align: left; margin-bottom: 25px; background: rgba(0,0,0,0.4); padding: 15px; border-left: 3px solid #d4af37;">
-                    <label style="font-size: 0.75rem; color: #d4af37; text-transform: uppercase; letter-spacing: 2px;">Tanggal Lahir</label>
-                    <input type="date" id="reg-tgl-lahir" required style="margin-top: 10px; margin-bottom: 5px; color: #f4eee0;" onchange="hitungWetonDummy()">
-                    <div id="hasil-weton" style="font-size: 0.9rem; color: #2ecc71; font-weight: bold; text-align: center; min-height: 20px; margin-top: 10px; font-family: 'Cinzel', serif; letter-spacing: 1px;"></div>
-                </div>
-
-                <button type="submit" class="btn-primary" style="width:100%">Masuk ke LAKUKOTA</button>
-            </form>
-
-<!-- FORM TOP UP -->
-            <form id="topup-form" class="form-box hidden">
-                <!-- KITA GANTI JADI EMAIL BIAR GAMPANG -->
-                <input type="email" id="topup-email" placeholder="Alamat Email Selaku" required>
-                
-                <select required>
-                    <option value="" disabled selected>-- Pilih Nominal Arta --</option>
-                    <option value="50000">500 Arta (Rp 50.000)</option>
-                    <option value="100000">1.000 Arta (Rp 100.000)</option>
-                    <option value="250000">2.500 Arta (Rp 250.000)</option>
-                </select>
-                <button type="submit" class="btn-primary" style="width:100%">Lanjutkan</button>
-            </form>
-            
-            <p style="margin-top:25px; font-size:0.8rem; color:#d4af37; cursor:pointer; text-decoration:underline;" 
-               onclick="tampilkanPesan('MEMASUKI PETA', 'Sistem akan mengarahkan Anda ke dimensi Peta Lakukota...', 'Lanjutkan', function(){ window.location.href = 'https://lakukota.vercel.app/'; })">
-                Sudah punya ID? Masuk Aplikasi Peta
-            </p>
+        <!-- CTA PENUTUP -->
+        <div style="margin-top: 50px; padding-top: 30px; border-top: 1px solid rgba(212, 175, 55, 0.3);">
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Rp 299.000</h2>
+            <p style="font-size: 0.9rem; margin-bottom: 30px;">Pilih waktumu, datang ke Yogyakarta, dan temukan yang tersembunyi.</p>
+            <a href="#form-daftar" class="btn-primary" style="width: 100%; padding: 20px; font-size: 1.2rem;">MULAI PERJALANAN</a>
         </div>
     </section>
 
-    <!-- STICKY MOBILE CTA -->
-    <div class="mobile-cta">
-        <a href="#register" class="btn-primary" style="width:100%; text-align:center;">Daftar Selaku (299k)</a>
-    </div>
-
-    <!-- =========================================
-         CUSTOM MODAL UNIVERSAL
-         ========================================= -->
-    <div id="custom-modal" class="modal-overlay hidden">
-        <div class="modal-box">
-            <h3 id="modal-title" style="color: #d4af37; margin-top: 0; border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 15px; font-family: 'Cinzel', serif;">INFO</h3>
-            <p id="modal-message" style="color: #f4eee0; line-height: 1.6; font-size: 0.95rem; font-family: 'Special Elite', sans-serif; margin-bottom: 25px;"></p>
-            <!-- Tombolnya pakai ID biar teksnya bisa diganti-ganti -->
-            <button id="modal-btn" onclick="tutupModal()" class="btn-primary" style="width:100%;">Mengerti</button>
-        </div>
-    </div>
-
-
-    <!-- Panggil Library Supabase & Script -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script src="js/main.js"></script>
 </body>
 </html>
