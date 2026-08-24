@@ -6,87 +6,147 @@
     <title>SANGKAN - Perjalanan Pertama LAKUKOTA</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* CSS tambahan khusus untuk halaman Sangkan biar cepat */
+        /* CSS KHUSUS SANGKAN BIAR RAPI */
         .sangkan-nav {
             position: fixed; top: 0; width: 100%; padding: 20px 0;
-            background: rgba(5,5,5,0.9); text-align: center; z-index: 1000;
+            background: rgba(5,5,5,0.9); backdrop-filter: blur(5px);
+            text-align: center; z-index: 1000;
             border-bottom: 1px solid rgba(212, 175, 55, 0.3);
         }
         .sangkan-nav .logo {
             font-family: 'Cinzel', serif; font-size: 1.8rem; 
             color: #d4af37; font-weight: bold; letter-spacing: 4px;
         }
-        .sangkan-section {
-            padding: 100px 20px 50px; max-width: 600px; margin: 0 auto; text-align: center;
+        .sangkan-wrapper {
+            padding: 120px 20px 80px; max-width: 700px; margin: 0 auto; 
+            text-align: center;
         }
-        .timeline { margin: 40px 0; text-align: left; border-left: 2px solid #d4af37; padding-left: 20px; }
-        .timeline-item { margin-bottom: 25px; position: relative; }
+        .quote-box {
+            background: rgba(212, 175, 55, 0.05);
+            border-left: 3px solid #d4af37;
+            padding: 20px;
+            margin: 30px 0;
+            font-style: italic;
+            text-align: left;
+        }
+        .timeline { margin: 50px 0; text-align: left; border-left: 2px solid rgba(212, 175, 55, 0.5); padding-left: 30px; }
+        .timeline-item { margin-bottom: 35px; position: relative; }
         .timeline-item::before {
-            content: ''; position: absolute; left: -26px; top: 5px;
-            width: 10px; height: 10px; background: #050505; 
+            content: ''; position: absolute; left: -37px; top: 5px;
+            width: 12px; height: 12px; background: #050505; 
             border: 2px solid #d4af37; border-radius: 50%;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
         }
-        .benefit-list { text-align: left; margin: 40px 0; }
-        .benefit-item { margin-bottom: 15px; font-size: 1.1rem; }
+        .benefit-grid {
+            display: grid; grid-template-columns: 1fr; gap: 15px; margin: 30px 0 50px; text-align: left;
+        }
+        .benefit-card {
+            background: rgba(10,10,10,0.8); border: 1px solid rgba(212,175,55,0.3);
+            padding: 15px 20px; border-radius: 5px; display: flex; align-items: center; gap: 15px;
+        }
+        .benefit-icon { font-size: 1.5rem; }
     </style>
 </head>
-<body>
+<body class="is-scrolling"> <!-- is-scrolling biar background jogjaview langsung jelas -->
 
-    <!-- NAVBAR POLOS TANPA MENU -->
+    <!-- NAVBAR POLOS -->
     <nav class="sangkan-nav">
         <div class="logo">LAKUKOTA</div>
     </nav>
 
     <!-- KONTEN UTAMA SANGKAN -->
-    <section class="sangkan-section">
-        <h1 style="font-size: 3rem; margin-bottom: 5px;">SANGKAN</h1>
-        <p class="subtitle" style="font-size: 1.2rem; color: #fff;">5 FRAGMEN. 1 PERJALANAN.</p>
+    <div class="sangkan-wrapper">
+        <h1 style="font-size: 3.5rem; margin-bottom: 5px; text-shadow: 2px 4px 10px rgba(0,0,0,0.8);">SANGKAN</h1>
+        <p class="subtitle" style="font-size: 1.2rem; color: #fff; letter-spacing: 6px;">5 FRAGMEN. 1 PERJALANAN.</p>
         
-        <p style="margin-top: 30px; font-size: 1.1rem;">Ada sesuatu yang tertinggal di Yogyakarta. <br>Bantu Kersa menemukannya.</p>
+        <div class="quote-box">
+            <p style="margin: 0; font-size: 1.1rem; color: #f4eee0;">
+                "Ada sesuatu di kota ini yang tidak bisa kulihat dengan jelas. Sesuatu yang sengaja ditinggalkan.<br><br>
+                Bantu aku menemukannya."
+            </p>
+            <p style="margin: 10px 0 0; font-size: 0.9rem; color: #d4af37; font-family: 'Cinzel', serif;">— KERSA</p>
+        </div>
+
+        <p style="font-size: 1.05rem; line-height: 1.8; color: #ccc;">
+            Sangkan bukan sekadar permainan, melainkan cara baru untuk melihat Yogyakarta. 
+            Ikuti petunjuk, pecahkan teka-teki di sudut kota yang mungkin sering kamu lewati, dan kumpulkan 5 Fragmen untuk membentuk satu manifestasi utuh.
+        </p>
 
         <!-- RUTE PERJALANAN -->
-        <h3 style="margin-top: 50px; font-size: 1.5rem; text-align: left;">APA YANG AKAN KAMU JALANI?</h3>
+        <h3 style="margin-top: 60px; font-size: 1.8rem; text-align: left; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 10px;">RUTE PERJALANANMU</h3>
         <div class="timeline">
             <div class="timeline-item">
-                <strong style="color: #d4af37; font-size: 1.2rem;">01 TUGU YOGYAKARTA</strong>
-                <p style="margin: 5px 0 0; font-size: 0.9rem;">Temukan fragmen pertama.</p>
+                <strong style="color: #d4af37; font-size: 1.3rem; font-family: 'Cinzel', serif;">01 TUGU YOGYAKARTA</strong>
+                <p style="margin: 5px 0 0; font-size: 0.95rem; color: #ccc;">Titik awal. Temukan bentuk dari yang tak terlihat.</p>
             </div>
             <div class="timeline-item">
-                <strong style="color: #d4af37; font-size: 1.2rem;">02 MALIOBORO</strong>
-                <p style="margin: 5px 0 0; font-size: 0.9rem;">Ikuti petunjuk berikutnya.</p>
+                <strong style="color: #d4af37; font-size: 1.3rem; font-family: 'Cinzel', serif;">02 MALIOBORO</strong>
+                <p style="margin: 5px 0 0; font-size: 0.95rem; color: #ccc;">Susuri jalanan, perhatikan apa yang tersembunyi di keramaian.</p>
             </div>
             <div class="timeline-item">
-                <strong style="color: #d4af37; font-size: 1.2rem;">03 KEPATIHAN</strong>
-                <p style="margin: 5px 0 0; font-size: 0.9rem;">Pecahkan teka-teki kota.</p>
+                <strong style="color: #d4af37; font-size: 1.3rem; font-family: 'Cinzel', serif;">03 KEPATIHAN</strong>
+                <p style="margin: 5px 0 0; font-size: 0.95rem; color: #ccc;">Simpul teka-teki yang menguji ingatan kota.</p>
             </div>
             <div class="timeline-item">
-                <strong style="color: #d4af37; font-size: 1.2rem;">04 BERINGHARJO</strong>
-                <p style="margin: 5px 0 0; font-size: 0.9rem;">Dengarkan suara masa lalu.</p>
+                <strong style="color: #d4af37; font-size: 1.3rem; font-family: 'Cinzel', serif;">04 BERINGHARJO</strong>
+                <p style="margin: 5px 0 0; font-size: 0.95rem; color: #ccc;">Dengarkan gema masa lalu di pusat perniagaan.</p>
             </div>
             <div class="timeline-item">
-                <strong style="color: #d4af37; font-size: 1.2rem;">05 TITIK NOL KM</strong>
-                <p style="margin: 5px 0 0; font-size: 0.9rem;">Fragmen terakhir menantimu.</p>
+                <strong style="color: #d4af37; font-size: 1.3rem; font-family: 'Cinzel', serif;">05 TITIK NOL KM</strong>
+                <p style="margin: 5px 0 0; font-size: 0.95rem; color: #ccc;">Garis akhir. Fragmen kelima menantimu.</p>
             </div>
         </div>
 
-        <!-- BENEFIT -->
-        <h3 style="margin-top: 50px; font-size: 1.5rem; text-align: left;">DENGAN RP 299.000, KAMU MENDAPATKAN:</h3>
-        <div class="benefit-list">
-            <div class="benefit-item">🧭 <strong>Akses Sangkan:</strong> Perjalanan interaktif di pusat Jogja.</div>
-            <div class="benefit-item">🗺️ <strong>Map Fisik:</strong> Peta rahasia petunjuk perjalananmu.</div>
-            <div class="benefit-item">💰 <strong>1.000 Arta:</strong> Bekal awal di semesta Lakukota.</div>
-            <div class="benefit-item">🧿 <strong>Atmaka Tugu:</strong> Manifestasi fisik (Artefak) setelah selesai.</div>
-            <div class="benefit-item">🪢 <strong>Lanyard Eksklusif:</strong> Bagian dari paket Atmaka.</div>
-            <div class="benefit-item">📱 <strong>Akses PWA:</strong> Mulai perjalanan kapan saja secara mandiri.</div>
+        <!-- BENEFIT CONCRETE -->
+        <h3 style="margin-top: 60px; font-size: 1.5rem; text-align: left; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 10px;">YANG KAMU DAPATKAN:</h3>
+        <div class="benefit-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">🧿</div>
+                <div>
+                    <strong style="color:#d4af37; font-family:'Cinzel', serif;">ATMAKA TUGU</strong><br>
+                    <span style="font-size:0.9rem; color:#ccc;">Manifestasi fisik (Artefak Akrilik) eksklusif Founder.</span>
+                </div>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">🪢</div>
+                <div>
+                    <strong style="color:#d4af37; font-family:'Cinzel', serif;">LANYARD LAKUKOTA</strong><br>
+                    <span style="font-size:0.9rem; color:#ccc;">Tali identitas resmi penjelajah kota.</span>
+                </div>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">🗺️</div>
+                <div>
+                    <strong style="color:#d4af37; font-family:'Cinzel', serif;">MAP & STARTER KIT</strong><br>
+                    <span style="font-size:0.9rem; color:#ccc;">Peta fisik rahasia untuk memandu perjalananmu.</span>
+                </div>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">💰</div>
+                <div>
+                    <strong style="color:#d4af37; font-family:'Cinzel', serif;">1.000 ARTA</strong><br>
+                    <span style="font-size:0.9rem; color:#ccc;">Mata uang digital (bekal) di semesta LAKUKOTA.</span>
+                </div>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">📱</div>
+                <div>
+                    <strong style="color:#d4af37; font-family:'Cinzel', serif;">AKSES PWA SANGKAN</strong><br>
+                    <span style="font-size:0.9rem; color:#ccc;">Akses penuh ke aplikasi radar untuk memulai pencarian.</span>
+                </div>
+            </div>
         </div>
 
         <!-- CTA PENUTUP -->
-        <div style="margin-top: 50px; padding-top: 30px; border-top: 1px solid rgba(212, 175, 55, 0.3);">
-            <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Rp 299.000</h2>
-            <p style="font-size: 0.9rem; margin-bottom: 30px;">Pilih waktumu, datang ke Yogyakarta, dan temukan yang tersembunyi.</p>
-            <a href="#form-daftar" class="btn-primary" style="width: 100%; padding: 20px; font-size: 1.2rem;">MULAI PERJALANAN</a>
+        <div style="margin-top: 60px; padding: 40px; background: rgba(5,5,5,0.8); border: 1px solid #d4af37; border-radius: 8px;">
+            <p style="font-size: 1rem; color: #ccc; margin-bottom: 10px; font-style: italic;">Sangkan dirancang untuk dimainkan secara mandiri.</p>
+            <p style="font-size: 1rem; color: #f4eee0; margin-bottom: 25px;">Pilih waktumu, datang ke Yogyakarta saat kamu siap, dan selesaikan perjalananmu.</p>
+            
+            <h2 style="font-size: 2.8rem; margin-bottom: 30px; color: #d4af37;">Rp 299.000</h2>
+            
+            <a href="#form-daftar" onclick="alert('Ini nanti diarahin ke form Midtrans / Registrasi Lik!')" class="btn-primary" style="width: 100%; padding: 20px; font-size: 1.2rem; box-sizing: border-box; text-align: center;">AMBIL PERANMU</a>
         </div>
-    </section>
+    </div>
 
 </body>
 </html>
