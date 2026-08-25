@@ -3,180 +3,764 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>SANGKAN - Perjalanan Pertama LAKUKOTA</title>
+
     <link rel="stylesheet" href="css/style.css">
+
     <style>
-        /* CSS KHUSUS SANGKAN BIAR RAPI */
+        /* =========================================================
+           SANGKAN LANDING
+           MOBILE FIRST
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
         .sangkan-nav {
-            position: fixed; top: 0; width: 100%; padding: 20px 0;
-            background: rgba(5,5,5,0.9); backdrop-filter: blur(5px);
-            text-align: center; z-index: 1000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 15px 20px;
+
+            background: rgba(5, 5, 5, 0.92);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+
+            z-index: 1000;
+
             border-bottom: 1px solid rgba(212, 175, 55, 0.3);
         }
-        .sangkan-nav .logo {
-            font-family: 'Cinzel', serif; font-size: 1.8rem; 
-            color: #d4af37; font-weight: bold; letter-spacing: 4px;
+
+        .sangkan-nav img {
+            display: block;
+            width: auto;
+            height: 24px;
+            max-width: 150px;
         }
+
+
+        /* =========================================================
+           MAIN WRAPPER
+        ========================================================= */
+
         .sangkan-wrapper {
-            padding: 120px 20px 80px; max-width: 700px; margin: 0 auto; 
+            width: 100%;
+            max-width: 640px;
+
+            margin: 0 auto;
+
+            padding: 95px 16px 60px;
+
             text-align: center;
         }
+
+
+        /* =========================================================
+           HERO
+        ========================================================= */
+
+        .sangkan-title {
+            margin: 0 0 5px;
+
+            font-size: clamp(2.5rem, 13vw, 3.5rem);
+            line-height: 1;
+
+            letter-spacing: 2px;
+
+            text-shadow:
+                2px 4px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .sangkan-subtitle {
+            margin: 0;
+
+            font-size: 0.9rem;
+            line-height: 1.4;
+
+            color: #fff;
+
+            letter-spacing: 3px;
+        }
+
+
+        /* =========================================================
+           KERSA QUOTE
+        ========================================================= */
+
         .quote-box {
+            margin: 26px 0;
+
+            padding: 17px 16px;
+
             background: rgba(212, 175, 55, 0.05);
+
             border-left: 3px solid #d4af37;
-            padding: 20px;
-            margin: 30px 0;
+
+            text-align: left;
+
             font-style: italic;
+        }
+
+        .quote-box p {
+            margin: 0;
+
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .quote-box .quote-author {
+            margin-top: 10px;
+
+            color: #d4af37;
+
+            font-family: 'Cinzel', serif;
+
+            font-size: 0.9rem;
+            font-style: normal;
+        }
+
+
+        /* =========================================================
+           INTRO
+        ========================================================= */
+
+        .intro-text {
+            margin: 0;
+
+            color: #ccc;
+
+            font-size: 0.96rem;
+            line-height: 1.85;
+
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           SECTION TITLE
+        ========================================================= */
+
+        .section-title {
+            margin: 52px 0 22px;
+
+            padding-bottom: 10px;
+
+            color: #d4af37;
+
+            font-size: 1.25rem;
+            line-height: 1.4;
+
+            letter-spacing: 2px;
+
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .section-title.center {
+            text-align: center;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .section-title.left {
             text-align: left;
         }
-        .timeline { margin: 50px 0; text-align: left; border-left: 2px solid rgba(212, 175, 55, 0.5); padding-left: 30px; }
-        .timeline-item { margin-bottom: 35px; position: relative; }
-        .timeline-item::before {
-            content: ''; position: absolute; left: -37px; top: 5px;
-            width: 12px; height: 12px; background: #050505; 
-            border: 2px solid #d4af37; border-radius: 50%;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+
+
+        /* =========================================================
+           RUTE / MAP
+        ========================================================= */
+
+        .map-container {
+            margin: 25px auto 25px;
+
+            width: 100%;
+
+            display: flex;
+            justify-content: center;
         }
 
-/* CSS CAROUSEL PRODUK (SWIPE-ABLE) */
-        .carousel-container {
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            gap: 20px;
-            padding: 10px 0 30px;
-        }
-        
-        /* HAPUS BAGIAN scrollbar-width: none YANG LAMA, GANTI DENGAN INI BIAR ELEGAN */
-        .carousel-container::-webkit-scrollbar {
-            height: 6px; /* Tinggi scrollbar tipis saja */
-        }
-        .carousel-container::-webkit-scrollbar-track {
-            background: rgba(10, 10, 10, 0.5); 
-            border-radius: 10px;
-        }
-        .carousel-container::-webkit-scrollbar-thumb {
-            background: rgba(212, 175, 55, 0.5); /* Warna emas redup */
-            border-radius: 10px;
-        }
-        .carousel-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(212, 175, 55, 0.9); /* Emas terang kalau disorot mouse */
-        }
-        
-        .carousel-card {
-            min-width: 260px; /* Lebar setiap kotak gambar */
-            scroll-snap-align: center;
-            background: rgba(10, 10, 10, 0.8);
+        .map-container img {
+            display: block;
+
+            width: 80%;
+            max-width: 300px;
+            height: auto;
+
             border: 1px solid rgba(212, 175, 55, 0.3);
             border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            flex: 0 0 auto;
-        }
-        .carousel-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            background: #222; /* Warna dasar kalau gambar belum dimuat */
-            border: 1px solid rgba(212, 175, 55, 0.1);
+
+            box-shadow:
+                0 0 20px rgba(0, 0, 0, 0.8);
         }
 
-        .benefit-icon { font-size: 1.5rem; }
+        .route-description {
+            margin: 0 10px 45px;
+
+            color: #aaa;
+
+            font-size: 0.95rem;
+            line-height: 1.7;
+
+            font-style: italic;
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           PRODUCT CAROUSEL
+        ========================================================= */
+
+        .carousel-container {
+            width: 100%;
+
+            display: flex;
+
+            overflow-x: auto;
+
+            gap: 14px;
+
+            padding: 4px 2px 20px;
+
+            scroll-snap-type: x mandatory;
+            scroll-padding-left: 2px;
+
+            -webkit-overflow-scrolling: touch;
+
+            scrollbar-width: thin;
+            scrollbar-color:
+                rgba(212, 175, 55, 0.5)
+                rgba(10, 10, 10, 0.5);
+        }
+
+        .carousel-container::-webkit-scrollbar {
+            height: 5px;
+        }
+
+        .carousel-container::-webkit-scrollbar-track {
+            background: rgba(10, 10, 10, 0.5);
+            border-radius: 10px;
+        }
+
+        .carousel-container::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.5);
+            border-radius: 10px;
+        }
+
+        .carousel-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.9);
+        }
+
+        .carousel-card {
+            flex: 0 0 220px;
+
+            width: 220px;
+
+            padding: 12px;
+
+            scroll-snap-align: start;
+
+            background: rgba(10, 10, 10, 0.8);
+
+            border: 1px solid rgba(212, 175, 55, 0.3);
+
+            border-radius: 8px;
+
+            text-align: center;
+        }
+
+        .carousel-image {
+            display: block;
+
+            width: 100%;
+            height: 145px;
+
+            object-fit: cover;
+
+            margin-bottom: 13px;
+
+            background: #222;
+
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 4px;
+        }
+
+        .carousel-title {
+            display: block;
+
+            color: #d4af37;
+
+            font-family: 'Cinzel', serif;
+
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .carousel-description {
+            margin: 8px 0 0;
+
+            color: #ccc;
+
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           PERSIAPAN PERJALANAN
+        ========================================================= */
+
+        .preparation-list {
+            margin: 0 0 50px;
+
+            padding-left: 20px;
+
+            color: #ccc;
+
+            font-size: 0.82rem;
+            line-height: 1.75;
+
+            text-align: left;
+        }
+
+        .preparation-list li {
+            margin-bottom: 12px;
+        }
+
+        .preparation-list li:last-child {
+            margin-bottom: 0;
+        }
+
+
+        /* =========================================================
+           CTA
+        ========================================================= */
+
+        .cta-box {
+            margin-top: 45px;
+
+            padding: 28px 20px;
+
+            background: rgba(5, 5, 5, 0.85);
+
+            border: 1px solid #d4af37;
+
+            border-radius: 8px;
+        }
+
+        .cta-small {
+            margin: 0 0 10px;
+
+            color: #ccc;
+
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .cta-description {
+            margin: 0 0 22px;
+
+            color: #f4eee0;
+
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .cta-price {
+            margin: 0 0 25px;
+
+            color: #d4af37;
+
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .btn-primary {
+            display: block;
+
+            width: 100%;
+
+            padding: 18px 15px;
+
+            text-align: center;
+
+            border-radius: 6px;
+
+            font-size: 0.95rem;
+        }
+
+
+        /* =========================================================
+           VERY SMALL PHONE
+        ========================================================= */
+
+        @media (max-width: 360px) {
+
+            .sangkan-wrapper {
+                padding-left: 13px;
+                padding-right: 13px;
+            }
+
+            .sangkan-title {
+                font-size: 2.35rem;
+            }
+
+            .quote-box {
+                padding: 15px 13px;
+            }
+
+            .quote-box p {
+                font-size: 0.9rem;
+            }
+
+            .intro-text {
+                font-size: 0.92rem;
+            }
+
+            .carousel-card {
+                flex-basis: 205px;
+                width: 205px;
+            }
+
+            .carousel-image {
+                height: 135px;
+            }
+
+            .cta-box {
+                padding: 25px 17px;
+            }
+
+            .cta-price {
+                font-size: 1.8rem;
+            }
+        }
+
+
+        /* =========================================================
+           TABLET / DESKTOP
+        ========================================================= */
+
+        @media (min-width: 600px) {
+
+            .sangkan-wrapper {
+                padding:
+                    115px
+                    24px
+                    80px;
+            }
+
+            .quote-box {
+                padding: 20px;
+            }
+
+            .intro-text {
+                font-size: 1rem;
+            }
+
+            .carousel-container {
+                gap: 20px;
+            }
+
+            .carousel-card {
+                flex-basis: 260px;
+                width: 260px;
+                padding: 15px;
+            }
+
+            .carousel-image {
+                height: 180px;
+            }
+
+            .carousel-title {
+                font-size: 1.05rem;
+            }
+
+            .carousel-description {
+                font-size: 0.9rem;
+            }
+
+            .preparation-list {
+                font-size: 0.85rem;
+            }
+
+            .cta-box {
+                padding: 40px;
+            }
+
+            .cta-price {
+                font-size: 2.2rem;
+            }
+        }
     </style>
 </head>
-<body class="is-scrolling"> <!-- is-scrolling biar background jogjaview langsung jelas -->
 
-    <!-- NAVBAR POLOS -->
+<body class="is-scrolling">
+
+    <!-- =========================================================
+         NAVBAR
+    ========================================================== -->
+
     <nav class="sangkan-nav">
-        <!-- Kalau formatnya SVG -->
-        <img src="assets/img/logo-lakukota.svg" alt="LAKUKOTA" style="height: 25px; margin: 0 auto; display: block;">
+        <img
+            src="assets/img/logo-lakukota.svg"
+            alt="LAKUKOTA"
+        >
     </nav>
 
-    <!-- KONTEN UTAMA SANGKAN -->
-    <div class="sangkan-wrapper">
-        <h1 style="font-size: 3.5rem; margin-bottom: 5px; text-shadow: 2px 4px 10px rgba(0,0,0,0.8);">SANGKAN</h1>
-        <p class="subtitle" style="font-size: 1.2rem; color: #fff; letter-spacing: 4px;">SEBUAH AWAL</p>
-        
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================== -->
+
+    <main class="sangkan-wrapper">
+
+        <!-- HERO -->
+
+        <h1 class="sangkan-title">
+            SANGKAN
+        </h1>
+
+        <p class="sangkan-subtitle">
+            SEBUAH AWAL
+        </p>
+
+
+        <!-- KERSA -->
+
         <div class="quote-box">
-            <p style="margin: 0; font-size: 1.0rem; color: #f4eee0;">
+
+            <p>
                 "Seringkali ada yang terlewat dari kota ini...<br>
                 Sesuatu yang tersembunyi, yang hanya bisa ditemukan dengan melangkah kaki."
             </p>
-            <p style="margin: 10px 0 0; font-size: 1.0rem; color: #d4af37; font-family: 'Cinzel', serif;">— KERSA</p>
+
+            <p class="quote-author">
+                — KERSA
+            </p>
+
         </div>
 
-        <p style="font-size: 1.0rem; line-height: 1.8; color: #ccc;">
-            Sangkan bukan sekadar permainan, melainkan suatu cara baru untuk melihat Yogyakarta dari sudut yang berbeda. 
-            Ikuti petunjuk, pecahkan teka-teki di sudut-sudut kota yang mungkin sering engkau lewati, kumpulkan 5 Fragmen untuk membentuk satu manifestasimu.
+
+        <!-- INTRO -->
+
+        <p class="intro-text">
+            Sangkan bukan sekadar permainan, melainkan suatu cara untuk melihat Yogyakarta dari sudut yang berbeda.
+            Ikuti petunjuk, pecahkan teka-teki di sudut-sudut kota yang mungkin sering engkau lewati.
+            Kumpulkan 5 Fragmen untuk membentuk satu manifestasi kota—sebagai pengingatmu atas kota ini.
         </p>
 
-<!-- RUTE PERJALANAN (GAMBAR PETA) -->
-        <h3 style="margin-top: 60px; font-size: 1.5rem; text-align: center; color: #d4af37; letter-spacing: 3px;">RUTE PERJALANAN</h3>
-        
-        <div style="text-align: center; margin: 30px 0;">
-            <img src="assets/img/map-sumbu.png" alt="Peta Sumbu Filosofis Yogyakarta" style="width: 80%; max-width: 300px; border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
+
+        <!-- =====================================================
+             RUTE PERJALANAN
+        ====================================================== -->
+
+        <h3 class="section-title center">
+            RUTE PERJALANAN
+        </h3>
+
+        <div class="map-container">
+
+            <img
+                src="assets/img/map-sumbu.png"
+                alt="Peta Sumbu Filosofis Yogyakarta"
+            >
+
         </div>
 
-        <p style="text-align: center; color: #aaa; font-style: italic; margin-bottom: 50px; font-size: 1.05rem; line-height: 1.6; padding: 0 20px;">
-            "Engkau akan menjalani sebuah perjalanan menyusuri jejak memori kota, membentang di sepanjang Sumbu Filosofis antara Tugu hingga Alun-Alun Utara Yogyakarta."
+        <p class="route-description">
+            "Engkau akan menjalani sebuah perjalanan menyusuri jejak memori kota,
+            membentang di sepanjang Sumbu Filosofis antara Tugu hingga Alun-Alun Utara Yogyakarta."
         </p>
 
-<!-- BENEFIT CONCRETE (CAROUSEL) -->
-        <h3 style="margin-top: 60px; font-size: 1.5rem; text-align: left; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 10px;">YANG ENGKAU DAPATKAN</h3>
-        
+
+        <!-- =====================================================
+             YANG ENGKAU DAPATKAN
+        ====================================================== -->
+
+        <h3 class="section-title left">
+            YANG ENGKAU DAPATKAN
+        </h3>
+
+
         <div class="carousel-container">
-            <!-- Item 1: Atmaka -->
+
+            <!-- ATMAKA -->
+
             <div class="carousel-card">
-                <!-- Nanti src-nya diganti link gambar/foto produk aslinya Lik -->
-                <img src="assets/img/atmaka1.png" alt="Atmaka Tugu" class="carousel-image">
-                <strong style="color:#d4af37; font-family:'Cinzel', serif; font-size: 1.1rem;">ATMAKA TUGU</strong>
-                <p style="font-size:0.9rem; color:#ccc; margin-top:8px; line-height: 1.4;">Manifestasi fisik eksklusif Founder.</p>
-            </div>
-            
-            <!-- Item 2: Lanyard -->
-            <div class="carousel-card">
-                <img src="assets/img/lanyard1.png" alt="Lanyard Kulit (1 slot)" class="carousel-image">
-                <strong style="color:#d4af37; font-family:'Cinzel', serif; font-size: 1.1rem;">LANYARD KULIT (1 SLOT)</strong>
-                <p style="font-size:0.9rem; color:#ccc; margin-top:8px; line-height: 1.4;">Tali kulit untuk membawa Atmakamu.</p>
+
+                <img
+                    src="assets/img/atmaka1.png"
+                    alt="Atmaka Tugu"
+                    class="carousel-image"
+                >
+
+                <strong class="carousel-title">
+                    ATMAKA TUGU
+                </strong>
+
+                <p class="carousel-description">
+                    Manifestasi fisik eksklusif Founder.
+                </p>
+
             </div>
 
-            <!-- Item 3: Map -->
+
+            <!-- LANYARD -->
+
             <div class="carousel-card">
-                <img src="assets/img/map1.png" alt="Map Starter Kit" class="carousel-image">
-                <strong style="color:#d4af37; font-family:'Cinzel', serif; font-size: 1.1rem;">MAP & STARTER KIT</strong>
-                <p style="font-size:0.9rem; color:#ccc; margin-top:8px; line-height: 1.4;">Peta fisik rahasia panduan perjalanan.</p>
+
+                <img
+                    src="assets/img/lanyard1.png"
+                    alt="Lanyard Kulit 1 Slot"
+                    class="carousel-image"
+                >
+
+                <strong class="carousel-title">
+                    LANYARD KULIT (1 SLOT)
+                </strong>
+
+                <p class="carousel-description">
+                    Tali kulit untuk membawa Atmakamu.
+                </p>
+
             </div>
 
-            <!-- Item 4: Arta -->
+
+            <!-- MAP -->
+
             <div class="carousel-card">
-                <div class="carousel-image" style="display:flex; align-items:center; justify-content:center; font-size: 3rem;">💰</div>
-                <strong style="color:#d4af37; font-family:'Cinzel', serif; font-size: 1.1rem;">1.000 ARTA</strong>
-                <p style="font-size:0.9rem; color:#ccc; margin-top:8px; line-height: 1.4;">Bekal mata uang digital di semesta LAKUKOTA.</p>
+
+                <img
+                    src="assets/img/map1.png"
+                    alt="Map Starter Kit"
+                    class="carousel-image"
+                >
+
+                <strong class="carousel-title">
+                    MAP & STARTER KIT
+                </strong>
+
+                <p class="carousel-description">
+                    Peta fisik rahasia panduan perjalanan.
+                </p>
+
             </div>
+
+
+            <!-- ARTA -->
+
+            <div class="carousel-card">
+
+                <div
+                    class="carousel-image"
+                    style="
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        font-size:3rem;
+                    "
+                >
+                    💰
+                </div>
+
+                <strong class="carousel-title">
+                    1.000 ARTA
+                </strong>
+
+                <p class="carousel-description">
+                    Bekal mata uang digital di semesta LAKUKOTA.
+                </p>
+
+            </div>
+
         </div>
 
-        <!-- PERSIAPAN PERJALANAN (PENGGANTI S&K KAKU) -->
-        <h3 style="margin-top: 50px; font-size: 1.2rem; text-align: left; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 10px;">PERSIAPAN PERJALANAN</h3>
-        <ul style="color: #ccc; text-align: left; line-height: 1.8; font-size: 0.8rem; padding-left: 20px; margin-bottom: 60px;">
-            <li style="margin-bottom: 10px;"><strong>Medan & Alas Kaki:</strong> Perjalanan menyusuri Sumbu Filosofis Yogyakarta (± 2.5 KM). Gunakan sepatu/alas kaki yang nyaman.</li>
-            <li style="margin-bottom: 10px;"><strong>Waktu Tempuh:</strong> Estimasi 2-3 jam. Engkau bebas memulai kapan saja dan berhenti sejenak untuk istirahat, makan atau minum kopi.</li>
-            <li style="margin-bottom: 10px;"><strong>Perangkat:</strong> Pastikan baterai <i>smartphone</i> terisi penuh (bawa <i>powerbank</i> sangat direkomendasikan), kuota internet stabil, dan fitur GPS menyala.</li>
-        <!--    <li style="margin-bottom: 10px;"><strong>Cuaca:</strong> Mengingat cuaca yang kadang tak terduga, siapkan payung atau jas hujan lipat di dalam tas.</li>
-        --></ul>
+
+        <!-- =====================================================
+             PERSIAPAN PERJALANAN
+        ====================================================== -->
+
+        <h3 class="section-title left">
+            PERSIAPAN PERJALANAN
+        </h3>
+
+        <ul class="preparation-list">
+
+            <li>
+                <strong>Medan & Alas Kaki:</strong>
+                Perjalanan menyusuri Sumbu Filosofis Yogyakarta
+                (± 2.5 KM). Gunakan sepatu/alas kaki yang nyaman.
+            </li>
+
+            <li>
+                <strong>Waktu Tempuh:</strong>
+                Estimasi 2-3 jam. Engkau bebas memulai kapan saja
+                dan berhenti sejenak untuk istirahat, makan atau minum kopi.
+            </li>
+
+            <li>
+                <strong>Perangkat:</strong>
+                Pastikan baterai <i>smartphone</i> terisi penuh
+                (bawa <i>powerbank</i> sangat direkomendasikan),
+                kuota internet stabil, dan fitur GPS menyala.
+            </li>
+
+        </ul>
 
 
-        <!-- CTA PENUTUP -->
-        <div style="margin-top: 60px; padding: 40px; background: rgba(5,5,5,0.8); border: 1px solid #d4af37; border-radius: 8px;">
-            <p style="font-size: 1rem; color: #ccc; margin-bottom: 10px;">Sangkan dirancang untuk dilakukan secara mandiri.</p>
-            <p style="font-size: 1rem; color: #f4eee0; margin-bottom: 25px;">Sendiri atau bersama kawan, tentukan waktumu, datanglah ke Yogyakarta saat engkau siap, dan selesaikan perjalananmu.</p>
-            
-            <h2 style="font-size: 2.2rem; margin-bottom: 30px; color: #d4af37;">Rp 299.000</h2>
-           
-            <a href="#form-daftar" onclick="alert('Ini nanti diarahin ke form Midtrans / Registrasi Lik!')" class="btn-primary" style="width: 100%; padding: 20px; font-size: 1.0rem; box-sizing: border-box; text-align: center;">DAFTARKAN LAKUMU</a>
+        <!-- =====================================================
+             CTA
+        ====================================================== -->
+
+        <div class="cta-box">
+
+            <p class="cta-small">
+                Sangkan dirancang untuk dilakukan secara mandiri.
+            </p>
+
+            <p class="cta-description">
+                Sendiri atau bersama kawan, tentukan waktumu,
+                datanglah ke Yogyakarta saat engkau siap,
+                dan selesaikan perjalananmu.
+            </p>
+
+            <h2 class="cta-price">
+                Rp 299.000
+            </h2>
+
+            <a
+                href="#form-daftar"
+                onclick="alert('Ini nanti diarahin ke form Midtrans / Registrasi Lik!')"
+                class="btn-primary"
+            >
+                DAFTARKAN LAKUMU
+            </a>
+
         </div>
-    </div>
+
+    </main>
 
 </body>
 </html>
