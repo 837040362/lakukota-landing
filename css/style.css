@@ -15,8 +15,19 @@ body {
 }
 
 /* =========================================
-   BACKGROUND ZOOM OUT SAAT SCROLL
+   CINEMATIC BACKGROUND ANIMATION (ANTI GAGAL)
    ========================================= */
+@keyframes revealBackground {
+    0% { 
+        transform: scale(1.3); 
+        opacity: 0; 
+    }
+    100% { 
+        transform: scale(1); 
+        opacity: 0.35; 
+    }
+}
+
 body::before {
     content: "";
     position: fixed;
@@ -25,7 +36,9 @@ body::before {
     width: 100vw;
     height: 100vh;
     
-    /* GANTI SESUAI NAMA FILE WEBP SAMPEYAN YAK */
+    /* Pastikan path ini benar ya Lik. 
+       Kalau CSS ini ditaruh di file css/style.css, pakai '../assets/...'. 
+       Kalau ditaruh langsung di index.html, pakai 'assets/...' */
     background-image: url('../assets/img/jogjaview.webp'); 
     background-size: cover;
     background-position: center;
@@ -33,18 +46,8 @@ body::before {
     
     z-index: -10;
     
-    /* KONDISI DEFAULT SAAT BARU BUKA WEB (BELUM SCROLL) */
-    transform: scale(1.3); /* Cukup zoom-in 30% saja, jangan 8000% wkwk */
-    opacity: 0; /* Layar gelap biar fokus ke teks Prolog "SANGKAN" */
-    
-    /* Durasi transisi diperlambat sedikit biar makin epik */
-    transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease-out;
-}
-
-body.is-scrolling::before {
-    /* KONDISI SAAT LAYAR MULAI DI-SCROLL KE BAWAH */
-    transform: scale(1); /* Gambar perlahan mundur ke ukuran asli */
-    opacity: 0.35; /* Gambar perlahan muncul meredup */
+    /* Menjalankan animasi secara otomatis saat web dibuka */
+    animation: revealBackground 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 h1, h2, h3 { font-family: 'Cinzel', serif; letter-spacing: 3px; color: #d4af37; font-weight: 700; margin-bottom: 15px; }
