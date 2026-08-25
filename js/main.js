@@ -119,22 +119,41 @@ document.getElementById('reg-form').addEventListener('submit', async function(ev
 
 
         // ========================================================
-        // 5. RITUAL BERHASIL
+        // 5. RITUAL BERHASIL (MUNCULKAN QRIS & KONFIRMASI WA)
         // ========================================================
         const userCode = profileData.user_code;
 
-        tampilkanPesan(
+        // Siapkan teks pesan untuk modal
+        const pesanSukses = 
+            `Selamat datang, <strong style="color:#d4af37;">${nama}</strong>.<br>` +
+            `LAKU-CODE Anda: <span style="color:#d4af37;">${userCode}</span><br><br>` +
+            `Silakan selesaikan mahar pendaratan senilai <strong style="color:#d4af37;">Rp 299.000</strong> melalui QRIS di bawah ini, lalu konfirmasikan ke WhatsApp Admin.`;
+
+        // Tampilkan modal dengan menyertakan QRIS
+        tampilkanPesanQRIS(
             "RITUAL BERHASIL", 
-            `Selamat datang, <strong style="color:#d4af37;">${nama}</strong>.<br><br>` +
-            `LAKU-CODE Anda: <span style="color:#d4af37;">${userCode}</span><br>` +
-            `<span style="font-size:0.8rem; color:#aaa;">(Gunakan Email Anda untuk keperluan Top Up nanti)</span><br><br>` +
-            `Silakan cek email untuk konfirmasi, atau langsung mulai perjalananmu.`, 
-            "Masuk ke Peta", 
+            pesanSukses, 
+            `Kirim Bukti ke WhatsApp`, 
             function() {
-                // Perintah untuk pindah ke app.html setelah tombol diklik
-                window.location.href = 'https://lakukota.vercel.app/';
+                // Link otomatis ke WhatsApp admin dengan membawa data nama & kode
+                const noAdmin = "628562942151"; // Ganti dengan nomor WhatsApp sampeyan (format: 628...)
+                const textWA = encodeURIComponent(`Halo Min, saya ${nama} (${userCode}) sudah mendaftar Sangkan dan melakukan transfer mahar Rp 299.000. Berikut bukti transfernya.`);
+                window.location.href = `https://wa.me/${noAdmin}?text=${textWA}`;
             }
-        );
+        );  
+
+        //tampilkanPesan(
+        //    "RITUAL BERHASIL", 
+        //    `Selamat datang, <strong style="color:#d4af37;">${nama}</strong>.<br><br>` +
+        //    `LAKU-CODE Anda: <span style="color:#d4af37;">${userCode}</span><br>` +
+        //    `<span style="font-size:0.8rem; color:#aaa;">(Gunakan Email Anda untuk keperluan Top Up nanti)</span><br><br>` +
+        //    `Silakan cek email untuk konfirmasi, atau langsung mulai perjalananmu.`, 
+        //    "Masuk ke Peta", 
+        //    function() {
+                // Perintah untuk pindah ke app.html setelah tombol diklik
+        //        window.location.href = 'https://lakukota.vercel.app/';
+        //    }
+        //);
 
 
         // Bersihkan form
@@ -412,5 +431,33 @@ function tutupModal() {
     if (typeof aksiModalBerikutnya === 'function') {
         aksiModalBerikutnya();
         aksiModalBerikutnya = null; // Reset setelah dieksekusi
+    }
+}
+
+// ========================================================
+// SISTEM MODAL KHUSUS DENGAN QRIS
+// ========================================================
+let aksiModalBerikutnya = null;
+
+function tampilkanPesanQRIS(judul, pesan, teksTombol, fungsiAksi) {
+    document.getElementById('modal-title').innerHTML = judul;
+    document.getElementById('modal-message').innerHTML = pesan;
+    document.getElementById('modal-btn').innerHTML = teksTombol ? teksTombol : "Mengerti";
+    
+    // Munculkan kotak QRIS
+    document.getElementById('qris-container').classList.remove('hidden');
+    
+    aksiModalBerikutnya = fungsiAksi;
+    document.getElementById('custom-modal').classList.remove('hidden');
+}
+
+// Override fungsi tutupModal lama agar menyembunyikan QRIS jika diperlukan atau mengeksekusi WA
+function tutupModal() {
+    document.getElementById('custom-modal').classList.add('hidden');
+    document.getElementById('qris-container').classList.add('hidden'); // Sembunyikan lagi
+    
+    if (typeof aksiModalBerikutnya === 'function') {
+        aksiModalBerikutnya();
+        aksiModalBerikutnya = null;
     }
 }

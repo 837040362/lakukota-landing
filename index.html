@@ -812,12 +812,24 @@
 <script src="js/main.js"></script>
 
 <!-- =========================================
-         CUSTOM MODAL PENGGANTI ALERT BROWSER
+         CUSTOM MODAL (DENGAN QRIS & KONFIRMASI WA)
          ========================================= -->
     <div id="custom-modal" class="modal-overlay hidden">
-        <div class="modal-box">
-            <h3 id="modal-title" style="color: #d4af37; margin-top: 0; border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 15px; font-family: 'Cinzel', serif;">INFO</h3>
-            <p id="modal-message" style="color: #f4eee0; line-height: 1.6; font-size: 0.95rem; font-family: 'Special Elite', sans-serif; margin-bottom: 25px;"></p>
+        <div class="modal-box" style="max-width: 450px;">
+            <h3 id="modal-title" style="color: #d4af37; margin-top: 0; border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 15px; font-family: 'Cinzel', serif;">RITUAL BERHASIL</h3>
+            
+            <!-- Pesan / Info Utama -->
+            <div id="modal-message" style="color: #f4eee0; line-height: 1.6; font-size: 0.95rem; font-family: 'Special Elite', sans-serif; margin-bottom: 20px; text-align: left;"></div>
+            
+            <!-- KOTAK QRIS STATIS (Disembunyikan dulu lewat class hidden, nanti dimunculkan via JS) -->
+            <div id="qris-container" class="hidden" style="margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px; border: 1px dashed rgba(212,175,55,0.5);">
+                <p style="font-size: 0.85rem; color: #d4af37; margin-bottom: 10px; font-family: 'Cinzel', serif;">SCAN QRIS UNTUK PEMBAYARAN</p>
+                <!-- Pastikan file gambar qris sampeyan taruh di assets/img/qris.png -->
+                <img src="assets/img/qris.png" alt="QRIS Sangkan" style="width: 100%; max-width: 220px; height: auto; border-radius: 4px; background: #fff; padding: 5px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;">
+                <p style="font-size: 0.75rem; color: #aaa; margin: 0;">Nominal: <strong style="color: #d4af37;">Rp 299.000</strong></p>
+            </div>
+
+            <!-- Tombol Aksi Dinamis -->
             <button id="modal-btn" onclick="tutupModal()" class="btn-primary" style="width:100%;">Mengerti</button>
         </div>
     </div>
