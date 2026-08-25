@@ -38,20 +38,31 @@
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
         }
 
-        /* CSS CAROUSEL PRODUK (SWIPE-ABLE) */
+/* CSS CAROUSEL PRODUK (SWIPE-ABLE) */
         .carousel-container {
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             gap: 20px;
             padding: 10px 0 30px;
-            /* Menyembunyikan scrollbar tapi tetap bisa di-swipe */
-            scrollbar-width: none; 
-            -ms-overflow-style: none;
         }
+        
+        /* HAPUS BAGIAN scrollbar-width: none YANG LAMA, GANTI DENGAN INI BIAR ELEGAN */
         .carousel-container::-webkit-scrollbar {
-            display: none; 
+            height: 6px; /* Tinggi scrollbar tipis saja */
         }
+        .carousel-container::-webkit-scrollbar-track {
+            background: rgba(10, 10, 10, 0.5); 
+            border-radius: 10px;
+        }
+        .carousel-container::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.5); /* Warna emas redup */
+            border-radius: 10px;
+        }
+        .carousel-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.9); /* Emas terang kalau disorot mouse */
+        }
+        
         .carousel-card {
             min-width: 260px; /* Lebar setiap kotak gambar */
             scroll-snap-align: center;
