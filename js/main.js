@@ -23,7 +23,7 @@ if (formDaftar) {
         btnSubmit.innerText = "Membuka Gerbang...";
         btnSubmit.disabled = true;
 
-        try {
+    try {
             // 1. AMBIL DATA FORM
             const nama = document.getElementById('reg-nama').value;
             const email = document.getElementById('reg-email').value;
@@ -43,38 +43,31 @@ if (formDaftar) {
                 return;
             }
 
-            // 3. DAFTARKAN KE SUPABASE AUTH
+            // 2. DAFTARKAN KE SUPABASE AUTH (SEKALIGUS TITIP DATA)
             const { data: authData, error: authError } = await supabaseClient.auth.signUp({
                 email: email,
-                password: password
+                password: password,
+                options: {
+                    data: { // Ini koper titipan gaib kita Lik!
+                        username: nama,
+                        gender: gender,
+                        tanggal_lahir: tglLahir,
+                        weton_hari: wetonHari,
+                        weton_pasaran: wetonPasaran,
+                        neptu_total: parseInt(neptuTotal),
+                        payment_status: 'pending'
+                    }
+                }
             });
 
             if (authError) throw authError;
             if (!authData.user) throw new Error("User Auth gagal dibuat.");
 
+            // 3. GENERATE LAKU-CODE LANGSUNG DI FRONTEND
             const newUserId = authData.user.id;
+            const userCode = "USR-" + newUserId.substring(0, 5);
 
-            // 4. LENGKAPI PROFIL + STATUS PEMBAYARAN PENDING
-            const { data: profileData, error: profileError } = await supabaseClient
-                .from('users')
-                .update({
-                    username: nama,
-                    email: email,
-                    gender: gender,
-                    tanggal_lahir: tglLahir,
-                    weton_hari: wetonHari,
-                    weton_pasaran: wetonPasaran,
-                    neptu_total: parseInt(neptuTotal),
-                    payment_status: 'pending' 
-                })
-                .eq('user_id', newUserId)
-                .select('user_code')
-                .single();
-
-            if (profileError) throw profileError;
-
-            // 5. RITUAL BERHASIL (MUNCULKAN QRIS & KONFIRMASI WA)
-            const userCode = profileData.user_code;
+            // 4. RITUAL BERHASIL (MUNCULKAN QRIS & KONFIRMASI WA)
             const pesanSukses = 
                 `Selamat datang, <strong style="color:#d4af37;">${nama}</strong>.<br>` +
                 `LAKU-CODE Anda: <span style="color:#d4af37;">${userCode}</span><br><br>` +
