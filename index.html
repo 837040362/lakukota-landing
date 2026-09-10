@@ -225,7 +225,7 @@
         }
 
         .map-container img:hover {
-            transform: scale(1.035);
+            transform: scale(1.08);
             border-color: rgba(212, 175, 55, 0.75);
 
             box-shadow:
@@ -249,6 +249,9 @@
             padding: 20px;
             background: rgba(0, 0, 0, 0.9);
 
+            /* Peta 300% perlu bisa digeser pada layar kecil */
+            overflow: auto;
+
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
@@ -266,10 +269,14 @@
 
         .map-lightbox img {
             display: block;
-            width: auto;
+            flex: 0 0 auto;
+
+            /* Preview = max 300px, lightbox = 300% -> 900px */
+            width: 900px;
+            max-width: none;
             height: auto;
-            max-width: 94vw;
-            max-height: 88vh;
+            max-height: none;
+
             object-fit: contain;
 
             border: 1px solid rgba(212, 175, 55, 0.55);
@@ -341,8 +348,9 @@
             }
 
             .map-lightbox img {
-                max-width: 96vw;
-                max-height: 84vh;
+                width: 750px;
+                max-width: none;
+                max-height: none;
             }
 
             .map-lightbox-close {
