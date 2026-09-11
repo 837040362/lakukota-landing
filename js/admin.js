@@ -45,6 +45,9 @@ const loginButton =
 const refreshButton =
     document.getElementById('refresh-btn');
 
+const logoutButton =
+    document.getElementById('logout-btn');
+
 const pendingList =
     document.getElementById('pending-list');
 
@@ -988,6 +991,51 @@ if (refreshButton) {
 
 }
 
+// ========================================================
+// LOGOUT
+// ========================================================
+
+if (logoutButton) {
+
+    logoutButton.addEventListener(
+        'click',
+        async function() {
+
+            const yakin =
+                confirm(
+                    'Keluar dari dashboard admin?'
+                );
+
+            if (!yakin) {
+                return;
+            }
+
+            const {
+                error
+            } =
+                await supabaseClient.auth.signOut();
+
+            if (error) {
+
+                console.error(
+                    'Gagal logout:',
+                    error
+                );
+
+                alert(
+                    'Gagal keluar: ' +
+                    error.message
+                );
+
+                return;
+            }
+
+            tampilkanLogin();
+
+        }
+    );
+
+}
 
 // ========================================================
 // AUTH STATE
