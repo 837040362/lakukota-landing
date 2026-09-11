@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>LAKUKOTA — Kurir</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #1b1b1b 0%,
+                    #080808 55%,
+                    #000000 100%
+                );
+
+            color: #f5f5f5;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 20px;
+        }
+
+
+        .container {
+            width: 100%;
+            max-width: 460px;
+        }
+
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        .brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .brand-title {
+            font-size: 28px;
+            font-weight: 700;
+
+            letter-spacing: 4px;
+
+            color: #d4af37;
+        }
+
+        .brand-subtitle {
+            margin-top: 8px;
+
+            font-size: 11px;
+
+            letter-spacing: 3px;
+
+            color: #888;
+        }
+
+
+        /* ==================================================
+           CARD
+        ================================================== */
+
+        .card {
+            background: rgba(20, 20, 20, 0.96);
+
+            border:
+                1px solid
+                rgba(212, 175, 55, 0.25);
+
+            border-radius: 18px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 20px 60px
+                rgba(0, 0, 0, 0.5);
+        }
+
+
+        .section-title {
+            color: #d4af37;
+
+            font-size: 13px;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 18px;
+
+            text-align: center;
+        }
+
+
+        /* ==================================================
+           QR READER
+        ================================================== */
+
+        #qr-reader {
+            width: 100%;
+
+            overflow: hidden;
+
+            border-radius: 14px;
+
+            background: #000;
+
+            border:
+                1px solid
+                rgba(212, 175, 55, 0.2);
+        }
+
+
+        #qr-reader video {
+            border-radius: 14px;
+        }
+
+
+        #qr-reader__scan_region {
+            background: #000;
+        }
+
+
+        /* ==================================================
+           STATUS
+        ================================================== */
+
+        .status {
+            margin-top: 18px;
+
+            padding: 14px;
+
+            border-radius: 10px;
+
+            background: #111;
+
+            border:
+                1px solid
+                #222;
+
+            text-align: center;
+
+            font-size: 13px;
+
+            color: #aaa;
+
+            line-height: 1.5;
+        }
+
+
+        .status.success {
+            color: #d4af37;
+
+            border-color:
+                rgba(212, 175, 55, 0.4);
+        }
+
+
+        .status.error {
+            color: #ff7777;
+
+            border-color:
+                rgba(255, 80, 80, 0.3);
+        }
+
+
+        /* ==================================================
+           MANUAL TOKEN
+        ================================================== */
+
+        .manual-section {
+            margin-top: 25px;
+
+            padding-top: 22px;
+
+            border-top:
+                1px solid
+                #222;
+        }
+
+
+        .manual-label {
+            display: block;
+
+            font-size: 10px;
+
+            letter-spacing: 2px;
+
+            color: #777;
+
+            margin-bottom: 8px;
+        }
+
+
+        .manual-input {
+            width: 100%;
+
+            padding: 13px;
+
+            border-radius: 9px;
+
+            border:
+                1px solid
+                #333;
+
+            background: #080808;
+
+            color: #fff;
+
+            outline: none;
+
+            font-size: 13px;
+        }
+
+
+        .manual-input:focus {
+            border-color: #d4af37;
+        }
+
+
+        .manual-button {
+            width: 100%;
+
+            margin-top: 10px;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background: #d4af37;
+
+            color: #000;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            cursor: pointer;
+        }
+
+
+        .manual-button:hover {
+            opacity: 0.9;
+        }
+
+
+        .manual-button:disabled {
+            opacity: 0.5;
+
+            cursor: not-allowed;
+        }
+
+
+        /* ==================================================
+           LOGOUT
+        ================================================== */
+
+        .logout-button {
+            width: 100%;
+
+            margin-top: 18px;
+
+            padding: 11px;
+
+            border:
+                1px solid
+                #333;
+
+            border-radius: 9px;
+
+            background: transparent;
+
+            color: #777;
+
+            cursor: pointer;
+
+            font-size: 11px;
+
+            letter-spacing: 1px;
+        }
+
+
+        .logout-button:hover {
+            color: #aaa;
+
+            border-color: #555;
+        }
+
+
+        /* ==================================================
+           RESULT
+        ================================================== */
+
+        #hasil-penerimaan {
+            display: none;
+
+            margin-top: 20px;
+
+            padding: 18px;
+
+            border-radius: 12px;
+
+            background: #0d0d0d;
+
+            border:
+                1px solid
+                rgba(212, 175, 55, 0.35);
+        }
+
+
+        .result-title {
+            color: #d4af37;
+
+            font-size: 12px;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .result-row {
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 7px 0;
+
+            font-size: 12px;
+        }
+
+
+        .result-label {
+            color: #666;
+        }
+
+
+        .result-value {
+            color: #ddd;
+
+            text-align: right;
+
+            word-break: break-word;
+        }
+
+
+        /* ==================================================
+           FOOTER
+        ================================================== */
+
+        .footer {
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #444;
+
+            font-size: 10px;
+
+            letter-spacing: 1px;
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- ==================================================
+         HEADER
+    ================================================== -->
+
+    <div class="brand">
+
+        <div class="brand-title">
+            LAKUKOTA
+        </div>
+
+        <div class="brand-subtitle">
+            KURIR · HANDOVER
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         MAIN CARD
+    ================================================== -->
+
+    <div class="card">
+
+        <div class="section-title">
+            SCAN RAJAH SELAKU
+        </div>
+
+
+        <!-- QR CAMERA -->
+
+        <div id="qr-reader"></div>
+
+
+        <!-- STATUS -->
+
+        <div
+            id="scanner-status"
+            class="status"
+        >
+            Mengaktifkan kamera...
+        </div>
+
+
+        <!-- ==================================================
+             HASIL PENERIMAAN
+        ================================================== -->
+
+        <div id="hasil-penerimaan">
+
+            <div class="result-title">
+                PAKET DITERIMA
+            </div>
+
+
+            <div class="result-row">
+
+                <span class="result-label">
+                    STATUS
+                </span>
+
+                <span
+                    id="result-status"
+                    class="result-value"
+                >
+                    RECEIVED
+                </span>
+
+            </div>
+
+
+            <div class="result-row">
+
+                <span class="result-label">
+                    ATMaka
+                </span>
+
+                <span
+                    id="result-atmaka"
+                    class="result-value"
+                >
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="result-row">
+
+                <span class="result-label">
+                    WAKTU
+                </span>
+
+                <span
+                    id="result-time"
+                    class="result-value"
+                >
+                    -
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             MANUAL FALLBACK
+        ================================================== -->
+
+        <div class="manual-section">
+
+            <label
+                class="manual-label"
+                for="kurir-qr-token"
+            >
+                INPUT TOKEN MANUAL
+            </label>
+
+
+            <input
+                id="kurir-qr-token"
+                class="manual-input"
+                type="text"
+                placeholder="Tempel QR token..."
+                autocomplete="off"
+            >
+
+
+            <button
+                id="btn-kurir-terima"
+                class="manual-button"
+                type="button"
+            >
+                TERIMA PAKET
+            </button>
+
+        </div>
+
+
+        <!-- ==================================================
+             LOGOUT
+        ================================================== -->
+
+        <button
+            id="logout-btn"
+            class="logout-button"
+            type="button"
+        >
+            KELUAR
+        </button>
+
+    </div>
+
+
+    <div class="footer">
+        LAKUKOTA · PHYSICAL MANIFESTATION SYSTEM
+    </div>
+
+</div>
+
+
+<!-- ========================================================
+     SUPABASE
+======================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<!-- ========================================================
+     QR SCANNER
+======================================================== -->
+
+<script
+    src="https://unpkg.com/html5-qrcode"
+    type="text/javascript"
+></script>
+
+
+<!-- ========================================================
+     KURIR ENGINE
+======================================================== -->
+
+<script src="js/kurir.js"></script>
+
+
+</body>
+</html>
