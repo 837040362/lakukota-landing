@@ -472,7 +472,7 @@ async function loadManifested() {
             error: atmakaError
         } =
             await supabaseClient
-                .from('atmaka')
+                .from('atmakas')
                 .select(`
                     atmaka_id,
                     atmaka_code,
