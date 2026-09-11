@@ -88,10 +88,8 @@ if (formDaftar) {
                             Email       : ${email}
                             Nominal     : Rp 299.000
                             
-                            Saya telah melakukan pembayaran mahar SANGKAN.
-                            Bukti transfer saya lampirkan pada pesan ini.
-                            
-                            Mohon dilakukan verifikasi pembayaran dan pendaftaran saya.
+                            Saya telah melakukan transfer mahar SANGKAN dengan bukti transfer terlampir.
+                            Tolong diverifikasi pembayaran dan pendaftaran saya.
                             
                             Terima kasih.`
                                 );
