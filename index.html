@@ -234,10 +234,31 @@
         }
 
         /* =========================================================
-           MAP LIGHTBOX
+           SEMUA ASSET — HOVER + LIGHTBOX 300%
            ========================================================= */
 
-        .map-lightbox {
+        .asset-zoom {
+            cursor: zoom-in;
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+        .asset-zoom:hover {
+            transform: scale(1.08);
+            border-color: rgba(212, 175, 55, 0.75);
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.75),
+                0 0 18px rgba(212, 175, 55, 0.12);
+        }
+
+        /* =========================================================
+           LIGHTBOX
+           ========================================================= */
+
+        .asset-lightbox {
             position: fixed;
             inset: 0;
             z-index: 10000;
@@ -247,10 +268,9 @@
             justify-content: center;
 
             padding: 20px;
-            background: rgba(0, 0, 0, 0.9);
-
-            /* Peta 300% perlu bisa digeser pada layar kecil */
             overflow: auto;
+
+            background: rgba(0, 0, 0, 0.9);
 
             opacity: 0;
             visibility: hidden;
@@ -261,20 +281,19 @@
                 visibility 0.25s ease;
         }
 
-        .map-lightbox.active {
+        .asset-lightbox.active {
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
         }
 
-        .map-lightbox img {
+        .asset-lightbox img {
             display: block;
             flex: 0 0 auto;
 
-            /* Preview = max 300px, lightbox = 300% -> 900px */
-            width: 900px;
-            max-width: none;
+            width: auto;
             height: auto;
+            max-width: none;
             max-height: none;
 
             object-fit: contain;
@@ -282,7 +301,8 @@
             border: 1px solid rgba(212, 175, 55, 0.55);
             border-radius: 6px;
 
-            box-shadow: 0 20px 70px rgba(0, 0, 0, 0.9);
+            box-shadow:
+                0 20px 70px rgba(0, 0, 0, 0.9);
 
             transform: scale(0.94);
             opacity: 0;
@@ -292,13 +312,13 @@
                 opacity 0.3s ease;
         }
 
-        .map-lightbox.active img {
+        .asset-lightbox.active img {
             transform: scale(1);
             opacity: 1;
         }
 
-        .map-lightbox-close {
-            position: absolute;
+        .asset-lightbox-close {
+            position: fixed;
             top: 16px;
             right: 20px;
 
@@ -310,57 +330,39 @@
             justify-content: center;
 
             color: #d4af37;
-            background: rgba(5, 5, 5, 0.75);
+            background: rgba(5, 5, 5, 0.8);
 
             border: 1px solid rgba(212, 175, 55, 0.45);
             border-radius: 50%;
 
             font-size: 28px;
             line-height: 1;
+
             cursor: pointer;
-
-            transition:
-                background 0.2s ease,
-                transform 0.2s ease;
         }
 
-        .map-lightbox-close:hover {
-            background: rgba(212, 175, 55, 0.12);
-            transform: scale(1.05);
-        }
-
-        .map-lightbox-hint {
-            position: absolute;
+        .asset-lightbox-hint {
+            position: fixed;
             left: 50%;
-            bottom: 18px;
+            bottom: 16px;
+
             transform: translateX(-50%);
 
             color: rgba(244, 238, 224, 0.72);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             letter-spacing: 1px;
             text-align: center;
             pointer-events: none;
         }
 
         @media (max-width: 600px) {
-            .map-lightbox {
+            .asset-lightbox {
                 padding: 12px;
             }
 
-            .map-lightbox img {
-                width: 750px;
-                max-width: none;
-                max-height: none;
-            }
-
-            .map-lightbox-close {
+            .asset-lightbox-close {
                 top: 12px;
                 right: 12px;
-            }
-
-            .map-lightbox-hint {
-                bottom: 12px;
-                font-size: 0.68rem;
             }
         }
 
@@ -668,6 +670,13 @@
       src="https://app.sandbox.midtrans.com/snap/snap.js"
       data-client-key="YOUR_CLIENT_KEY"></script>
 -->
+<!--
+    BESOK SAAT ASET WEBP SUDAH SIAP:
+    map-sumbu.png -> map-sumbu.webp
+    atmaka1.png    -> atmaka1.webp
+    lanyard1.png   -> lanyard1.webp
+    arta1.png      -> arta1.webp
+-->
 </head>
 
 <body>
@@ -740,7 +749,7 @@
                 src="assets/img/map-sumbu.png"
                 alt="Peta Sumbu Filosofis Yogyakarta"
                 title="Klik untuk melihat peta lebih besar"
-                onclick="bukaPetaSumbu()"
+                onclick="bukaAset(this)"
             >
 
         </div>
@@ -769,7 +778,9 @@
                 <img
                     src="assets/img/atmaka1.png"
                     alt="Atmaka Tugu"
-                    class="carousel-image"
+                    class="carousel-image asset-zoom"
+                    title="Klik untuk melihat lebih besar"
+                    onclick="bukaAset(this)"
                 >
 
                 <strong class="carousel-title">
@@ -790,7 +801,9 @@
                 <img
                     src="assets/img/lanyard1.png"
                     alt="Lanyard Kulit 1 Slot"
-                    class="carousel-image"
+                    class="carousel-image asset-zoom"
+                    title="Klik untuk melihat lebih besar"
+                    onclick="bukaAset(this)"
                 >
 
                 <strong class="carousel-title">
@@ -829,17 +842,13 @@
 
             <div class="carousel-card">
 
-                <div
-                    class="carousel-image"
-                    style="
-                        display:flex;
-                        align-items:center;
-                        justify-content:center;
-                        font-size:3rem;
-                    "
+                <img
+                    src="assets/img/arta1.png"
+                    alt="1.000 Arta"
+                    class="carousel-image asset-zoom"
+                    title="Klik untuk melihat lebih besar"
+                    onclick="bukaAset(this)"
                 >
-                    💰
-                </div>
 
                 <strong class="carousel-title">
                     1.000 ARTA
@@ -956,30 +965,47 @@
 
 <script>
     /* =========================================================
-       MAP LIGHTBOX
+       UNIVERSAL ASSET LIGHTBOX — 300%
        ========================================================= */
 
-    function bukaPetaSumbu() {
-        const lightbox = document.getElementById('map-lightbox');
-        if (!lightbox) return;
+    function bukaAset(img) {
+        const lightbox = document.getElementById('asset-lightbox');
+        const target = document.getElementById('asset-lightbox-image');
+
+        if (!lightbox || !target || !img) return;
+
+        // Ukuran 300% dari ukuran aset saat tampil di landing page.
+        const previewWidth = img.getBoundingClientRect().width;
+        const zoomWidth = Math.max(previewWidth * 3, 1);
+
+        target.src = img.src;
+        target.alt = img.alt || 'Detail aset';
+        target.style.width = zoomWidth + 'px';
 
         lightbox.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
 
-    function tutupPetaSumbu(event) {
+    function tutupAset(event) {
         if (event) event.stopPropagation();
 
-        const lightbox = document.getElementById('map-lightbox');
+        const lightbox = document.getElementById('asset-lightbox');
+        const target = document.getElementById('asset-lightbox-image');
+
         if (!lightbox) return;
 
         lightbox.classList.remove('active');
         document.body.style.overflow = '';
+
+        if (target) {
+            target.src = '';
+            target.style.width = '';
+        }
     }
 
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
-            tutupPetaSumbu();
+            tutupAset();
         }
     });
 </script>
@@ -1011,31 +1037,33 @@
 
 
     <!-- =========================================================
-         MAP LIGHTBOX
+         UNIVERSAL ASSET LIGHTBOX
+         Map / Atmaka / Lanyard / Arta
          ========================================================= -->
     <div
-        id="map-lightbox"
-        class="map-lightbox"
+        id="asset-lightbox"
+        class="asset-lightbox"
         role="dialog"
         aria-modal="true"
-        aria-label="Peta Sumbu Filosofis Yogyakarta"
-        onclick="tutupPetaSumbu(event)"
+        aria-label="Detail aset"
+        onclick="tutupAset(event)"
     >
         <button
             type="button"
-            class="map-lightbox-close"
-            aria-label="Tutup peta"
-            onclick="tutupPetaSumbu(event)"
+            class="asset-lightbox-close"
+            aria-label="Tutup"
+            onclick="tutupAset(event)"
         >&times;</button>
 
         <img
-            src="assets/img/map-sumbu.png"
-            alt="Peta Sumbu Filosofis Yogyakarta - tampilan besar"
+            id="asset-lightbox-image"
+            src=""
+            alt=""
             onclick="event.stopPropagation()"
         >
 
-        <div class="map-lightbox-hint">
-            KLIK DI LUAR PETA UNTUK MENUTUP
+        <div class="asset-lightbox-hint">
+            KLIK DI LUAR GAMBAR • ESC UNTUK MENUTUP
         </div>
     </div>
 
