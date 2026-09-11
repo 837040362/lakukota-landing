@@ -1,464 +1,698 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-    <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+  <meta charset="UTF-8">
 
-    <title>LAKUKOTA — Pande</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-    <style>
+  <title>LAKUKOTA — Pande</title>
 
-        * {
-            box-sizing: border-box;
-        }
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        body {
-            margin: 0;
-            min-height: 100vh;
+  <!-- QR SCANNER -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
 
-            background:
-                radial-gradient(
-                    circle at top,
-                    #202020 0%,
-                    #111 45%,
-                    #080808 100%
-                );
+  <style>
 
-            color: #e8dcc3;
+    * {
+      box-sizing: border-box;
+    }
 
-            font-family:
-                Georgia,
-                'Times New Roman',
-                serif;
+    body {
 
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+      margin: 0;
 
-            padding: 70px 20px;
-        }
+      min-height: 100vh;
 
+      background:
+        radial-gradient(
+          circle at top,
+          #252525 0%,
+          #111 45%,
+          #050505 100%
+        );
 
-        .page {
-            width: 100%;
-            max-width: 520px;
-        }
+      color: #eee;
 
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
 
-        /* =========================================
-           HEADER
-           ========================================= */
+      display: flex;
 
-        .brand {
-            text-align: center;
-            margin-bottom: 22px;
-        }
+      justify-content: center;
 
-        .brand-top {
-            font-size: 12px;
-            letter-spacing: 5px;
-            margin-bottom: 6px;
-        }
+      align-items: flex-start;
 
-        .brand-title {
-            font-size: 34px;
-            font-weight: bold;
-            letter-spacing: 4px;
-            color: #d4af37;
-        }
+      padding: 30px 16px;
 
-        .brand-subtitle {
-            margin-top: 5px;
-            font-size: 15px;
-            letter-spacing: 1px;
-        }
+    }
 
+    .app {
 
-        /* =========================================
-           CARD
-           ========================================= */
+      width: 100%;
 
-        .card {
-            background: #f3ecd9;
-            color: #3d3427;
+      max-width: 520px;
 
-            border-radius: 15px;
+    }
 
-            padding: 22px;
+    /* =====================================================
+       HEADER
+    ===================================================== */
 
-            box-shadow:
-                0 25px 60px rgba(0,0,0,.45);
-        }
+    .header {
 
+      text-align: center;
 
-        .section-title {
-            font-size: 14px;
-            font-weight: bold;
+      margin-bottom: 24px;
 
-            letter-spacing: 2px;
+    }
 
-            margin-bottom: 20px;
+    .brand {
 
-            color: #765b16;
-        }
+      font-size: 0.75rem;
 
+      letter-spacing: 0.35em;
 
-        .divider {
-            height: 1px;
-            background: #d5c8a9;
+      color: #aaa;
 
-            margin-bottom: 20px;
-        }
+      margin-bottom: 8px;
 
+    }
 
-        /* =========================================
-           CAMERA
-           ========================================= */
+    h1 {
 
-        #qr-reader {
-            width: 100%;
+      margin: 0;
 
-            display: none;
+      font-size: 2rem;
 
-            overflow: hidden;
+      letter-spacing: 0.12em;
 
-            border-radius: 10px;
+      color: #d4af37;
 
-            background: #111;
+    }
 
-            margin-bottom: 14px;
-        }
+    .subtitle {
 
+      margin-top: 8px;
 
-        #qr-reader video {
-            width: 100% !important;
-            height: auto !important;
-            display: block;
-        }
+      font-size: 0.85rem;
 
+      color: #999;
 
-        .camera-status {
-            text-align: center;
+      letter-spacing: 0.08em;
 
-            font-size: 13px;
+    }
 
-            color: #806b45;
+    /* =====================================================
+       CARD
+    ===================================================== */
 
-            margin: 10px 0 15px;
-        }
+    .card {
 
+      background: #f4eddb;
 
-        .btn {
-            width: 100%;
+      color: #2c3e50;
 
-            border: none;
+      border-radius: 14px;
 
-            border-radius: 9px;
+      padding: 22px;
 
-            padding: 13px;
+      box-shadow:
+        0 15px 40px rgba(0,0,0,0.45);
 
-            font-family: inherit;
+      margin-bottom: 18px;
 
-            font-size: 14px;
+    }
 
-            font-weight: bold;
+    .card-title {
 
-            letter-spacing: 1px;
+      font-size: 0.75rem;
 
-            cursor: pointer;
-        }
+      letter-spacing: 0.18em;
 
+      color: #8a6d1d;
 
-        .btn-camera {
-            background: #b78b1d;
-            color: white;
+      margin-bottom: 18px;
 
-            margin-bottom: 14px;
-        }
+      font-weight: bold;
 
+    }
 
-        .btn-camera:hover {
-            background: #9d7617;
-        }
+    /* =====================================================
+       SCANNER
+    ===================================================== */
 
+    #reader {
 
-        .btn-camera:disabled {
-            opacity: .55;
-            cursor: not-allowed;
-        }
+      width: 100%;
 
+      overflow: hidden;
 
-        .btn-stop {
-            background: #5b5142;
-            color: white;
+      border-radius: 12px;
 
-            margin-bottom: 16px;
+      background: #111;
 
-            display: none;
-        }
+      display: none;
 
+      margin-bottom: 16px;
 
-        /* =========================================
-           MANUAL
-           ========================================= */
+    }
 
-        .manual {
-            border-top: 1px solid #d5c8a9;
+    .scanner-help {
 
-            padding-top: 18px;
-        }
+      font-size: 0.75rem;
 
+      color: #777;
 
-        .manual-label {
-            font-size: 11px;
+      line-height: 1.5;
 
-            letter-spacing: 2px;
+      margin-top: 12px;
 
-            color: #8a7653;
+      text-align: center;
 
-            margin-bottom: 7px;
-        }
+    }
 
+    /* =====================================================
+       INPUT
+    ===================================================== */
 
-        #qr-token {
-            width: 100%;
+    label {
 
-            padding: 13px;
+      display: block;
 
-            border-radius: 8px;
+      font-size: 0.7rem;
 
-            border: 1px solid #cdbf9e;
+      letter-spacing: 0.12em;
 
-            background: #fffdf7;
+      color: #777;
 
-            color: #3d3427;
+      margin-bottom: 7px;
 
-            font-family: monospace;
+    }
 
-            font-size: 13px;
+    input {
 
-            outline: none;
+      width: 100%;
 
-            margin-bottom: 10px;
-        }
+      padding: 13px 14px;
 
+      border-radius: 8px;
 
-        #qr-token:focus {
-            border-color: #b78b1d;
-        }
+      border: 1px solid #cfc5ab;
 
+      background: #fffdf7;
 
-        .btn-submit {
-            background: #30465b;
-            color: white;
-        }
+      color: #222;
 
+      font-family: monospace;
 
-        .btn-submit:hover {
-            background: #263b4d;
-        }
+      font-size: 0.8rem;
 
+      outline: none;
 
-        .btn-submit:disabled {
-            opacity: .55;
-            cursor: not-allowed;
-        }
+    }
 
+    input:focus {
 
-        /* =========================================
-           RESULT
-           ========================================= */
+      border-color: #b28a21;
 
-        #result {
-            display: none;
+      box-shadow:
+        0 0 0 2px rgba(178,138,33,0.15);
 
-            margin-top: 18px;
+    }
 
-            padding: 15px;
+    /* =====================================================
+       BUTTON
+    ===================================================== */
 
-            border-radius: 9px;
+    button {
 
-            background: #e5dcc3;
+      width: 100%;
 
-            font-size: 13px;
+      border: 0;
 
-            line-height: 1.6;
-        }
+      border-radius: 9px;
 
+      padding: 14px;
 
-        #result.success {
-            border-left: 4px solid #4f7d55;
-        }
+      margin-top: 10px;
 
+      font-family: inherit;
 
-        #result.error {
-            border-left: 4px solid #9b4a43;
-        }
+      font-weight: bold;
 
+      letter-spacing: 0.08em;
 
-        .result-title {
-            font-weight: bold;
+      cursor: pointer;
 
-            letter-spacing: 1px;
+    }
 
-            margin-bottom: 5px;
-        }
+    button:disabled {
 
+      opacity: 0.5;
 
-        /* =========================================
-           FOOTER
-           ========================================= */
+      cursor: not-allowed;
 
-        .footer {
-            text-align: center;
+    }
 
-            margin-top: 25px;
+    .btn-primary {
 
-            font-size: 10px;
+      background: #2c3e50;
 
-            letter-spacing: 2px;
+      color: white;
 
-            color: #75684f;
-        }
+    }
 
-    </style>
+    .btn-primary:hover:not(:disabled) {
+
+      background: #1e2b37;
+
+    }
+
+    .btn-gold {
+
+      background: #b28a21;
+
+      color: white;
+
+    }
+
+    .btn-secondary {
+
+      background: transparent;
+
+      color: #2c3e50;
+
+      border: 1px solid #b9ad91;
+
+    }
+
+    /* =====================================================
+       STATUS
+    ===================================================== */
+
+    .status {
+
+      display: none;
+
+      border-radius: 9px;
+
+      padding: 13px;
+
+      margin-top: 14px;
+
+      font-size: 0.8rem;
+
+      line-height: 1.5;
+
+    }
+
+    .status.info {
+
+      display: block;
+
+      background: #e8eef3;
+
+      color: #34495e;
+
+    }
+
+    .status.success {
+
+      display: block;
+
+      background: #e5f5eb;
+
+      color: #176b3a;
+
+    }
+
+    .status.error {
+
+      display: block;
+
+      background: #f8e4e4;
+
+      color: #8b2525;
+
+    }
+
+    /* =====================================================
+       ORDER
+    ===================================================== */
+
+    #order-card {
+
+      display: none;
+
+    }
+
+    .order-row {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      gap: 15px;
+
+      padding: 10px 0;
+
+      border-bottom: 1px solid #ddd3bd;
+
+      font-size: 0.8rem;
+
+    }
+
+    .order-row:last-child {
+
+      border-bottom: 0;
+
+    }
+
+    .order-label {
+
+      color: #777;
+
+    }
+
+    .order-value {
+
+      text-align: right;
+
+      font-weight: bold;
+
+      max-width: 60%;
+
+    }
+
+    .token {
+
+      font-family: monospace;
+
+      font-size: 0.68rem;
+
+      word-break: break-all;
+
+    }
+
+    .badge {
+
+      display: inline-block;
+
+      padding: 4px 9px;
+
+      border-radius: 20px;
+
+      font-size: 0.65rem;
+
+      letter-spacing: 0.05em;
+
+    }
+
+    .badge-manifested {
+
+      background: #f6e8b8;
+
+      color: #765600;
+
+    }
+
+    .badge-received {
+
+      background: #dff1e5;
+
+      color: #176b3a;
+
+    }
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+
+    .footer {
+
+      text-align: center;
+
+      color: #666;
+
+      font-size: 0.65rem;
+
+      letter-spacing: 0.08em;
+
+      margin-top: 25px;
+
+    }
+
+  </style>
 
 </head>
 
 
 <body>
 
-<div class="page">
+<div class="app">
 
+  <!-- ===================================================
+       HEADER
+  ==================================================== -->
 
-    <!-- =========================================
-         BRAND
-         ========================================= -->
+  <div class="header">
 
     <div class="brand">
+      LAKUKOTA
+    </div>
 
-        <div class="brand-top">
-            L A K U K O T A
-        </div>
+    <h1>PANDE</h1>
 
-        <div class="brand-title">
-            PANDE
-        </div>
+    <div class="subtitle">
+      MEJA PENUKARAN
+    </div>
 
-        <div class="brand-subtitle">
-            MEJA PENUKARAN
-        </div>
+  </div>
+
+
+  <!-- ===================================================
+       SCAN / TOKEN
+  ==================================================== -->
+
+  <div class="card">
+
+    <div class="card-title">
+      RAJAH PENUKARAN
+    </div>
+
+
+    <div id="reader"></div>
+
+
+    <button
+      id="btn-scan"
+      class="btn-gold"
+    >
+      📷 PINDAI RAJAH
+    </button>
+
+
+    <div
+      class="scanner-help"
+      id="scanner-help"
+    >
+      Atau masukkan token Rajah secara manual.
+    </div>
+
+
+    <div style="margin-top:18px;">
+
+      <label for="qr-token">
+        QR TOKEN
+      </label>
+
+      <input
+        id="qr-token"
+        type="text"
+        placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+        autocomplete="off"
+      >
 
     </div>
 
 
-    <!-- =========================================
-         CARD
-         ========================================= -->
-
-    <div class="card">
-
-
-        <div class="section-title">
-            RAJAH PENUKARAN
-        </div>
+    <button
+      id="btn-validasi"
+      class="btn-primary"
+    >
+      VALIDASI RAJAH
+    </button>
 
 
-        <div class="divider"></div>
+    <div
+      id="status"
+      class="status"
+    ></div>
+
+  </div>
 
 
-        <!-- CAMERA -->
+  <!-- ===================================================
+       ORDER
+  ==================================================== -->
 
-        <button
-            id="btn-start-camera"
-            class="btn btn-camera"
-            type="button"
-        >
-            📷 PINDAI RAJAH
-        </button>
+  <div
+    id="order-card"
+    class="card"
+  >
 
-
-        <div
-            id="camera-status"
-            class="camera-status"
-        >
-            Kamera belum diaktifkan.
-        </div>
+    <div class="card-title">
+      DATA MANIFESTASI
+    </div>
 
 
-        <div id="qr-reader"></div>
+    <div class="order-row">
 
+      <span class="order-label">
+        Selaku
+      </span>
 
-        <button
-            id="btn-stop-camera"
-            class="btn btn-stop"
-            type="button"
-        >
-            TUTUP KAMERA
-        </button>
-
-
-        <!-- MANUAL -->
-
-        <div class="manual">
-
-            <div class="manual-label">
-                QR TOKEN
-            </div>
-
-
-            <input
-                id="qr-token"
-                type="text"
-                placeholder="Tempel token Rajah..."
-                autocomplete="off"
-                spellcheck="false"
-            >
-
-
-            <button
-                id="btn-submit"
-                class="btn btn-submit"
-                type="button"
-            >
-                VALIDASI RAJAH
-            </button>
-
-        </div>
-
-
-        <!-- RESULT -->
-
-        <div id="result"></div>
-
+      <span
+        id="order-user"
+        class="order-value"
+      >
+        —
+      </span>
 
     </div>
 
 
-    <div class="footer">
-        LAKUKOTA · PANDE · OPERASIONAL
+    <div class="order-row">
+
+      <span class="order-label">
+        Atmaka
+      </span>
+
+      <span
+        id="order-atmaka"
+        class="order-value"
+      >
+        —
+      </span>
+
     </div>
 
+
+    <div class="order-row">
+
+      <span class="order-label">
+        Paket
+      </span>
+
+      <span
+        id="order-package"
+        class="order-value"
+      >
+        Atmaka + Lanyard
+      </span>
+
+    </div>
+
+
+    <div class="order-row">
+
+      <span class="order-label">
+        Status
+      </span>
+
+      <span
+        id="order-status"
+        class="order-value"
+      >
+        —
+      </span>
+
+    </div>
+
+
+    <div class="order-row">
+
+      <span class="order-label">
+        Batch
+      </span>
+
+      <span
+        id="order-window"
+        class="order-value"
+      >
+        —
+      </span>
+
+    </div>
+
+
+    <div class="order-row">
+
+      <span class="order-label">
+        Rajah
+      </span>
+
+      <span
+        id="order-token"
+        class="order-value token"
+      >
+        —
+      </span>
+
+    </div>
+
+
+    <button
+      id="btn-terima"
+      class="btn-gold"
+    >
+      📦 TERIMA PAKET
+    </button>
+
+
+    <button
+      id="btn-reset"
+      class="btn-secondary"
+    >
+      [ SELESAI / PESANAN BERIKUTNYA ]
+    </button>
+
+  </div>
+
+
+  <div class="footer">
+    LAKUKOTA · PANDE · OPERASIONAL
+  </div>
 
 </div>
 
 
-<!-- =========================================
-     LIBRARY
-     ========================================= -->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script src="https://unpkg.com/html5-qrcode"></script>
 
-<script src="js/kurir.js"></script>
+<script>
+  const SUPABASE_URL =
+    'https://tihixoswhxlihrsatfft.supabase.co';
 
+  const SUPABASE_KEY =
+    'sb_publishable_vzlNczrbFT5sBTa-kNT3Bg_4vDvXbxG';
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+</script>
+
+<script src="./kurir.js"></script>
 
 </body>
-
 </html>
