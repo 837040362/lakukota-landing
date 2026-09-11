@@ -179,42 +179,119 @@
 <body>
 
     <main class="admin-wrapper">
-
-        <h1 class="admin-title">
-            LAKUKOTA
-        </h1>
-
-        <p class="admin-subtitle">
-            SANGKAN — ADMIN
-        </p>
-
-
-        <div class="summary">
-
-            <span
-                id="jumlah-pending"
-                class="summary-number"
-            >
-                -
-            </span>
-
-            <span class="summary-label">
-                MENUNGGU VERIFIKASI
-            </span>
-
-        </div>
-
-
-        <div id="daftar-pending">
-
-            <p style="color:#aaa;">
-                Memuat...
+    
+        <!-- =====================================================
+             LOGIN ADMIN
+             ===================================================== -->
+        <div id="admin-login">
+    
+            <h1 class="admin-title">
+                LAKUKOTA
+            </h1>
+    
+            <p class="admin-subtitle">
+                SANGKAN — ADMIN
             </p>
-
+    
+            <div class="login-box">
+    
+                <h2>
+                    GERBANG ADMIN
+                </h2>
+    
+                <p>
+                    Masuk untuk mengelola aktivasi Selaku.
+                </p>
+    
+                <form id="admin-login-form">
+    
+                    <input
+                        type="email"
+                        id="admin-email"
+                        placeholder="Email Admin"
+                        autocomplete="email"
+                        required
+                    >
+    
+                    <input
+                        type="password"
+                        id="admin-password"
+                        placeholder="Kata Sandi"
+                        autocomplete="current-password"
+                        required
+                    >
+    
+                    <button
+                        type="submit"
+                        id="btn-login-admin"
+                    >
+                        MASUK
+                    </button>
+    
+                </form>
+    
+                <p
+                    id="login-error"
+                    class="login-error"
+                ></p>
+    
+            </div>
+    
         </div>
-
+    
+    
+        <!-- =====================================================
+             DASHBOARD ADMIN
+             ===================================================== -->
+        <div id="admin-dashboard" class="hidden">
+    
+            <h1 class="admin-title">
+                LAKUKOTA
+            </h1>
+    
+            <p class="admin-subtitle">
+                SANGKAN — DASHBOARD AKTIVASI
+            </p>
+    
+            <div class="admin-toolbar">
+    
+                <div class="summary">
+    
+                    <span
+                        id="jumlah-pending"
+                        class="summary-number"
+                    >
+                        -
+                    </span>
+    
+                    <span class="summary-label">
+                        MENUNGGU VERIFIKASI
+                    </span>
+    
+                </div>
+    
+                <button
+                    id="btn-refresh"
+                    class="btn-secondary"
+                    type="button"
+                >
+                    ↻ SEGARKAN
+                </button>
+    
+            </div>
+    
+    
+            <div id="daftar-pending">
+    
+                <p style="color:#aaa;">
+                    Memuat...
+                </p>
+    
+            </div>
+    
+        </div>
+    
     </main>
-
 
     <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
