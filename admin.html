@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>LAKUKOTA — Admin Sangkan</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #080808;
+            color: #f4eee0;
+            font-family: Arial, sans-serif;
+        }
+
+        .admin-wrapper {
+            width: 100%;
+            max-width: 700px;
+            margin: auto;
+            padding: 30px 16px 60px;
+        }
+
+        .admin-title {
+            color: #d4af37;
+            text-align: center;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+        }
+
+        .admin-subtitle {
+            color: #888;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+
+        .summary {
+            border: 1px solid rgba(212,175,55,.4);
+            background: rgba(212,175,55,.05);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .summary-number {
+            display: block;
+            color: #d4af37;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .summary-label {
+            color: #aaa;
+            font-size: .8rem;
+            letter-spacing: 2px;
+        }
+
+        .selaku-card {
+            background: rgba(15,15,15,.95);
+            border: 1px solid rgba(212,175,55,.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .selaku-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .selaku-header h3 {
+            margin: 0 0 6px;
+            color: #f4eee0;
+        }
+
+        .user-code {
+            color: #d4af37;
+            font-size: .85rem;
+        }
+
+        .status {
+            font-size: .7rem;
+            padding: 6px 9px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        .status.pending {
+            color: #f39c12;
+            border: 1px solid #f39c12;
+        }
+
+        .selaku-info {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .selaku-info div {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .selaku-info small {
+            color: #777;
+            font-size: .65rem;
+            letter-spacing: 1px;
+        }
+
+        .selaku-info strong {
+            font-size: .85rem;
+            font-weight: normal;
+            word-break: break-word;
+        }
+
+        .user-id {
+            color: #aaa;
+            font-size: .7rem !important;
+        }
+
+        .payment-proof {
+            padding: 10px;
+            margin-bottom: 15px;
+            color: #2ecc71;
+            background: rgba(46,204,113,.06);
+            border-left: 2px solid #2ecc71;
+            font-size: .8rem;
+        }
+
+        .payment-proof.warning {
+            color: #f39c12;
+            background: rgba(243,156,18,.06);
+            border-color: #f39c12;
+        }
+
+        .btn-activate {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #d4af37;
+            border-radius: 5px;
+            background: transparent;
+            color: #d4af37;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .btn-activate:hover {
+            background: rgba(212,175,55,.12);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #777;
+            padding: 40px 20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <main class="admin-wrapper">
+
+        <h1 class="admin-title">
+            LAKUKOTA
+        </h1>
+
+        <p class="admin-subtitle">
+            SANGKAN — ADMIN
+        </p>
+
+
+        <div class="summary">
+
+            <span
+                id="jumlah-pending"
+                class="summary-number"
+            >
+                -
+            </span>
+
+            <span class="summary-label">
+                MENUNGGU VERIFIKASI
+            </span>
+
+        </div>
+
+
+        <div id="daftar-pending">
+
+            <p style="color:#aaa;">
+                Memuat...
+            </p>
+
+        </div>
+
+    </main>
+
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+    <script src="js/admin.js"></script>
+
+</body>
+
+</html>
