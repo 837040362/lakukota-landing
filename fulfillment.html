@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>LAKUKOTA — Fulfillment SANGKAN</title>
+
+
+    <!-- =====================================================
+         SUPABASE
+    ====================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <style>
+
+        /* =====================================================
+           LAKUKOTA — FULFILLMENT CONSOLE
+        ====================================================== */
+
+        :root {
+
+            --bg: #070707;
+            --panel: #0d0d0d;
+            --panel-soft: #101010;
+
+            --gold: #d4af37;
+            --gold-bright: #e7c65c;
+            --gold-dark: #705b1b;
+
+            --text: #eeeeee;
+            --text-soft: #cccccc;
+
+            --muted: #777777;
+            --muted-dark: #4c4c4c;
+
+            --line: rgba(212,175,55,0.22);
+            --line-soft: rgba(255,255,255,0.07);
+
+            --manifested: #d89524;
+            --received: #7da55d;
+
+            --max-width: 1080px;
+        }
+
+
+        /* =====================================================
+           RESET
+        ====================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            background:
+
+                radial-gradient(
+                    circle at 50% -15%,
+                    rgba(212,175,55,0.09),
+                    transparent 38%
+                ),
+
+                radial-gradient(
+                    circle at 100% 100%,
+                    rgba(212,175,55,0.025),
+                    transparent 35%
+                ),
+
+                var(--bg);
+
+            color: var(--text);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+
+        .hidden {
+            display: none !important;
+        }
+
+
+        /* =====================================================
+           LOGIN
+        ====================================================== */
+
+        #login-section {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 30px 20px;
+        }
+
+
+        .login-wrapper {
+
+            width: 100%;
+
+            max-width: 440px;
+        }
+
+
+        .login-brand {
+
+            text-align: center;
+
+            margin-bottom: 32px;
+        }
+
+
+        .login-brand-main {
+
+            color: var(--gold);
+
+            font-size: 30px;
+
+            font-weight: bold;
+
+            letter-spacing: 5px;
+        }
+
+
+        .login-brand-sub {
+
+            margin-top: 7px;
+
+            color: #666;
+
+            font-size: 10px;
+
+            letter-spacing: 3px;
+        }
+
+
+        .login-card {
+
+            position: relative;
+
+            width: 100%;
+
+            padding: 38px;
+
+            background:
+
+                linear-gradient(
+                    145deg,
+                    rgba(20,19,15,0.98),
+                    rgba(10,10,10,0.98)
+                );
+
+            border:
+                1px solid var(--line);
+
+            box-shadow:
+
+                0 35px 90px
+                rgba(0,0,0,0.60),
+
+                inset 0 0 50px
+                rgba(212,175,55,0.025);
+        }
+
+
+        .login-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 2px;
+
+            background:
+
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--gold),
+                    transparent
+                );
+        }
+
+
+        .login-eyebrow {
+
+            margin-bottom: 12px;
+
+            color: var(--gold);
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            letter-spacing: 3px;
+        }
+
+
+        .login-card h1 {
+
+            margin: 0 0 8px;
+
+            font-size: 27px;
+
+            line-height: 1.2;
+
+            letter-spacing: 1px;
+        }
+
+
+        .login-description {
+
+            margin: 0 0 30px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           LOGIN FORM
+        ====================================================== */
+
+        .form-group {
+
+            margin-bottom: 20px;
+        }
+
+
+        .form-group label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #777;
+
+            font-size: 9px;
+
+            font-weight: bold;
+
+            letter-spacing: 2px;
+        }
+
+
+        .form-group input {
+
+            display: block;
+
+            width: 100%;
+
+            height: 48px;
+
+            padding: 0 14px;
+
+            border:
+                1px solid #292929;
+
+            outline: none;
+
+            background: #080808;
+
+            color: #eee;
+
+            font-size: 14px;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .form-group input:focus {
+
+            border-color:
+                var(--gold);
+
+            box-shadow:
+                0 0 0 1px
+                rgba(212,175,55,0.12);
+        }
+
+
+        .form-group input::placeholder {
+
+            color: #444;
+        }
+
+
+        /* =====================================================
+           LOGIN BUTTON
+        ====================================================== */
+
+        .btn-primary {
+
+            display: block;
+
+            width: 100%;
+
+            height: 50px;
+
+            margin-top: 8px;
+
+            border:
+                1px solid var(--gold);
+
+            background:
+
+                linear-gradient(
+                    180deg,
+                    #daba45,
+                    #c8a331
+                );
+
+            color: #080808;
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            letter-spacing: 2px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                transform 0.15s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .btn-primary:hover {
+
+            background:
+                var(--gold-bright);
+
+            box-shadow:
+
+                0 8px 25px
+                rgba(212,175,55,0.12);
+        }
+
+
+        .btn-primary:active {
+
+            transform:
+                translateY(1px);
+        }
+
+
+        .btn-primary:disabled {
+
+            opacity: 0.55;
+
+            cursor: wait;
+
+            box-shadow: none;
+        }
+
+
+        .login-status {
+
+            min-height: 20px;
+
+            margin-top: 16px;
+
+            color: var(--manifested);
+
+            font-size: 11px;
+
+            line-height: 1.5;
+
+            text-align: center;
+        }
+
+
+        .login-footer {
+
+            margin-top: 20px;
+
+            color: #3f3f3f;
+
+            font-size: 9px;
+
+            letter-spacing: 1.5px;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           DASHBOARD
+        ====================================================== */
+
+        #dashboard-section {
+
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ====================================================== */
+
+        .admin-header {
+
+            width: 100%;
+
+            max-width: var(--max-width);
+
+            margin: 0 auto;
+
+            padding:
+                30px 30px 25px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-bottom:
+                1px solid
+                rgba(212,175,55,0.15);
+        }
+
+
+        .header-brand {
+
+            color: var(--gold);
+
+            font-size: 25px;
+
+            font-weight: bold;
+
+            letter-spacing: 4px;
+        }
+
+
+        .header-subtitle {
+
+            margin-top: 5px;
+
+            color: #626262;
+
+            font-size: 9px;
+
+            letter-spacing: 2px;
+        }
+
+
+        .admin-status {
+
+            display: flex;
+
+            align-items: center;
+
+            color: #707070;
+
+            font-size: 9px;
+
+            letter-spacing: 1.5px;
+        }
+
+
+        .status-dot {
+
+            width: 7px;
+            height: 7px;
+
+            margin-right: 8px;
+
+            border-radius: 50%;
+
+            background:
+                var(--received);
+
+            box-shadow:
+                0 0 8px
+                rgba(125,165,93,0.65);
+        }
+
+
+        /* =====================================================
+           MAIN
+        ====================================================== */
+
+        .dashboard-main {
+
+            width: 100%;
+
+            max-width: var(--max-width);
+
+            margin: 0 auto;
+
+            padding:
+                35px 30px 90px;
+        }
+
+
+        /* =====================================================
+           STAT CARD
+        ====================================================== */
+
+        .stat-card {
+
+            position: relative;
+
+            padding:
+                30px 35px;
+
+            margin-bottom: 46px;
+
+            background:
+
+                linear-gradient(
+                    120deg,
+                    rgba(212,175,55,0.045),
+                    rgba(255,255,255,0.008)
+                );
+
+            border:
+                1px solid var(--line);
+
+            overflow: hidden;
+        }
+
+
+        .stat-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+            bottom: 0;
+
+            width: 3px;
+
+            background:
+                var(--gold);
+        }
+
+
+        .stat-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            right: -80px;
+            top: -100px;
+
+            width: 250px;
+            height: 250px;
+
+            border-radius: 50%;
+
+            background:
+
+                radial-gradient(
+                    circle,
+                    rgba(212,175,55,0.06),
+                    transparent 68%
+                );
+        }
+
+
+        .stat-label {
+
+            position: relative;
+
+            z-index: 1;
+
+            color: var(--gold);
+
+            font-size: 9px;
+
+            font-weight: bold;
+
+            letter-spacing: 3px;
+        }
+
+
+        .stat-number {
+
+            position: relative;
+
+            z-index: 1;
+
+            margin-top: 9px;
+
+            color: var(--gold);
+
+            font-size: 54px;
+
+            font-weight: bold;
+
+            line-height: 1;
+        }
+
+
+        .stat-description {
+
+            position: relative;
+
+            z-index: 1;
+
+            margin-top: 10px;
+
+            color: #666;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           SECTION HEADER
+        ====================================================== */
+
+        .section-heading {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-end;
+
+            margin-bottom: 20px;
+        }
+
+
+        .section-kicker {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #555;
+
+            font-size: 9px;
+
+            font-weight: bold;
+
+            letter-spacing: 3px;
+        }
+
+
+        .section-heading h2 {
+
+            margin: 0;
+
+            color: #e7e7e7;
+
+            font-size: 19px;
+
+            letter-spacing: 1px;
+        }
+
+
+        /* =====================================================
+           REFRESH
+        ====================================================== */
+
+        .btn-refresh {
+
+            height: 38px;
+
+            padding: 0 15px;
+
+            border:
+                1px solid #303030;
+
+            background: transparent;
+
+            color: #858585;
+
+            font-size: 9px;
+
+            font-weight: bold;
+
+            letter-spacing: 1.5px;
+
+            cursor: pointer;
+
+            transition:
+                border-color 0.2s ease,
+                color 0.2s ease,
+                background 0.2s ease;
+        }
+
+
+        .btn-refresh:hover {
+
+            border-color:
+                var(--gold-dark);
+
+            color: var(--gold);
+
+            background:
+                rgba(212,175,55,0.025);
+        }
+
+
+        .btn-refresh:disabled {
+
+            opacity: 0.5;
+
+            cursor: wait;
+        }
+
+
+        /* =====================================================
+           LIST
+        ====================================================== */
+
+        .manifested-list {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    1,
+                    minmax(0,1fr)
+                );
+
+            gap: 14px;
+        }
+
+
+        /* =====================================================
+           ATMAKA CARD
+        ====================================================== */
+
+        .manifested-card {
+
+            position: relative;
+
+            padding: 25px 27px;
+
+            background:
+
+                linear-gradient(
+                    145deg,
+                    #0d0d0d,
+                    #0a0a0a
+                );
+
+            border:
+                1px solid #242424;
+
+            overflow: hidden;
+
+            transition:
+                border-color 0.2s ease,
+                transform 0.2s ease,
+                background 0.2s ease;
+        }
+
+
+        .manifested-card:hover {
+
+            border-color:
+                var(--gold-dark);
+
+            background:
+                #0f0f0f;
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        .manifested-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 2px;
+            height: 100%;
+
+            background:
+
+                linear-gradient(
+                    180deg,
+                    transparent,
+                    rgba(212,175,55,0.5),
+                    transparent
+                );
+        }
+
+
+        .manifested-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            top: -35px;
+            right: -35px;
+
+            width: 110px;
+            height: 110px;
+
+            border-radius: 50%;
+
+            background:
+
+                radial-gradient(
+                    circle,
+                    rgba(212,175,55,0.055),
+                    transparent 70%
+                );
+
+            pointer-events: none;
+        }
+
+
+        /* =====================================================
+           CARD HEADER
+        ====================================================== */
+
+        .manifested-card-header {
+
+            position: relative;
+
+            z-index: 1;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            margin-bottom: 24px;
+        }
+
+
+        .selaku-name {
+
+            color: #eee;
+
+            font-size: 18px;
+
+            font-weight: bold;
+        }
+
+
+        .selaku-code {
+
+            margin-top: 6px;
+
+            color: var(--gold);
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            letter-spacing: 1.2px;
+        }
+
+
+        /* =====================================================
+           STATUS
+        ====================================================== */
+
+        .manifested-status {
+
+            flex-shrink: 0;
+
+            padding: 6px 10px;
+
+            border:
+                1px solid
+                rgba(216,149,36,0.65);
+
+            background:
+                rgba(216,149,36,0.035);
+
+            color: var(--manifested);
+
+            font-size: 8px;
+
+            font-weight: bold;
+
+            letter-spacing: 1.5px;
+        }
+
+
+        /* =====================================================
+           INFO
+        ====================================================== */
+
+        .manifested-info {
+
+            position: relative;
+
+            z-index: 1;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0,1fr)
+                );
+
+            gap: 20px 35px;
+        }
+
+
+        .info-item {
+
+            min-width: 0;
+        }
+
+
+        .info-label {
+
+            margin-bottom: 6px;
+
+            color: #4e4e4e;
+
+            font-size: 8px;
+
+            font-weight: bold;
+
+            letter-spacing: 2px;
+        }
+
+
+        .info-value {
+
+            color: #cfcfcf;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+
+            word-break: break-word;
+        }
+
+
+        .atmaka-name {
+
+            color: var(--gold);
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           PHYSICAL STATUS
+        ====================================================== */
+
+        .fulfillment-note {
+
+            position: relative;
+
+            z-index: 1;
+
+            margin-top: 24px;
+
+            padding-top: 18px;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,0.055);
+
+            color: #666;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+        }
+
+
+        .fulfillment-note strong {
+
+            color: #999;
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+        ====================================================== */
+
+        .empty-state {
+
+            padding:
+                55px 25px;
+
+            border:
+                1px dashed #292929;
+
+            background:
+                rgba(255,255,255,0.01);
+
+            text-align: center;
+        }
+
+
+        .empty-symbol {
+
+            margin-bottom: 15px;
+
+            color: var(--gold);
+
+            font-size: 22px;
+
+            opacity: 0.7;
+        }
+
+
+        .empty-title {
+
+            margin-bottom: 7px;
+
+            color: #aaa;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+        }
+
+
+        .empty-description {
+
+            color: #555;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =====================================================
+           DESKTOP
+        ====================================================== */
+
+        @media (min-width: 850px) {
+
+            .manifested-list {
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(0,1fr)
+                    );
+            }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ====================================================== */
+
+        @media (max-width: 650px) {
+
+            #login-section {
+
+                padding:
+                    20px 15px;
+            }
+
+
+            .login-card {
+
+                padding:
+                    30px 23px;
+            }
+
+
+            .login-brand-main {
+
+                font-size: 25px;
+
+                letter-spacing: 4px;
+            }
+
+
+            .login-card h1 {
+
+                font-size: 24px;
+            }
+
+
+            .admin-header {
+
+                padding:
+                    23px 20px 20px;
+            }
+
+
+            .header-brand {
+
+                font-size: 21px;
+
+                letter-spacing: 3px;
+            }
+
+
+            .header-subtitle {
+
+                font-size: 8px;
+            }
+
+
+            .admin-status {
+
+                display: none;
+            }
+
+
+            .dashboard-main {
+
+                padding:
+                    25px 20px 60px;
+            }
+
+
+            .stat-card {
+
+                padding:
+                    25px;
+
+                margin-bottom: 35px;
+            }
+
+
+            .stat-number {
+
+                font-size: 46px;
+            }
+
+
+            .section-heading {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+
+            .btn-refresh {
+
+                width: 100%;
+            }
+
+
+            .manifested-info {
+
+                grid-template-columns: 1fr;
+
+                gap: 16px;
+            }
+
+
+            .manifested-card {
+
+                padding:
+                    22px;
+            }
+
+
+            .manifested-card-header {
+
+                gap: 15px;
+            }
+
+
+            .selaku-name {
+
+                font-size: 17px;
+            }
+
+        }
+
+
+        /* =====================================================
+           VERY SMALL
+        ====================================================== */
+
+        @media (max-width: 380px) {
+
+            .login-card {
+
+                padding:
+                    26px 19px;
+            }
+
+
+            .manifested-card-header {
+
+                flex-direction: column;
+            }
+
+
+            .manifested-status {
+
+                align-self: flex-start;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         LOGIN
+    ====================================================== -->
+
+    <section id="login-section">
+
+        <div class="login-wrapper">
+
+
+            <div class="login-brand">
+
+                <div class="login-brand-main">
+                    LAKUKOTA
+                </div>
+
+                <div class="login-brand-sub">
+                    SANGKAN — FULFILLMENT
+                </div>
+
+            </div>
+
+
+            <div class="login-card">
+
+                <div class="login-eyebrow">
+                    AKSES OPERASIONAL
+                </div>
+
+
+                <h1>
+                    GERBANG FULFILLMENT
+                </h1>
+
+
+                <p class="login-description">
+                    Masuk untuk melihat Atmaka yang
+                    menunggu pemenuhan fisik.
+                </p>
+
+
+                <form id="login-form">
+
+
+                    <div class="form-group">
+
+                        <label for="admin-email">
+                            EMAIL ADMIN
+                        </label>
+
+                        <input
+                            type="email"
+                            id="admin-email"
+                            placeholder="email admin"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="admin-password">
+                            PASSWORD
+                        </label>
+
+                        <input
+                            type="password"
+                            id="admin-password"
+                            placeholder="password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn-primary"
+                        id="login-btn"
+                    >
+                        MASUK KE FULFILLMENT
+                    </button>
+
+
+                    <div
+                        id="login-status"
+                        class="login-status"
+                    ></div>
+
+
+                </form>
+
+            </div>
+
+
+            <div class="login-footer">
+                LAKUKOTA / INTERNAL CONSOLE
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DASHBOARD
+    ====================================================== -->
+
+    <section
+        id="dashboard-section"
+        class="hidden"
+    >
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="admin-header">
+
+
+            <div>
+
+                <div class="header-brand">
+                    LAKUKOTA
+                </div>
+
+                <div class="header-subtitle">
+                    SANGKAN — FULFILLMENT CONSOLE
+                </div>
+
+            </div>
+
+
+            <div class="admin-status">
+
+                <span class="status-dot"></span>
+
+                FULFILLMENT ONLINE
+
+            </div>
+
+
+        </header>
+
+
+
+        <!-- =================================================
+             MAIN
+        ================================================== -->
+
+        <main class="dashboard-main">
+
+
+            <!-- =============================================
+                 STAT
+            ============================================== -->
+
+            <section class="stat-card">
+
+                <div class="stat-label">
+                    MENUNGGU PEMENUHAN
+                </div>
+
+
+                <div
+                    class="stat-number"
+                    id="manifested-count"
+                >
+                    0
+                </div>
+
+
+                <div class="stat-description">
+                    Atmaka telah diredeem dan menunggu
+                    pemenuhan fisik.
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =============================================
+                 LIST HEADER
+            ============================================== -->
+
+            <div class="section-heading">
+
+
+                <div>
+
+                    <span class="section-kicker">
+                        FULFILLMENT
+                    </span>
+
+                    <h2>
+                        ATMAKA MANIFESTED
+                    </h2>
+
+                </div>
+
+
+                <button
+                    id="refresh-btn"
+                    class="btn-refresh"
+                    type="button"
+                >
+                    ↻ &nbsp; SEGARKAN
+                </button>
+
+
+            </div>
+
+
+
+            <!-- =============================================
+                 LIST
+            ============================================== -->
+
+            <div
+                id="manifested-list"
+                class="manifested-list"
+            >
+
+                <!--
+                    Data MANIFESTED
+                    akan dirender oleh fulfillment.js
+                -->
+
+            </div>
+
+
+        </main>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="js/fulfillment.js"></script>
+
+
+</body>
+</html>
