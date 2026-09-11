@@ -1,5 +1,6 @@
 // ========================================================
-// LAKUKOTA — KURIR HANDOVER
+// LAKUKOTA — PANDE / KURIR
+// RAJAH HANDOVER
 // ========================================================
 
 
@@ -29,30 +30,26 @@ const supabaseClient =
 // ELEMENT
 // ========================================================
 
-const scannerStatus =
-    document.getElementById(
-        'scanner-status'
-    );
+const btnStartCamera =
+    document.getElementById('btn-start-camera');
 
-const manualInput =
-    document.getElementById(
-        'kurir-qr-token'
-    );
+const btnStopCamera =
+    document.getElementById('btn-stop-camera');
 
-const receiveButton =
-    document.getElementById(
-        'btn-kurir-terima'
-    );
+const btnSubmit =
+    document.getElementById('btn-submit');
 
-const logoutButton =
-    document.getElementById(
-        'logout-btn'
-    );
+const qrTokenInput =
+    document.getElementById('qr-token');
 
-const hasilPenerimaan =
-    document.getElementById(
-        'hasil-penerimaan'
-    );
+const qrReader =
+    document.getElementById('qr-reader');
+
+const cameraStatus =
+    document.getElementById('camera-status');
+
+const resultBox =
+    document.getElementById('result');
 
 
 // ========================================================
@@ -61,6 +58,8 @@ const hasilPenerimaan =
 
 let qrScanner = null;
 
+let scannerAktif = false;
+
 let sedangMemproses = false;
 
 
@@ -68,69 +67,85 @@ let sedangMemproses = false;
 // STATUS
 // ========================================================
 
-function setStatus(
-    message,
-    type = ''
+function setCameraStatus(text) {
+
+    if (cameraStatus) {
+        cameraStatus.textContent = text;
+    }
+
+}
+
+
+// ========================================================
+// RESULT
+// ========================================================
+
+function tampilkanHasil(
+    tipe,
+    judul,
+    pesan
 ) {
 
-    if (!scannerStatus) {
+    if (!resultBox) {
         return;
     }
 
-    scannerStatus.textContent =
-        message;
 
-    scannerStatus.className =
-        'status ' + type;
+    resultBox.className = '';
+
+    resultBox.classList.add(tipe);
+
+    resultBox.innerHTML = `
+        <div class="result-title">
+            ${escapeHTML(judul)}
+        </div>
+
+        <div>
+            ${escapeHTML(pesan)}
+        </div>
+    `;
+
+    resultBox.style.display = 'block';
 
 }
 
 
 // ========================================================
-// STOP SCANNER
+// ESCAPE
 // ========================================================
 
-async function stopScanner() {
+function escapeHTML(value) {
 
-    if (!qrScanner) {
-        return;
-    }
-
-    try {
-
-        await qrScanner.stop();
-
-        console.log(
-            'QR scanner dihentikan.'
-        );
-
-    }
-    catch (error) {
-
-        console.warn(
-            'Scanner tidak dapat dihentikan:',
-            error
-        );
-
-    }
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 
 }
 
 
 // ========================================================
-// START SCANNER
+// MULAI KAMERA
 // ========================================================
 
-async function startScanner() {
+async function mulaiKamera() {
+
+    if (scannerAktif) {
+        return;
+    }
+
 
     if (
         typeof Html5Qrcode ===
         'undefined'
     ) {
 
-        setStatus(
-            'Scanner QR tidak tersedia. Gunakan input manual.',
-            'error'
+        tampilkanHasil(
+            'error',
+            'SCANNER TIDAK TERSEDIA',
+            'Library scanner QR gagal dimuat.'
         );
 
         return;
@@ -138,6 +153,19 @@ async function startScanner() {
 
 
     try {
+
+        qrReader.style.display = 'block';
+
+        btnStartCamera.disabled = true;
+
+        btnStopCamera.style.display =
+            'block';
+
+
+        setCameraStatus(
+            'Meminta akses kamera...'
+        );
+
 
         qrScanner =
             new Html5Qrcode(
@@ -145,11 +173,13 @@ async function startScanner() {
             );
 
 
+        scannerAktif = true;
+
+
         await qrScanner.start(
 
             {
-                facingMode:
-                    'environment'
+                facingMode: 'environment'
             },
 
             {
@@ -160,6 +190,7 @@ async function startScanner() {
                     height: 250
                 }
             },
+
 
             async function(decodedText) {
 
@@ -172,44 +203,82 @@ async function startScanner() {
 
 
                 console.log(
-                    'QR terbaca:',
+                    'QR TERBACA:',
                     decodedText
                 );
 
 
-                await prosesPenerimaan(
+                // Masukkan token
+                // ke input manual
+                qrTokenInput.value =
+                    decodedText;
+
+
+                setCameraStatus(
+                    'Rajah terbaca. Memvalidasi...'
+                );
+
+
+                await hentikanKamera();
+
+
+                await validasiRajah(
                     decodedText
                 );
+
+
+                sedangMemproses = false;
 
             },
 
+
             function(errorMessage) {
 
-                // Tidak perlu menampilkan
-                // error scan frame demi frame.
+                // Jangan tampilkan error
+                // scanning frame secara terus-menerus.
 
             }
 
         );
 
 
-        setStatus(
-            'Arahkan kamera ke Rajah / QR Selaku.'
+        setCameraStatus(
+            'Arahkan kamera ke Rajah Selaku.'
         );
+
 
     }
 
     catch (error) {
 
         console.error(
-            'Kamera gagal:',
+            'Kamera gagal dibuka:',
             error
         );
 
 
-        setStatus(
-            'Kamera tidak dapat digunakan. Gunakan input token manual.',
-            'error'
+        scannerAktif = false;
+
+        qrReader.style.display =
+            'none';
+
+        btnStartCamera.disabled =
+            false;
+
+        btnStopCamera.style.display =
+            'none';
+
+
+        setCameraStatus(
+            'Kamera tidak dapat dibuka.'
+        );
+
+
+        tampilkanHasil(
+            'error',
+            'KAMERA TIDAK TERSEDIA',
+            error.message ||
+            'Periksa izin kamera pada browser.'
         );
 
     }
@@ -218,61 +287,109 @@ async function startScanner() {
 
 
 // ========================================================
-// PROSES PENERIMAAN
+// HENTIKAN KAMERA
 // ========================================================
 
-async function prosesPenerimaan(
-    qrToken
-) {
+async function hentikanKamera() {
 
-    if (!qrToken) {
-
-        sedangMemproses = false;
-
+    if (!qrScanner) {
         return;
     }
 
 
-    const token =
-        qrToken.trim();
+    try {
 
+        if (scannerAktif) {
 
-    if (!token) {
+            await qrScanner.stop();
 
-        sedangMemproses = false;
+        }
 
-        return;
     }
 
+    catch (error) {
 
-    // ---------------------------------------------
-    // STOP CAMERA
-    // ---------------------------------------------
-
-    await stopScanner();
-
-
-    setStatus(
-        'Memverifikasi Rajah...',
-    );
-
-
-    if (receiveButton) {
-
-        receiveButton.disabled =
-            true;
-
-        receiveButton.textContent =
-            'MEMPROSES...';
+        console.warn(
+            'Scanner stop:',
+            error
+        );
 
     }
 
 
     try {
 
-        // =========================================
-        // RPC
-        // =========================================
+        qrScanner.clear();
+
+    }
+
+    catch (error) {
+
+        console.warn(
+            'Scanner clear:',
+            error
+        );
+
+    }
+
+
+    qrScanner = null;
+
+    scannerAktif = false;
+
+
+    qrReader.style.display =
+        'none';
+
+    btnStartCamera.disabled =
+        false;
+
+    btnStopCamera.style.display =
+        'none';
+
+
+    setCameraStatus(
+        'Kamera belum diaktifkan.'
+    );
+
+}
+
+
+// ========================================================
+// VALIDASI RAJAH
+// ========================================================
+
+async function validasiRajah(token) {
+
+    if (!token) {
+
+        tampilkanHasil(
+            'error',
+            'TOKEN KOSONG',
+            'Rajah belum terbaca.'
+        );
+
+        return;
+    }
+
+
+    if (btnSubmit) {
+
+        btnSubmit.disabled = true;
+
+        btnSubmit.textContent =
+            'MEMVALIDASI...';
+
+    }
+
+
+    try {
+
+        console.log(
+            'Mengirim token ke RPC:',
+            token
+        );
+
 
         const {
             data,
@@ -281,29 +398,32 @@ async function prosesPenerimaan(
             await supabaseClient.rpc(
                 'terima_fulfillment_order',
                 {
-                    p_qr_token: token
+                    p_qr_token: token.trim()
                 }
             );
 
 
-        // =========================================
-        // ERROR SUPABASE
-        // =========================================
-
         if (error) {
+
+            console.error(
+                'RPC ERROR:',
+                error
+            );
 
             throw error;
 
         }
 
 
-        // =========================================
-        // CEK HASIL RPC
-        // =========================================
+        console.log(
+            'HASIL RPC:',
+            data
+        );
+
 
         if (
             !data ||
-            !data.success
+            data.success !== true
         ) {
 
             throw new Error(
@@ -313,32 +433,30 @@ async function prosesPenerimaan(
         }
 
 
-        console.log(
-            'Paket berhasil diterima:',
-            data
-        );
-
-
-        // =========================================
-        // TAMPILKAN HASIL
-        // =========================================
+        // ==============================================
+        // BERHASIL
+        // ==============================================
 
         tampilkanHasil(
-            data
+            'success',
+            '✓ PAKET DITERIMA',
+            'Status Rajah: RECEIVED'
         );
 
 
-        setStatus(
-            'Paket berhasil diterima.',
-            'success'
+        alert(
+            '📦 PAKET DITERIMA!\n\n' +
+            'Manifestasi Atmaka + Lanyard\n\n' +
+            'Status: RECEIVED'
         );
 
 
-        if (manualInput) {
+        qrTokenInput.value = '';
 
-            manualInput.value = '';
 
-        }
+        setCameraStatus(
+            'Siap menerima Rajah berikutnya.'
+        );
 
 
     }
@@ -346,45 +464,28 @@ async function prosesPenerimaan(
     catch (error) {
 
         console.error(
-            'Gagal menerima paket:',
+            'Validasi gagal:',
             error
         );
 
 
-        setStatus(
-            'Gagal: ' +
-            error.message,
-            'error'
+        tampilkanHasil(
+            'error',
+            '✕ RAJAH DITOLAK',
+            error.message ||
+            'Rajah tidak dapat diproses.'
         );
-
-
-        alert(
-            '❌ PAKET TIDAK DAPAT DITERIMA\n\n' +
-            error.message
-        );
-
-
-        // -----------------------------------------
-        // SCANNER DIHIDUPKAN LAGI
-        // -----------------------------------------
-
-        sedangMemproses =
-            false;
-
-
-        await startScanner();
 
     }
 
     finally {
 
-        if (receiveButton) {
+        if (btnSubmit) {
 
-            receiveButton.disabled =
-                false;
+            btnSubmit.disabled = false;
 
-            receiveButton.textContent =
-                'TERIMA PAKET';
+            btnSubmit.textContent =
+                'VALIDASI RAJAH';
 
         }
 
@@ -394,113 +495,48 @@ async function prosesPenerimaan(
 
 
 // ========================================================
-// HASIL
+// EVENT — START CAMERA
 // ========================================================
 
-function tampilkanHasil(
-    data
-) {
+if (btnStartCamera) {
 
-    if (!hasilPenerimaan) {
-        return;
-    }
-
-
-    hasilPenerimaan.style.display =
-        'block';
-
-
-    const atmaka =
-        document.getElementById(
-            'result-atmaka'
-        );
-
-
-    const status =
-        document.getElementById(
-            'result-status'
-        );
-
-
-    const waktu =
-        document.getElementById(
-            'result-time'
-        );
-
-
-    if (status) {
-
-        status.textContent =
-            data.status ||
-            'RECEIVED';
-
-    }
-
-
-    if (atmaka) {
-
-        atmaka.textContent =
-            data.atmaka_id ||
-            '-';
-
-    }
-
-
-    if (waktu) {
-
-        const waktuDiterima =
-            data.received_at
-                ? new Date(
-                    data.received_at
-                ).toLocaleString(
-                    'id-ID'
-                )
-                : '-';
-
-
-        waktu.textContent =
-            waktuDiterima;
-
-    }
+    btnStartCamera.addEventListener(
+        'click',
+        mulaiKamera
+    );
 
 }
 
 
 // ========================================================
-// MANUAL BUTTON
+// EVENT — STOP CAMERA
 // ========================================================
 
-if (receiveButton) {
+if (btnStopCamera) {
 
-    receiveButton.addEventListener(
+    btnStopCamera.addEventListener(
+        'click',
+        hentikanKamera
+    );
+
+}
+
+
+// ========================================================
+// EVENT — MANUAL VALIDATION
+// ========================================================
+
+if (btnSubmit) {
+
+    btnSubmit.addEventListener(
         'click',
         async function() {
 
             const token =
-                manualInput
-                    ? manualInput.value.trim()
-                    : '';
+                qrTokenInput.value.trim();
 
 
-            if (!token) {
-
-                alert(
-                    'QR Token belum diisi.'
-                );
-
-                return;
-            }
-
-
-            if (sedangMemproses) {
-                return;
-            }
-
-
-            sedangMemproses = true;
-
-
-            await prosesPenerimaan(
+            await validasiRajah(
                 token
             );
 
@@ -511,28 +547,24 @@ if (receiveButton) {
 
 
 // ========================================================
-// ENTER PADA INPUT
+// ENTER = VALIDASI
 // ========================================================
 
-if (manualInput) {
+if (qrTokenInput) {
 
-    manualInput.addEventListener(
+    qrTokenInput.addEventListener(
         'keydown',
-        function(event) {
+        async function(event) {
 
             if (
-                event.key ===
-                'Enter'
+                event.key === 'Enter'
             ) {
 
                 event.preventDefault();
 
-
-                if (receiveButton) {
-
-                    receiveButton.click();
-
-                }
+                await validasiRajah(
+                    qrTokenInput.value.trim()
+                );
 
             }
 
@@ -543,153 +575,19 @@ if (manualInput) {
 
 
 // ========================================================
-// LOGOUT
+// CLEANUP
 // ========================================================
 
-if (logoutButton) {
+window.addEventListener(
+    'beforeunload',
+    async function() {
 
-    logoutButton.addEventListener(
-        'click',
-        async function() {
-
-            await stopScanner();
-
-
-            await supabaseClient.auth.signOut();
-
-
-            window.location.href =
-                'index.html';
-
-        }
-    );
-
-}
-
-
-// ========================================================
-// CEK SESSION
-// ========================================================
-
-async function cekSession() {
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .auth
-                .getSession();
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        const session =
-            data?.session;
-
-
-        if (!session) {
-
-            alert(
-                'Silakan login terlebih dahulu.'
-            );
-
-
-            window.location.href =
-                'index.html';
-
-
-            return;
-
-        }
-
-
-        console.log(
-            'Kurir session:',
-            session.user?.email
-        );
-
-
-        // =============================================
-        // MVP
-        // =============================================
-        // Untuk sekarang kurir menggunakan
-        // akun internal yang sama dengan admin.
-        //
-        // Nanti bisa dipisah menjadi:
-        //
-        // role = courier
-        //
-        // =============================================
-
-
-        const role =
-            session.user?.app_metadata?.role;
-
-
-        if (
-            role !== 'admin' &&
-            role !== 'courier'
-        ) {
-
-            await supabaseClient
-                .auth
-                .signOut();
-
-
-            alert(
-                'Akun ini tidak memiliki akses kurir.'
-            );
-
-
-            window.location.href =
-                'index.html';
-
-
-            return;
-
-        }
-
-
-        // =============================================
-        // START CAMERA
-        // =============================================
-
-        await startScanner();
+        await hentikanKamera();
 
     }
-
-    catch (error) {
-
-        console.error(
-            'Gagal memeriksa session:',
-            error
-        );
+);
 
 
-        alert(
-            'Gagal membuka halaman kurir:\n\n' +
-            error.message
-        );
-
-
-        window.location.href =
-            'index.html';
-
-    }
-
-}
-
-
-// ========================================================
-// MULAI
-// ========================================================
-
-cekSession();
+console.log(
+    'LAKUKOTA PANDE — sistem siap.'
+);
