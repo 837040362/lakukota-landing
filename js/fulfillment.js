@@ -343,7 +343,7 @@ async function loadManifested() {
 
         // =================================================
         // STEP 1
-        // AMBIL USER_ATMAKA YANG MANIFESTED
+        // AMBIL USER_ATMAKAS YANG MANIFESTED
         // =================================================
 
         const {
@@ -351,7 +351,7 @@ async function loadManifested() {
             error: manifestedError
         } =
             await supabaseClient
-                .from('user_atmaka')
+                .from('user_atmakas')
                 .select(`
                     id,
                     user_id,
