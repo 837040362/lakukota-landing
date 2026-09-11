@@ -77,11 +77,27 @@ if (formDaftar) {
                 "RITUAL BERHASIL", 
                 pesanSukses, 
                 `Kirim Bukti ke WhatsApp`, 
-                function() {
-                    const noAdmin = "628562942151"; 
-                    const textWA = encodeURIComponent(`Halo Min, saya ${nama} (${userCode}) sudah mendaftar Sangkan dan melakukan transfer mahar Rp 299.000. Berikut bukti transfernya.`);
-                    window.location.href = `https://wa.me/${noAdmin}?text=${textWA}`;
-                }
+                     function() {
+                        const noAdmin = "628562942151";
+                    
+                                const textWA = encodeURIComponent(
+                            `KONFIRMASI MAHAR SANGKAN
+                            
+                            Nama Selaku : ${nama}
+                            User ID     : ${newUserId}
+                            Email       : ${email}
+                            Nominal     : Rp 299.000
+                            
+                            Saya telah melakukan pembayaran mahar SANGKAN.
+                            Bukti transfer saya lampirkan pada pesan ini.
+                            
+                            Mohon dilakukan verifikasi pembayaran dan pendaftaran saya.
+                            
+                            Terima kasih.`
+                                );
+                            
+                                window.location.href = `https://wa.me/${noAdmin}?text=${textWA}`;
+                    }
             );  
 
             // Bersihkan form
