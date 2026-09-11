@@ -3,7 +3,9 @@
 // ========================================================
 
 const SUPABASE_PROJECT_URL = 'https://tihixoswhxlihrsatfft.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_vzlNczrbFT5sBTa-kNT3Bg_4vDvXbxG';
+
+const SUPABASE_PUBLISHABLE_KEY =
+    'sb_publishable_vzlNczrbFT5sBTa-kNT3Bg_4vDvXbxG';
 
 const supabaseLib = window.supabase || supabase;
 
@@ -17,35 +19,185 @@ const supabaseClient = supabaseLib.createClient(
 // ELEMENT
 // ========================================================
 
-const daftarPending = document.getElementById('daftar-pending');
-const jumlahPending = document.getElementById('jumlah-pending');
+const loginPanel =
+    document.getElementById('admin-login');
+
+const dashboardPanel =
+    document.getElementById('admin-dashboard');
+
+const loginForm =
+    document.getElementById('admin-login-form');
+
+const loginError =
+    document.getElementById('login-error');
+
+const btnLogin =
+    document.getElementById('btn-login-admin');
+
+const btnRefresh =
+    document.getElementById('btn-refresh');
+
+const daftarPending =
+    document.getElementById('daftar-pending');
+
+const jumlahPending =
+    document.getElementById('jumlah-pending');
 
 
 // ========================================================
-// CEK ADMIN
+// TAMPILKAN DASHBOARD
 // ========================================================
 
-async function cekAdmin() {
+function tampilkanDashboard() {
+
+    loginPanel.classList.add('hidden');
+
+    dashboardPanel.classList.remove('hidden');
+
+}
+
+
+// ========================================================
+// TAMPILKAN LOGIN
+// ========================================================
+
+function tampilkanLogin() {
+
+    dashboardPanel.classList.add('hidden');
+
+    loginPanel.classList.remove('hidden');
+
+}
+
+
+// ========================================================
+// LOGIN ADMIN
+// ========================================================
+
+if (loginForm) {
+
+    loginForm.addEventListener('submit', async function(event) {
+
+        event.preventDefault();
+
+        loginError.textContent = '';
+
+        btnLogin.disabled = true;
+        btnLogin.textContent = 'MEMBUKA GERBANG...';
+
+        const email =
+            document.getElementById('admin-email')
+                .value
+                .trim();
+
+        const password =
+            document.getElementById('admin-password')
+                .value;
+
+
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+
+        if (error) {
+
+            console.error(error);
+
+            loginError.textContent =
+                'Login gagal: ' + error.message;
+
+            btnLogin.disabled = false;
+            btnLogin.textContent = 'MASUK';
+
+            return;
+        }
+
+
+        // =================================================
+        // CEK ROLE ADMIN
+        // =================================================
+
+        const role =
+            data.user?.app_metadata?.role;
+
+
+        if (role !== 'admin') {
+
+            await supabaseClient.auth.signOut();
+
+            loginError.textContent =
+                'Akun ini bukan akun admin.';
+
+            btnLogin.disabled = false;
+            btnLogin.textContent = 'MASUK';
+
+            return;
+        }
+
+
+        // =================================================
+        // BERHASIL
+        // =================================================
+
+        btnLogin.textContent = 'BERHASIL';
+
+        tampilkanDashboard();
+
+        await loadPending();
+
+        btnLogin.disabled = false;
+
+    });
+
+}
+
+
+// ========================================================
+// CEK SESSION SAAT HALAMAN DIBUKA
+// ========================================================
+
+async function cekSession() {
 
     const {
-        data: { user },
-        error
-    } = await supabaseClient.auth.getUser();
+        data: { session }
+    } = await supabaseClient.auth.getSession();
 
-    if (error || !user) {
-        window.location.href = 'index.html';
-        return null;
+
+    // Belum login
+    if (!session) {
+
+        tampilkanLogin();
+
+        return;
+
     }
 
-    const role = user.app_metadata?.role;
+
+    // Sudah login → cek admin
+    const role =
+        session.user?.app_metadata?.role;
+
 
     if (role !== 'admin') {
-        alert('Akses ditolak. Halaman ini khusus admin.');
-        window.location.href = 'index.html';
-        return null;
+
+        await supabaseClient.auth.signOut();
+
+        tampilkanLogin();
+
+        return;
+
     }
 
-    return user;
+
+    tampilkanDashboard();
+
+    await loadPending();
+
 }
 
 
@@ -60,6 +212,7 @@ async function loadPending() {
             Membaca daftar Selaku...
         </p>
     `;
+
 
     const {
         data,
@@ -80,6 +233,7 @@ async function loadPending() {
             ascending: false
         });
 
+
     if (error) {
 
         console.error(error);
@@ -87,13 +241,19 @@ async function loadPending() {
         daftarPending.innerHTML = `
             <p style="color:#e74c3c;">
                 Gagal membaca data Selaku.
+                <br><br>
+                ${escapeHTML(error.message)}
             </p>
         `;
+
+        jumlahPending.textContent = '?';
 
         return;
     }
 
+
     jumlahPending.textContent = data.length;
+
 
     if (data.length === 0) {
 
@@ -106,9 +266,11 @@ async function loadPending() {
         return;
     }
 
-    daftarPending.innerHTML = data
-        .map(selaku => buatKartuSelaku(selaku))
-        .join('');
+
+    daftarPending.innerHTML =
+        data.map(selaku => buatKartuSelaku(selaku))
+            .join('');
+
 }
 
 
@@ -118,16 +280,10 @@ async function loadPending() {
 
 function buatKartuSelaku(selaku) {
 
-    const tanggal = new Date(selaku.created_at)
-        .toLocaleString('id-ID');
+    const tanggal =
+        new Date(selaku.created_at)
+            .toLocaleString('id-ID');
 
-    const bukti = selaku.payment_proof
-        ? `<div class="payment-proof">
-               Bukti pembayaran tersedia
-           </div>`
-        : `<div class="payment-proof warning">
-               Bukti pembayaran belum tercatat
-           </div>`;
 
     return `
         <div class="selaku-card">
@@ -135,11 +291,15 @@ function buatKartuSelaku(selaku) {
             <div class="selaku-header">
 
                 <div>
-                    <h3>${escapeHTML(selaku.username)}</h3>
+
+                    <h3>
+                        ${escapeHTML(selaku.username)}
+                    </h3>
 
                     <span class="user-code">
                         ${escapeHTML(selaku.user_code)}
                     </span>
+
                 </div>
 
                 <span class="status pending">
@@ -148,32 +308,43 @@ function buatKartuSelaku(selaku) {
 
             </div>
 
+
             <div class="selaku-info">
 
                 <div>
+
                     <small>EMAIL</small>
+
                     <strong>
                         ${escapeHTML(selaku.email || '-')}
                     </strong>
+
                 </div>
 
+
                 <div>
+
                     <small>USER ID</small>
+
                     <strong class="user-id">
                         ${escapeHTML(selaku.user_id)}
                     </strong>
+
                 </div>
 
+
                 <div>
+
                     <small>TERDAFTAR</small>
+
                     <strong>
                         ${tanggal}
                     </strong>
+
                 </div>
 
             </div>
 
-            ${bukti}
 
             <button
                 class="btn-activate"
@@ -197,33 +368,40 @@ async function aktifkanSelaku(userId) {
         'Verifikasi pembayaran dan aktifkan Selaku ini?'
     );
 
+
     if (!yakin) return;
+
 
     const {
         error
-    } = await supabaseClient
-        .from('users')
-        .update({
-            payment_status: 'paid'
-        })
-        .eq('user_id', userId)
-        .eq('payment_status', 'pending');
+    } = await supabaseClient.rpc(
+        'admin_activate_selaku',
+        {
+            p_user_id: userId
+        }
+    );
+
 
     if (error) {
 
         console.error(error);
 
         alert(
-            'Gagal mengaktifkan Selaku: ' +
+            'Gagal mengaktifkan Selaku:\n\n' +
             error.message
         );
 
         return;
     }
 
-    alert('Selaku berhasil diaktifkan.');
+
+    alert(
+        'Selaku berhasil diaktifkan.'
+    );
+
 
     await loadPending();
+
 }
 
 
@@ -239,6 +417,21 @@ function escapeHTML(value) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
+
+}
+
+
+// ========================================================
+// REFRESH
+// ========================================================
+
+if (btnRefresh) {
+
+    btnRefresh.addEventListener(
+        'click',
+        loadPending
+    );
+
 }
 
 
@@ -246,12 +439,4 @@ function escapeHTML(value) {
 // MULAI
 // ========================================================
 
-(async function() {
-
-    const admin = await cekAdmin();
-
-    if (admin) {
-        await loadPending();
-    }
-
-})();
+cekSession();
