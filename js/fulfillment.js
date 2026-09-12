@@ -54,6 +54,8 @@ const manifestedList =
 const manifestedCount =
     document.getElementById('manifested-count');
 
+const readyCount =
+    document.getElementById('ready-count');
 
 // ========================================================
 // LOGIN / DASHBOARD
@@ -306,13 +308,16 @@ async function cekSession() {
 
 
 // ========================================================
-// LOAD MANIFESTED
+// LOAD FULFILLMENT
 // ========================================================
 
 async function loadManifested() {
 
-    if (!manifestedList ||
-        !manifestedCount) {
+    if (
+        !manifestedList ||
+        !manifestedCount ||
+        !readyCount
+    ) {
 
         console.error(
             'Element fulfillment tidak ditemukan.'
@@ -346,7 +351,40 @@ async function loadManifested() {
 
         // =================================================
         // STEP 1
-        // AMBIL USER_ATMAKAS YANG MANIFESTED
+        // HITUNG ATMAKA READY
+        // =================================================
+
+        const {
+            count: readyTotal,
+            error: readyError
+        } =
+            await supabaseClient
+                .from('user_atmakas')
+                .select(
+                    'id',
+                    {
+                        count: 'exact',
+                        head: true
+                    }
+                )
+                .eq(
+                    'claim_status',
+                    'READY'
+                );
+
+
+        if (readyError) {
+            throw readyError;
+        }
+
+
+        readyCount.textContent =
+            readyTotal ?? 0;
+
+
+        // =================================================
+        // STEP 2
+        // AMBIL USER_ATMAKAS MANIFESTED
         // =================================================
 
         const {
@@ -438,7 +476,6 @@ async function loadManifested() {
 
 
         // =================================================
-        // STEP 2
         // AMBIL DATA USERS
         // =================================================
 
@@ -466,7 +503,6 @@ async function loadManifested() {
 
 
         // =================================================
-        // STEP 3
         // AMBIL DATA ATMAKA
         // =================================================
 
@@ -557,6 +593,11 @@ async function loadManifested() {
 
 
         console.log(
+            'READY:',
+            readyTotal
+        );
+
+        console.log(
             'Manifested:',
             queue
         );
@@ -570,6 +611,8 @@ async function loadManifested() {
             error
         );
 
+
+        readyCount.textContent = '?';
 
         manifestedCount.textContent = '?';
 
