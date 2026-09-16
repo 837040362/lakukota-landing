@@ -1137,6 +1137,24 @@
         }
 
 
+
+        /* =====================================================
+           REQUESTED
+        ====================================================== */
+
+        .requested-list { display:grid; grid-template-columns:repeat(1,minmax(0,1fr)); gap:14px; margin-bottom:46px; }
+        .requested-card { padding:25px 27px; background:linear-gradient(145deg,#0d0d0d,#0a0a0a); border:1px solid #242424; }
+        .requested-card-header { display:flex; justify-content:space-between; gap:15px; align-items:flex-start; margin-bottom:20px; }
+        .requested-name { color:#eee; font-size:18px; font-weight:bold; }
+        .requested-status { flex-shrink:0; padding:6px 10px; border:1px solid rgba(212,175,55,.65); color:var(--gold); font-size:8px; font-weight:bold; letter-spacing:1.5px; }
+        .requested-info { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 35px; }
+        .requested-action { margin-top:22px; padding-top:18px; border-top:1px solid rgba(255,255,255,.055); }
+        .btn-process-request { width:100%; min-height:42px; border:1px solid var(--gold); background:transparent; color:var(--gold); font-size:9px; font-weight:bold; letter-spacing:1.5px; cursor:pointer; }
+        .btn-process-request:hover { background:rgba(212,175,55,.08); }
+        .btn-process-request:disabled { opacity:.5; cursor:wait; }
+
+        @media (max-width: 650px) { .requested-info { grid-template-columns:1fr; } }
+
         /* =====================================================
            DESKTOP
         ====================================================== */
@@ -1520,6 +1538,26 @@
             
             </section>
 
+
+
+            <!-- =============================================
+                 REQUESTED
+            ============================================== -->
+
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">PERMINTAAN</span>
+                    <h2>PERMINTAAN PENGIRIMAN</h2>
+                </div>
+            </div>
+
+            <div id="requested-list" class="requested-list">
+                <div class="empty-state">
+                    <div class="empty-symbol">◌</div>
+                    <div class="empty-title">MEMBACA PERMINTAAN</div>
+                    <div class="empty-description">Memuat permintaan pengiriman...</div>
+                </div>
+            </div>
 
 
             <!-- =============================================
