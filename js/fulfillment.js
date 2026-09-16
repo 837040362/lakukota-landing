@@ -57,6 +57,10 @@ const manifestedCount =
 const readyCount =
     document.getElementById('ready-count');
 
+const requestedList =
+    document.getElementById('requested-list');
+
+
 // ========================================================
 // LOGIN / DASHBOARD
 // ========================================================
@@ -197,7 +201,7 @@ if (loginForm) {
 
                 tampilkanDashboard();
 
-                await loadManifested();
+                await loadDashboard();
 
 
                 if (loginButton) {
@@ -289,7 +293,7 @@ async function cekSession() {
 
         tampilkanDashboard();
 
-        await loadManifested();
+        await loadDashboard();
 
     }
 
@@ -307,17 +311,84 @@ async function cekSession() {
 }
 
 
+
+async function loadDashboard() {
+    await Promise.all([
+        loadReadyCount(),
+        loadRequested(),
+        loadManifested()
+    ]);
+}
+
+async function loadReadyCount() {
+    if (!readyCount) return;
+    const { count, error } = await supabaseClient
+        .from('user_atmakas')
+        .select('id', { count: 'exact', head: true })
+        .eq('claim_status', 'READY');
+    if (error) { console.error('Gagal membaca READY:', error); readyCount.textContent = '?'; return; }
+    readyCount.textContent = count ?? 0;
+}
+
+async function loadRequested() {
+    if (!requestedList) return;
+    requestedList.innerHTML = `<div class="empty-state"><div class="empty-symbol">◌</div><div class="empty-title">MEMBACA PERMINTAAN</div><div class="empty-description">Memuat permintaan pengiriman...</div></div>`;
+    try {
+        const { data, error } = await supabaseClient
+            .from('fulfillment_requests')
+            .select(`id,user_id,atmaka_id,recipient_name,recipient_phone,shipping_address,shipping_city,shipping_province,shipping_postal_code,status,created_at,atmakas(atmaka_name)`)
+            .eq('status', 'REQUESTED')
+            .order('created_at', { ascending: true });
+        if (error) throw error;
+        if (!data || data.length === 0) { requestedList.innerHTML = `<div class="empty-state"><div class="empty-symbol">◇</div><div class="empty-title">TIDAK ADA PERMINTAAN</div><div class="empty-description">Belum ada permintaan pengiriman baru.</div></div>`; return; }
+        requestedList.innerHTML = data.map(buatKartuRequested).join('');
+    } catch (error) {
+        console.error('Gagal membaca REQUESTED:', error);
+        requestedList.innerHTML = `<div class="empty-state"><div class="empty-symbol">!</div><div class="empty-title">GAGAL MEMBACA DATA</div><div class="empty-description">${escapeHTML(error.message)}</div></div>`;
+    }
+}
+
+function buatKartuRequested(request) {
+    const atmakaName = request.atmakas?.atmaka_name || request.atmaka_id || '-';
+    const created = request.created_at ? new Date(request.created_at).toLocaleString('id-ID', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '-';
+    return `<article class="requested-card">
+        <div class="requested-card-header"><div><div class="requested-name">${escapeHTML(request.recipient_name || '-')}</div><div class="selaku-code">${escapeHTML(request.user_id || '-')}</div></div><div class="requested-status">REQUESTED</div></div>
+        <div class="requested-info">
+            <div class="info-item"><div class="info-label">ATMAKA</div><div class="info-value atmaka-name">${escapeHTML(atmakaName)}</div></div>
+            <div class="info-item"><div class="info-label">WHATSAPP</div><div class="info-value">${escapeHTML(request.recipient_phone || '-')}</div></div>
+            <div class="info-item"><div class="info-label">ALAMAT</div><div class="info-value">${escapeHTML(request.shipping_address || '-')}</div></div>
+            <div class="info-item"><div class="info-label">KOTA / PROVINSI</div><div class="info-value">${escapeHTML(request.shipping_city || '-')} / ${escapeHTML(request.shipping_province || '-')} ${escapeHTML(request.shipping_postal_code || '')}</div></div>
+            <div class="info-item"><div class="info-label">DIAJUKAN</div><div class="info-value">${escapeHTML(created)}</div></div>
+        </div>
+        <div class="requested-action"><button class="btn-process-request" type="button" onclick="prosesPermintaanPengiriman('${request.id}')">MANIFESTASIKAN</button></div>
+    </article>`;
+}
+
+async function prosesPermintaanPengiriman(requestId) {
+    if (!requestId) return;
+    if (!confirm('Manifestasikan permintaan pengiriman ini?')) return;
+    try {
+        const { data, error } = await supabaseClient.rpc('proses_fulfillment_request', { p_request_id: requestId });
+        if (error) throw error;
+        if (!data?.success) throw new Error('Manifestasi fulfillment gagal.');
+        alert('FULFILLMENT BERHASIL DIMANIFESTASIKAN\n\nStatus: MANIFESTED');
+        await loadDashboard();
+    } catch (error) {
+        console.error('Gagal memproses REQUESTED:', error);
+        alert('Gagal memproses fulfillment.\n\n' + error.message);
+    }
+}
+
+window.prosesPermintaanPengiriman = prosesPermintaanPengiriman;
+
 // ========================================================
-// LOAD FULFILLMENT
+// LOAD MANIFESTED
 // ========================================================
 
 async function loadManifested() {
 
-    if (
-        !manifestedList ||
-        !manifestedCount ||
-        !readyCount
-    ) {
+    if (!manifestedList ||
+        !manifestedCount) {
 
         console.error(
             'Element fulfillment tidak ditemukan.'
@@ -351,40 +422,7 @@ async function loadManifested() {
 
         // =================================================
         // STEP 1
-        // HITUNG ATMAKA READY
-        // =================================================
-
-        const {
-            count: readyTotal,
-            error: readyError
-        } =
-            await supabaseClient
-                .from('user_atmakas')
-                .select(
-                    'id',
-                    {
-                        count: 'exact',
-                        head: true
-                    }
-                )
-                .eq(
-                    'claim_status',
-                    'READY'
-                );
-
-
-        if (readyError) {
-            throw readyError;
-        }
-
-
-        readyCount.textContent =
-            readyTotal ?? 0;
-
-
-        // =================================================
-        // STEP 2
-        // AMBIL USER_ATMAKAS MANIFESTED
+        // AMBIL USER_ATMAKAS YANG MANIFESTED
         // =================================================
 
         const {
@@ -476,6 +514,7 @@ async function loadManifested() {
 
 
         // =================================================
+        // STEP 2
         // AMBIL DATA USERS
         // =================================================
 
@@ -503,6 +542,7 @@ async function loadManifested() {
 
 
         // =================================================
+        // STEP 3
         // AMBIL DATA ATMAKA
         // =================================================
 
@@ -593,11 +633,6 @@ async function loadManifested() {
 
 
         console.log(
-            'READY:',
-            readyTotal
-        );
-
-        console.log(
             'Manifested:',
             queue
         );
@@ -611,8 +646,6 @@ async function loadManifested() {
             error
         );
 
-
-        readyCount.textContent = '?';
 
         manifestedCount.textContent = '?';
 
@@ -848,7 +881,7 @@ if (refreshButton) {
                 '↻  MEMBACA...';
 
 
-            await loadManifested();
+            await loadDashboard();
 
 
             refreshButton.disabled = false;
@@ -948,7 +981,7 @@ supabaseClient.auth.onAuthStateChange(
 
         tampilkanDashboard();
 
-        await loadManifested();
+        await loadDashboard();
 
     }
 );
