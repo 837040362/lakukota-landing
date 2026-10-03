@@ -54,6 +54,20 @@ const pendingList =
 const pendingCount =
     document.getElementById('pending-count');
 
+const registrationBatchName =
+    document.getElementById('registration-batch-name');
+
+const registeredCount =
+    document.getElementById('registered-count');
+
+const paidCount =
+    document.getElementById('paid-count');
+
+const registrationGateStatus =
+    document.getElementById('registration-gate-status');
+
+const registrationGateButton =
+    document.getElementById('registration-gate-btn');
 
 // ========================================================
 // CEK ELEMENT
@@ -318,7 +332,7 @@ if (loginForm) {
 
 
                 await loadPending();
-
+                await loadRegistrationGate();
 
                 if (loginButton) {
 
@@ -454,7 +468,7 @@ async function cekSession() {
         tampilkanDashboard();
 
         await loadPending();
-
+        await loadRegistrationGate();
     }
 
     catch (error) {
@@ -470,6 +484,249 @@ async function cekSession() {
 
 }
 
+// ========================================================
+// REGISTRATION GATE
+// ========================================================
+
+let registrationGateOpen = true;
+
+async function loadRegistrationGate() {
+
+    if (
+        !registrationBatchName ||
+        !registeredCount ||
+        !paidCount ||
+        !registrationGateStatus ||
+        !registrationGateButton
+    ) {
+        console.warn(
+            'Element registration gate belum lengkap.'
+        );
+        return;
+    }
+
+    try {
+
+        const {
+            data: gate,
+            error: gateError
+        } =
+            await supabaseClient
+                .from('registration_gate')
+                .select(
+                    'id,batch_name,is_open,updated_at'
+                )
+                .eq('id', 1)
+                .single();
+
+        if (gateError) {
+            throw gateError;
+        }
+
+        registrationGateOpen =
+            gate.is_open === true;
+
+        registrationBatchName.textContent =
+            gate.batch_name;
+
+        // ============================================
+        // HITUNG TERDAFTAR
+        // ============================================
+
+        const {
+            count: registered,
+            error: registeredError
+        } =
+            await supabaseClient
+                .from('users')
+                .select(
+                    'user_id',
+                    {
+                        count: 'exact',
+                        head: true
+                    }
+                );
+
+        if (registeredError) {
+            throw registeredError;
+        }
+
+        // ============================================
+        // HITUNG PAID
+        // ============================================
+
+        const {
+            count: paid,
+            error: paidError
+        } =
+            await supabaseClient
+                .from('users')
+                .select(
+                    'user_id',
+                    {
+                        count: 'exact',
+                        head: true
+                    }
+                )
+                .eq(
+                    'payment_status',
+                    'paid'
+                );
+
+        if (paidError) {
+            throw paidError;
+        }
+
+        registeredCount.textContent =
+            registered ?? 0;
+
+        paidCount.textContent =
+            paid ?? 0;
+
+        renderRegistrationGate();
+
+    }
+    catch (error) {
+
+        console.error(
+            'Gagal membaca registration gate:',
+            error
+        );
+
+        registrationBatchName.textContent =
+            '—';
+
+        registeredCount.textContent =
+            '?';
+
+        paidCount.textContent =
+            '?';
+
+        registrationGateStatus.textContent =
+            'GAGAL MEMBACA STATUS';
+
+        registrationGateStatus.classList.remove(
+            'is-open',
+            'is-closed'
+        );
+
+        registrationGateButton.disabled =
+            true;
+
+    }
+}
+
+function renderRegistrationGate() {
+
+    if (
+        !registrationGateStatus ||
+        !registrationGateButton
+    ) {
+        return;
+    }
+
+    registrationGateStatus.classList.remove(
+        'is-open',
+        'is-closed'
+    );
+
+    if (registrationGateOpen) {
+
+        registrationGateStatus.textContent =
+            '🟢 REGISTRASI TERBUKA';
+
+        registrationGateStatus.classList.add(
+            'is-open'
+        );
+
+        registrationGateButton.textContent =
+            'TUTUP REGISTRASI';
+
+    } else {
+
+        registrationGateStatus.textContent =
+            '🔴 REGISTRASI DITUTUP';
+
+        registrationGateStatus.classList.add(
+            'is-closed'
+        );
+
+        registrationGateButton.textContent =
+            'BUKA REGISTRASI';
+
+    }
+
+    registrationGateButton.disabled =
+        false;
+}
+
+if (registrationGateButton) {
+
+    registrationGateButton.addEventListener(
+        'click',
+        async function() {
+
+            const nextState =
+                !registrationGateOpen;
+
+            const pesan =
+                nextState
+                    ? 'Buka kembali registrasi SANGKAN?'
+                    : 'Tutup registrasi SANGKAN?';
+
+            const yakin =
+                confirm(pesan);
+
+            if (!yakin) {
+                return;
+            }
+
+            registrationGateButton.disabled =
+                true;
+
+            registrationGateButton.textContent =
+                'MENYIMPAN...';
+
+            try {
+
+                const {
+                    data,
+                    error
+                } =
+                    await supabaseClient.rpc(
+                        'admin_set_registration_gate',
+                        {
+                            p_is_open: nextState
+                        }
+                    );
+
+                if (error) {
+                    throw error;
+                }
+
+                registrationGateOpen =
+                    data?.is_open === true;
+
+                renderRegistrationGate();
+
+            }
+            catch (error) {
+
+                console.error(
+                    'Gagal mengubah registration gate:',
+                    error
+                );
+
+                alert(
+                    'Gagal mengubah status registrasi:\n\n' +
+                    error.message
+                );
+
+                renderRegistrationGate();
+            }
+        }
+    );
+}
 
 // ========================================================
 // LOAD PENDAFTAR PENDING
@@ -885,7 +1142,8 @@ async function aktifkanSelaku(userId) {
 
 
             await loadPending();
-
+            await loadRegistrationGate();
+            
             return;
         }
 
@@ -905,7 +1163,7 @@ async function aktifkanSelaku(userId) {
         // =========================================
 
         await loadPending();
-
+        await loadRegistrationGate();
     }
 
     catch (error) {
@@ -923,7 +1181,7 @@ async function aktifkanSelaku(userId) {
 
 
         await loadPending();
-
+        await loadRegistrationGate();
     }
 
 }
@@ -979,7 +1237,7 @@ if (refreshButton) {
 
 
             await loadPending();
-
+            await loadRegistrationGate();
 
             refreshButton.disabled = false;
 
@@ -1090,7 +1348,7 @@ supabaseClient.auth.onAuthStateChange(
         tampilkanDashboard();
 
         await loadPending();
-
+        await loadRegistrationGate();
     }
 );
 
