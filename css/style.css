@@ -400,3 +400,23 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
         .btn-secondary:hover {
             background: rgba(212, 175, 55, 0.08);
         }
+
+/* ========================================================
+   HERO LOGO — LAKUKOTA SANGKAN
+======================================================== */
+
+.hero-logo {
+    width: min(900px, 90vw);
+    margin: 0 auto 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-logo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 55vh;
+    object-fit: contain;
+}
