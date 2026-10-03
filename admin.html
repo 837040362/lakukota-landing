@@ -1201,6 +1201,53 @@
 
         }
 
+            .registration-gate-stats {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-top: 16px;
+            }
+            
+            .registration-gate-stat {
+                padding: 12px;
+                border: 1px solid rgba(255,255,255,0.08);
+                border-radius: 8px;
+                background: rgba(255,255,255,0.02);
+            }
+            
+            .registration-gate-stat-label {
+                font-size: 10px;
+                letter-spacing: 0.12em;
+                opacity: 0.55;
+            }
+            
+            .registration-gate-stat-value {
+                margin-top: 4px;
+                font-size: 24px;
+                font-weight: 700;
+            }
+            
+            .registration-gate-status {
+                margin-top: 16px;
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 0.08em;
+            }
+            
+            .registration-gate-status.is-open {
+                color: #2ecc71;
+            }
+            
+            .registration-gate-status.is-closed {
+                color: #e74c3c;
+            }
+            
+            .registration-gate-card .btn-secondary {
+                width: 100%;
+                margin-top: 12px;
+            }
+
+        
     </style>
 </head>
 
