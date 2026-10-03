@@ -136,8 +136,8 @@
             // ----------------------------------------------------
 
             const registerTabs =
-                document.querySelector('.register-tabs');
-
+                document.querySelector('.tabs');
+            
             if (registerTabs) {
                 registerTabs.style.display = 'none';
             }
