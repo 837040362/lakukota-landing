@@ -422,13 +422,16 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 
+
 /* =========================================
-   HERO DESKTOP — KOREKSI PUSAT VISUAL LOGO
-   Tampilan HP tetap dipertahankan
+   HERO DESKTOP — LOGO POSITION & SHADOW
    ========================================= */
 
 @media (min-width: 769px) {
     #hero .hero-logo img {
-        transform: translateX(-3%);
+        transform: translateX(-4%);
+        filter:
+            drop-shadow(0 8px 16px rgba(0, 0, 0, 0.75))
+            drop-shadow(0 0 22px rgba(212, 175, 55, 0.22));
     }
 }
