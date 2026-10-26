@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#171914">
+  <title>LAKUKOTA — Selaku Founder</title>
+
+  <style>
+    :root {
+      --bg: #171914;
+      --gold: #c7b889;
+      --paper: #eee5d1;
+      --muted: #aaa58f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 50% 35%, #303126 0%, var(--bg) 70%);
+      color: var(--paper);
+      font-family: Georgia, "Times New Roman", serif;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .landing {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      border: 1px solid #756849;
+      padding: 28px 24px;
+      position: relative;
+      background: rgba(23, 25, 20, 0.88);
+      box-shadow: 0 20px 70px #0008;
+    }
+
+    .brand {
+      font-size: 1.3rem;
+      letter-spacing: 5px;
+      color: var(--gold);
+      margin: 0;
+    }
+
+    .edition {
+      font-family: Arial, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(
+        90deg, transparent, var(--gold), transparent
+      );
+      margin: 28px 0;
+    }
+
+    .emblem {
+      width: 94px;
+      height: 94px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      margin: 0 auto 25px;
+      display: grid;
+      place-items: center;
+      color: var(--gold);
+      font-size: 3rem;
+      box-shadow: 0 0 35px #c7b88918;
+    }
+
+    .eyebrow {
+      font-family: Arial, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      line-height: 1.8;
+      color: var(--gold);
+    }
+
+    h1 {
+      font-size: clamp(2rem, 9vw, 2.8rem);
+      font-weight: normal;
+      margin: 14px 0;
+    }
+
+    h2 {
+      font-size: 1.05rem;
+      font-weight: normal;
+      color: var(--gold);
+      margin: 0 0 22px;
+    }
+
+    .message {
+      color: #d0cbbd;
+      font-size: 0.95rem;
+      line-height: 1.9;
+      margin: 0 auto;
+      max-width: 290px;
+    }
+
+    .serial {
+      margin-top: 30px;
+      padding: 18px 12px;
+      border: 1px solid #756849;
+    }
+
+    .serial-label {
+      color: var(--muted);
+      font-family: Arial, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+    }
+
+    .serial-number {
+      color: var(--gold);
+      font-size: 1.6rem;
+      letter-spacing: 3px;
+      margin: 10px 0;
+    }
+
+    .closing {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-style: italic;
+    }
+
+    footer {
+      margin-top: 28px;
+      color: var(--muted);
+      font-family: Arial, sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+    }
+
+    @media (max-width: 360px) {
+      .landing {
+        padding: 24px 18px;
+      }
+
+      .divider {
+        margin: 22px 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="landing">
+    <header>
+      <p class="brand">LAKUKOTA</p>
+      <div class="edition">SELAKU · FOUNDER EDITION</div>
+    </header>
+
+    <div class="divider"></div>
+
+    <div class="emblem" aria-hidden="true">✳</div>
+
+    <div class="eyebrow">
+      SEBUAH TANDA, SEBUAH PERJALANAN
+    </div>
+
+    <h1>Sugeng Rawuh.</h1>
+    <h2>Salam untukmu, Selaku.</h2>
+
+    <p class="message">
+      Terima kasih telah menjadi bagian
+      dari awal perjalanan LAKUKOTA.
+      Semoga setiap langkah membawa
+      cerita yang layak dikenang.
+    </p>
+
+    <section class="serial">
+      <div class="serial-label">KARTU FOUNDER</div>
+      <div class="serial-number" id="serial-number">
+        SEL-0001
+      </div>
+      <div class="closing">Sebuah awal, bukan akhir.</div>
+    </section>
+
+    <div class="divider"></div>
+
+    <footer>YOGYAKARTA · LAKUKOTA</footer>
+  </main>
+
+
+<script>
+  const SUPABASE_URL = "https://pgfvbrduuwudlyqooove.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_FF4H3uVNFu_YMFGYBfB-8Q_u2Oe3P4X";
+
+  const serialElement = document.getElementById("serial-number");
+  const token = new URLSearchParams(location.search).get("token");
+
+  function showMessage(title, message) {
+    serialElement.textContent = title;
+    const closing = document.querySelector(".closing");
+    closing.textContent = message;
+  }
+
+  async function loadSelakuCard() {
+    if (!token || !/^[a-f0-9]{32}$/i.test(token)) {
+      showMessage("KARTU TIDAK DITEMUKAN", "Periksa kembali tautan kartu SELAKU.");
+      return;
+    }
+
+    serialElement.textContent = "Memanggil kartu...";
+
+    try {
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/rpc/get_selaku_card`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_KEY,
+            "Authorization": `Bearer ${SUPABASE_KEY}`
+          },
+          body: JSON.stringify({ p_token: token })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Supabase HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      const card = Array.isArray(result) ? result[0] : null;
+
+      if (!card) {
+        showMessage("KARTU TIDAK DITEMUKAN", "Tautan ini tidak aktif atau tidak valid.");
+        return;
+      }
+
+      serialElement.textContent = card.card_number;
+
+      const closing = document.querySelector(".closing");
+
+      if (card.status === "unassigned") {
+        closing.textContent = "Sebuah awal, bukan akhir.";
+      } else if (card.status === "active") {
+        closing.textContent = "Salam untukmu, Selaku.";
+      } else {
+        closing.textContent = "Status kartu belum dapat ditampilkan.";
+      }
+    } catch (error) {
+      console.error("Gagal memuat kartu SELAKU:", error);
+      showMessage("KARTU BELUM TERSEDIA", "Silakan coba kembali beberapa saat lagi.");
+    }
+  }
+
+  loadSelakuCard();
+</script>
+</body>
+</html>
