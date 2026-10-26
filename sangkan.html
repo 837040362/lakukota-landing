@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SANGKAN - Perjalanan Pertama LAKUKOTA</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* =========================================================
+           SANGKAN LANDING
+           MOBILE FIRST
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        .sangkan-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 15px 20px;
+
+            background: rgba(5, 5, 5, 0.92);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+
+            z-index: 1000;
+
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .sangkan-nav img {
+            display: block;
+            width: auto;
+            height: 24px;
+            max-width: 150px;
+        }
+
+
+        /* =========================================================
+           MAIN WRAPPER
+        ========================================================= */
+
+        .sangkan-wrapper {
+            width: 100%;
+            max-width: 640px;
+
+            margin: 0 auto;
+
+            padding: 95px 16px 60px;
+
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           HERO
+        ========================================================= */
+
+        .sangkan-title {
+            /* MANTRA RUANG KOSONG (NEGATIVE SPACE) */
+            /* Angka 15vh berarti jarak atasnya adalah 15% dari tinggi layar HP */
+            margin: 15vh 0 5px; 
+
+            font-size: clamp(2.5rem, 13vw, 3.5rem);
+            line-height: 1;
+
+            letter-spacing: 2px;
+
+            text-shadow:
+                2px 4px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .sangkan-subtitle {
+            margin: 0;
+
+            font-size: 0.9rem;
+            line-height: 1.4;
+
+            color: #fff;
+
+            letter-spacing: 3px;
+        }
+
+
+        /* =========================================================
+           KERSA QUOTE
+        ========================================================= */
+
+        .quote-box {
+            margin: 26px 0;
+
+            padding: 17px 16px;
+
+            background: rgba(212, 175, 55, 0.05);
+
+            border-left: 3px solid #d4af37;
+
+            text-align: left;
+
+            font-style: italic;
+        }
+
+        .quote-box p {
+            margin: 0;
+
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .quote-box .quote-author {
+            margin-top: 10px;
+
+            color: #d4af37;
+
+            font-family: 'Cinzel', serif;
+
+            font-size: 0.9rem;
+            font-style: normal;
+        }
+
+
+        /* =========================================================
+           INTRO
+        ========================================================= */
+
+        .intro-text {
+            margin: 0;
+
+            color: #ccc;
+
+            font-size: 0.96rem;
+            line-height: 1.85;
+
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           SECTION TITLE
+        ========================================================= */
+
+        .section-title {
+            margin: 52px 0 22px;
+
+            padding-bottom: 10px;
+
+            color: #d4af37;
+
+            font-size: 1.25rem;
+            line-height: 1.4;
+
+            letter-spacing: 2px;
+
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .section-title.center {
+            text-align: center;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .section-title.left {
+            text-align: left;
+        }
+
+
+        /* =========================================================
+           RUTE / MAP
+        ========================================================= */
+
+        .map-container {
+            margin: 25px auto 25px;
+
+            width: 100%;
+
+            display: flex;
+            justify-content: center;
+        }
+
+        .map-container img {
+            display: block;
+
+            width: 80%;
+            max-width: 300px;
+            height: auto;
+
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+
+            box-shadow:
+                0 0 20px rgba(0, 0, 0, 0.8);
+
+            cursor: zoom-in;
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+        .map-container img:hover {
+            transform: scale(1.08);
+            border-color: rgba(212, 175, 55, 0.75);
+
+            box-shadow:
+                0 12px 35px rgba(0, 0, 0, 0.75),
+                0 0 18px rgba(212, 175, 55, 0.12);
+        }
+
+        /* =========================================================
+           SEMUA ASSET — HOVER + LIGHTBOX 300%
+           ========================================================= */
+
+        .asset-zoom {
+            cursor: zoom-in;
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+        .asset-zoom:hover {
+            transform: scale(1.08);
+            border-color: rgba(212, 175, 55, 0.75);
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.75),
+                0 0 18px rgba(212, 175, 55, 0.12);
+        }
+
+        /* =========================================================
+           LIGHTBOX
+           ========================================================= */
+
+        .asset-lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+            overflow: auto;
+
+            background: rgba(0, 0, 0, 0.9);
+
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+
+            transition:
+                opacity 0.25s ease,
+                visibility 0.25s ease;
+        }
+
+        .asset-lightbox.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .asset-lightbox img {
+            display: block;
+            flex: 0 0 auto;
+
+            width: auto;
+            height: auto;
+            max-width: none;
+            max-height: none;
+
+            object-fit: contain;
+
+            border: 1px solid rgba(212, 175, 55, 0.55);
+            border-radius: 6px;
+
+            box-shadow:
+                0 20px 70px rgba(0, 0, 0, 0.9);
+
+            transform: scale(0.94);
+            opacity: 0;
+
+            transition:
+                transform 0.3s ease,
+                opacity 0.3s ease;
+        }
+
+        .asset-lightbox.active img {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .asset-lightbox-close {
+            position: fixed;
+            top: 16px;
+            right: 20px;
+
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: #d4af37;
+            background: rgba(5, 5, 5, 0.8);
+
+            border: 1px solid rgba(212, 175, 55, 0.45);
+            border-radius: 50%;
+
+            font-size: 28px;
+            line-height: 1;
+
+            cursor: pointer;
+        }
+
+        .asset-lightbox-hint {
+            position: fixed;
+            left: 50%;
+            bottom: 16px;
+
+            transform: translateX(-50%);
+
+            color: rgba(244, 238, 224, 0.72);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        @media (max-width: 600px) {
+            .asset-lightbox {
+                padding: 12px;
+            }
+
+            .asset-lightbox-close {
+                top: 12px;
+                right: 12px;
+            }
+        }
+
+        .route-description {
+            margin: 0 10px 45px;
+
+            color: #aaa;
+
+            font-size: 0.95rem;
+            line-height: 1.7;
+
+            font-style: italic;
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           PRODUCT CAROUSEL
+        ========================================================= */
+
+        .carousel-container {
+            width: 100%;
+
+            display: flex;
+
+            overflow-x: auto;
+
+            gap: 14px;
+
+            padding: 4px 2px 20px;
+
+            scroll-snap-type: x mandatory;
+            scroll-padding-left: 2px;
+
+            -webkit-overflow-scrolling: touch;
+
+            scrollbar-width: thin;
+            scrollbar-color:
+                rgba(212, 175, 55, 0.5)
+                rgba(10, 10, 10, 0.5);
+        }
+
+        .carousel-container::-webkit-scrollbar {
+            height: 5px;
+        }
+
+        .carousel-container::-webkit-scrollbar-track {
+            background: rgba(10, 10, 10, 0.5);
+            border-radius: 10px;
+        }
+
+        .carousel-container::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.5);
+            border-radius: 10px;
+        }
+
+        .carousel-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.9);
+        }
+
+        .carousel-card {
+            flex: 0 0 220px;
+
+            width: 220px;
+
+            padding: 12px;
+
+            scroll-snap-align: start;
+
+            background: rgba(10, 10, 10, 0.8);
+
+            border: 1px solid rgba(212, 175, 55, 0.3);
+
+            border-radius: 8px;
+
+            text-align: center;
+        }
+
+        .carousel-image {
+            display: block;
+
+            width: 100%;
+            height: 145px;
+
+            object-fit: cover;
+
+            margin-bottom: 13px;
+
+            background: #222;
+
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 4px;
+        }
+
+        .carousel-title {
+            display: block;
+
+            color: #d4af37;
+
+            font-family: 'Cinzel', serif;
+
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .carousel-description {
+            margin: 8px 0 0;
+
+            color: #ccc;
+
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           PERSIAPAN PERJALANAN
+        ========================================================= */
+
+        .preparation-list {
+            margin: 0 0 50px;
+
+            padding-left: 20px;
+
+            color: #ccc;
+
+            font-size: 0.82rem;
+            line-height: 1.75;
+
+            text-align: left;
+        }
+
+        .preparation-list li {
+            margin-bottom: 12px;
+        }
+
+        .preparation-list li:last-child {
+            margin-bottom: 0;
+        }
+
+
+        /* =========================================================
+           CTA
+        ========================================================= */
+
+        .cta-box {
+            margin-top: 45px;
+
+            padding: 28px 20px;
+
+            background: rgba(5, 5, 5, 0.85);
+
+            border: 1px solid #d4af37;
+
+            border-radius: 8px;
+        }
+
+        .cta-small {
+            margin: 0 0 10px;
+
+            color: #ccc;
+
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .cta-description {
+            margin: 0 0 22px;
+
+            color: #f4eee0;
+
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .cta-price {
+            margin: 0 0 25px;
+
+            color: #d4af37;
+
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .btn-primary {
+            display: block;
+
+            width: 100%;
+
+            padding: 18px 15px;
+
+            text-align: center;
+
+            border-radius: 6px;
+
+            font-size: 0.95rem;
+        }
+
+
+        /* =========================================================
+           VERY SMALL PHONE
+        ========================================================= */
+
+        @media (max-width: 360px) {
+
+            .sangkan-wrapper {
+                padding-left: 13px;
+                padding-right: 13px;
+            }
+
+            .sangkan-title {
+                font-size: 2.35rem;
+            }
+
+            .quote-box {
+                padding: 15px 13px;
+            }
+
+            .quote-box p {
+                font-size: 0.9rem;
+            }
+
+            .intro-text {
+                font-size: 0.92rem;
+            }
+
+            .carousel-card {
+                flex-basis: 205px;
+                width: 205px;
+            }
+
+            .carousel-image {
+                height: 135px;
+            }
+
+            .cta-box {
+                padding: 25px 17px;
+            }
+
+            .cta-price {
+                font-size: 1.8rem;
+            }
+        }
+
+
+        /* =========================================================
+           TABLET / DESKTOP
+        ========================================================= */
+
+        @media (min-width: 600px) {
+
+            .sangkan-wrapper {
+                padding:
+                    115px
+                    24px
+                    80px;
+            }
+
+            .quote-box {
+                padding: 20px;
+            }
+
+            .intro-text {
+                font-size: 1rem;
+            }
+
+            .carousel-container {
+                gap: 20px;
+            }
+
+            .carousel-card {
+                flex-basis: 260px;
+                width: 260px;
+                padding: 15px;
+            }
+
+            .carousel-image {
+                height: 180px;
+            }
+
+            .carousel-title {
+                font-size: 1.05rem;
+            }
+
+            .carousel-description {
+                font-size: 0.9rem;
+            }
+
+            .preparation-list {
+                font-size: 0.85rem;
+            }
+
+            .cta-box {
+                padding: 40px;
+            }
+
+            .cta-price {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+
+<!-- MANTRA MIDTRANS SNAP 
+    <script type="text/javascript"
+      src="https://app.sandbox.midtrans.com/snap/snap.js"
+      data-client-key="YOUR_CLIENT_KEY"></script>
+-->
+<!--
+    BESOK SAAT ASET WEBP SUDAH SIAP:
+    map-sumbu.png -> map-sumbu.webp
+    atmaka1.png    -> atmaka1.webp
+    lanyard1.png   -> lanyard1.webp
+    arta1.png      -> arta1.webp
+-->
+</head>
+
+<body>
+
+    <!-- =========================================================
+         NAVBAR
+    ========================================================== -->
+
+    <nav class="sangkan-nav">
+        <img
+            src="assets/img/logo-lakukota.svg"
+            alt="LAKUKOTA"
+        >
+    </nav>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================== -->
+
+    <main class="sangkan-wrapper">
+
+        <!-- HERO -->
+
+        <h1 class="sangkan-title">
+            SANGKAN
+        </h1>
+
+        <p class="sangkan-subtitle">
+            SEBUAH AWAL
+        </p>
+
+
+        <!-- KERSA -->
+
+        <div class="quote-box">
+
+            <p>
+                "Seringkali ada yang terlewat dari kota ini...<br>
+                Sesuatu yang tersembunyi, yang hanya bisa ditemukan dengan melangkah kaki."
+            </p>
+
+            <p class="quote-author">
+                — KERSA
+            </p>
+
+        </div>
+
+
+        <!-- INTRO -->
+
+        <p class="intro-text">
+            Sangkan bukan sekadar permainan, melainkan suatu cara untuk melihat Yogyakarta dari sudut yang berbeda.
+            Ikuti petunjuk, pecahkan teka-teki di sudut-sudut kota yang mungkin sering engkau lewati.
+            Kumpulkan 5 Fragmen untuk membentuk satu manifestasi kota—sebagai pengingatmu atas kota ini.
+        </p>
+
+
+        <!-- =====================================================
+             RUTE PERJALANAN
+        ====================================================== -->
+
+        <h3 class="section-title center">
+            RUTE PERJALANAN
+        </h3>
+
+        <div class="map-container">
+
+            <img
+                src="assets/img/map-sumbu.png"
+                alt="Peta Sumbu Filosofis Yogyakarta"
+                title="Klik untuk melihat peta lebih besar"
+                onclick="bukaAset(this)"
+            >
+
+        </div>
+
+        <p class="route-description">
+            "Engkau akan menjalani sebuah perjalanan menyusuri jejak memori kota,
+            membentang di sepanjang Sumbu Filosofis antara Tugu hingga Alun-Alun Utara Yogyakarta."
+        </p>
+
+
+        <!-- =====================================================
+             YANG ENGKAU DAPATKAN
+        ====================================================== -->
+
+        <h3 class="section-title left">
+            YANG ENGKAU DAPATKAN
+        </h3>
+
+
+        <div class="carousel-container">
+
+            <!-- ATMAKA -->
+
+            <div class="carousel-card">
+
+                <img
+                    src="assets/img/atmaka1.png"
+                    alt="Atmaka Tugu"
+                    class="carousel-image asset-zoom"
+                    title="Klik untuk melihat lebih besar"
+                    onclick="bukaAset(this)"
+                >
+
+                <strong class="carousel-title">
+                    ATMAKA TUGU
+                </strong>
+
+                <p class="carousel-description">
+                    Manifestasi fisik eksklusif Founder.
+                </p>
+
+            </div>
+
+
+            <!-- LANYARD -->
+
+            <div class="carousel-card">
+
+                <img
+                    src="assets/img/lanyard1.png"
+                    alt="Lanyard Kulit 1 Slot"
+                    class="carousel-image asset-zoom"
+                    title="Klik untuk melihat lebih besar"
+                    onclick="bukaAset(this)"
+                >
+
+                <strong class="carousel-title">
+                    LANYARD KULIT (1 SLOT)
+                </strong>
+
+                <p class="carousel-description">
+                    Tali kulit untuk membawa Atmakamu.
+                </p>
+
+            </div>
+
+
+            <!-- MAP -->
+
+            <div class="carousel-card">
+
+            <img
+                src="assets/img/map1.png"
+                alt="Map Starter Kit"
+                class="carousel-image asset-zoom"
+                title="Klik untuk melihat lebih besar"
+                onclick="bukaAset(this)"
+            >
+
+                <strong class="carousel-title">
+                    MAP & STARTER KIT
+                </strong>
+
+                <p class="carousel-description">
+                    Peta fisik rahasia panduan perjalanan.
+                </p>
+
+            </div>
+
+
+            <!-- ARTA -->
+
+            <div class="carousel-card">
+
+                <img
+                    src="assets/img/arta1.png"
+                    alt="1.000 Arta"
+                    class="carousel-image asset-zoom"
+                    title="Klik untuk melihat lebih besar"
+                    onclick="bukaAset(this)"
+                >
+
+                <strong class="carousel-title">
+                    1.000 ARTA
+                </strong>
+
+                <p class="carousel-description">
+                    Bekal mata uang digital di semesta LAKUKOTA.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             PERSIAPAN PERJALANAN
+        ====================================================== -->
+
+        <h3 class="section-title left">
+            PERSIAPAN PERJALANAN
+        </h3>
+
+        <ul class="preparation-list">
+
+            <li>
+                <strong>Medan & Alas Kaki:</strong>
+                Perjalanan menyusuri Sumbu Filosofis Yogyakarta
+                (± 2.5 KM). Gunakan sepatu/alas kaki yang nyaman.
+            </li>
+
+            <li>
+                <strong>Waktu Tempuh:</strong>
+                Estimasi 2-3 jam. Engkau bebas memulai kapan saja
+                dan berhenti sejenak untuk istirahat, makan atau minum kopi.
+            </li>
+
+            <li>
+                <strong>Perangkat:</strong>
+                Pastikan baterai <i>smartphone</i> terisi penuh
+                (bawa <i>powerbank</i> sangat direkomendasikan),
+                kuota internet stabil, dan fitur GPS menyala.
+            </li>
+
+        </ul>
+
+
+        <!-- =====================================================
+             CTA
+        ====================================================== 
+        <div class="cta-box">
+            <p class="cta-small">
+                Sangkan dirancang untuk dilakukan secara mandiri.
+            </p>
+            <p class="cta-description">
+                Sendiri atau bersama kawan, tentukan waktumu,
+                datanglah ke Yogyakarta saat engkau siap,
+                dan selesaikan perjalananmu.
+            </p>
+            <h2 class="cta-price">
+                Rp 299.000
+            </h2>
+            <a
+                href="#form-daftar"
+                onclick="alert('Ini nanti diarahin ke form Midtrans / Registrasi Lik!')"
+                class="btn-primary"
+            >
+                DAFTARKAN LAKUMU
+            </a>
+        </div>-->
+
+        <!-- =====================================================
+             GERBANG REGISTRASI (TERHUBUNG KE SUPABASE)
+        ====================================================== -->
+        <div id="form-daftar" class="form-box" style="margin-top: 60px;">
+            <h3 style="color: #d4af37; margin-top: 0; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 10px; font-family: 'Cinzel', serif; text-align: center;">
+                REGISTRASI LAKUMU
+            </h3>
+        <!--    <p class="cta-small" style="margin-bottom: 25px; text-align: left;">
+                Eksklusif untuk 100 Selaku Pertama (Founder). Lengkapi bekalmu.
+            </p>-->
+            
+            <form id="reg-form" style="text-align: left;">
+                <input type="text" id="reg-nama" placeholder="Nama Selaku (Tanpa Spasi)" required>
+                
+                <input type="email" id="reg-email" placeholder="Alamat Email Aktif" required>
+                
+                <input type="password" id="reg-password" placeholder="Kata Sandi Batin" required>
+                
+                <select id="reg-gender" required>
+                    <option value="" disabled selected>-- Gender --</option>
+                    <option value="L">Maskulin</option>
+                    <option value="P">Feminin</option>
+                </select>
+
+                <!-- KOTAK TANGGAL LAHIR & WETON -->
+                <div style="text-align: left; margin-bottom: 25px; background: rgba(0,0,0,0.4); padding: 15px; border-left: 3px solid #d4af37; border-radius: 5px;">
+                    <label style="font-size: 0.75rem; color: #d4af37; text-transform: uppercase; letter-spacing: 2px;">Tanggal Lahir</label>
+                    <input type="date" id="reg-tgl-lahir" required style="margin-top: 10px; color: #f4eee0;" onchange="hitungWetonDummy()">
+                    <div id="hasil-weton" style="font-size: 0.9rem; color: #2ecc71; font-weight: bold; text-align: center; min-height: 20px; margin-top: 10px; font-family: 'Cinzel', serif; letter-spacing: 1px;"></div>
+                </div>
+
+                <h2 class="cta-price" style="text-align: center; margin-bottom: 20px;">Rp 299.000</h2>
+
+                <!-- TOMBOL SUBMIT (Akan ditangkap oleh js/main.js sampeyan) -->
+                <button type="submit" id="btn-bayar-sangkan" class="btn-primary" style="width:100%; border: none; cursor: pointer; font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 1px;">
+                    LANJUT PEMBAYARAN
+                </button>
+            </form>
+        </div>
+
+    </main>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+<script>
+    /* =========================================================
+       UNIVERSAL ASSET LIGHTBOX — 300%
+       ========================================================= */
+
+    function bukaAset(img) {
+        const lightbox = document.getElementById('asset-lightbox');
+        const target = document.getElementById('asset-lightbox-image');
+
+        if (!lightbox || !target || !img) return;
+
+        // Ukuran 300% dari ukuran aset saat tampil di landing page.
+        const previewWidth = img.getBoundingClientRect().width;
+        const zoomWidth = Math.max(previewWidth * 2, 1);
+
+        target.src = img.src;
+        target.alt = img.alt || 'Detail aset';
+        target.style.width = zoomWidth + 'px';
+
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function tutupAset(event) {
+        if (event) event.stopPropagation();
+
+        const lightbox = document.getElementById('asset-lightbox');
+        const target = document.getElementById('asset-lightbox-image');
+
+        if (!lightbox) return;
+
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+
+        if (target) {
+            target.src = '';
+            target.style.width = '';
+        }
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            tutupAset();
+        }
+    });
+</script>
+
+<script src="js/main.js"></script>
+
+<!-- =========================================
+         CUSTOM MODAL (DENGAN QRIS & KONFIRMASI WA)
+         ========================================= -->
+    <div id="custom-modal" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width: 450px;">
+            <h3 id="modal-title" style="color: #d4af37; margin-top: 0; border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 15px; font-family: 'Cinzel', serif;">RITUAL BERHASIL</h3>
+            
+            <!-- Pesan / Info Utama -->
+            <div id="modal-message" style="color: #f4eee0; line-height: 1.6; font-size: 0.95rem; font-family: 'Special Elite', sans-serif; margin-bottom: 20px; text-align: left;"></div>
+            
+            <!-- KOTAK QRIS STATIS (Disembunyikan dulu lewat class hidden, nanti dimunculkan via JS) -->
+            <div id="qris-container" class="hidden" style="margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px; border: 1px dashed rgba(212,175,55,0.5);">
+                <p style="font-size: 0.85rem; color: #d4af37; margin-bottom: 10px; font-family: 'Cinzel', serif;">SCAN QRIS UNTUK PEMBAYARAN</p>
+                <!-- Pastikan file gambar qris sampeyan taruh di assets/img/qris.png -->
+                <img src="assets/img/qris.png" alt="QRIS Sangkan" style="width: 100%; max-width: 220px; height: auto; border-radius: 4px; background: #fff; padding: 5px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;">
+                <p style="font-size: 0.75rem; color: #aaa; margin: 0;">Nominal: <strong style="color: #d4af37;">Rp 299.000</strong></p>
+            </div>
+
+            <!-- Tombol Aksi Dinamis -->
+            <button id="modal-btn" onclick="tutupModal()" class="btn-primary" style="width:100%;">Mengerti</button>
+        </div>
+    </div>
+
+
+    <!-- =========================================================
+         UNIVERSAL ASSET LIGHTBOX
+         Map / Atmaka / Lanyard / Arta
+         ========================================================= -->
+    <div
+        id="asset-lightbox"
+        class="asset-lightbox"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Detail aset"
+        onclick="tutupAset(event)"
+    >
+        <button
+            type="button"
+            class="asset-lightbox-close"
+            aria-label="Tutup"
+            onclick="tutupAset(event)"
+        >&times;</button>
+
+        <img
+            id="asset-lightbox-image"
+            src=""
+            alt=""
+            onclick="event.stopPropagation()"
+        >
+
+        <div class="asset-lightbox-hint">
+            KLIK DI LUAR GAMBAR • ESC UNTUK MENUTUP
+        </div>
+    </div>
+
+</body>
+</html>
