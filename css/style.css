@@ -420,3 +420,15 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     max-height: 55vh;
     object-fit: contain;
 }
+
+
+/* =========================================
+   HERO DESKTOP — KOREKSI PUSAT VISUAL LOGO
+   Tampilan HP tetap dipertahankan
+   ========================================= */
+
+@media (min-width: 769px) {
+    #hero .hero-logo img {
+        transform: translateX(-3%);
+    }
+}
