@@ -2,8 +2,8 @@
 // REGISTRATION GATE — GERBANG PENDAFTARAN SANGKAN
 // ========================================================
 
-(() => {
 
+(() => {
     console.log('[Registration Gate] SCRIPT LOADED');
 
     const SUPABASE_PROJECT_URL =
@@ -14,13 +14,20 @@
 
     const supabaseLib = window.supabase || supabase;
 
-    const gateClient = supabaseLib.createClient(
-        SUPABASE_PROJECT_URL,
-        SUPABASE_PUBLISHABLE_KEY
-    );
+    // Hindari membuat client baru jika main.js sudah menyediakan
+    // client global yang bisa digunakan kembali.
+    const existingClient =
+        window.supabaseClient ||
+        window.supabaseClientPublic ||
+        window.supabaseClientAnon;
+
+    const gateClient = existingClient ||
+        supabaseLib.createClient(
+            SUPABASE_PROJECT_URL,
+            SUPABASE_PUBLISHABLE_KEY
+        );
 
     async function loadRegistrationGate() {
-
         console.log('[Registration Gate] Membaca status gerbang...');
 
         const messageBox =
@@ -38,23 +45,47 @@
         const topupForm =
             document.getElementById('topup-form');
 
-        console.log('[Registration Gate] Elements:', {
-            messageBox,
-            messageTitle,
-            messageText,
-            registerForm,
-            topupForm
-        });
+        const registerTabs =
+            document.querySelector('.tabs');
 
-        if (!messageBox) {
+        // Jangan membuka form sebelum status gerbang terverifikasi.
+        if (registerForm) {
+            registerForm.style.display = 'none';
+        }
+
+        if (topupForm) {
+            topupForm.style.display = 'none';
+        }
+
+        if (registerTabs) {
+            registerTabs.style.display = 'none';
+        }
+
+        if (messageBox) {
+            messageBox.style.display = 'block';
+        }
+
+        if (messageTitle) {
+            messageTitle.textContent = 'MEMERIKSA GERBANG REGISTRASI';
+        }
+
+        if (messageText) {
+            messageText.textContent =
+                'Mohon tunggu, status gerbang sedang diperiksa.';
+        }
+
+        if (!messageBox || !registerForm) {
             console.error(
-                '[Registration Gate] #registration-gate-message TIDAK DITEMUKAN'
+                '[Registration Gate] Elemen wajib tidak ditemukan.',
+                {
+                    messageBox: !!messageBox,
+                    registerForm: !!registerForm
+                }
             );
             return;
         }
 
         try {
-
             const { data, error } = await gateClient
                 .from('registration_gate')
                 .select('id,batch_name,is_open,updated_at')
@@ -62,11 +93,13 @@
                 .single();
 
             if (error) {
-                console.error(
-                    '[Registration Gate] DATABASE ERROR:',
-                    error
-                );
                 throw error;
+            }
+
+            if (!data || typeof data.is_open !== 'boolean') {
+                throw new Error(
+                    'Status gerbang tidak valid.'
+                );
             }
 
             console.log(
@@ -74,54 +107,82 @@
                 data
             );
 
-            // ====================================================
-            // OPEN
-            // ====================================================
-
             if (data.is_open === true) {
-
-                console.log(
-                    '[Registration Gate] STATUS: OPEN'
-                );
+                console.log('[Registration Gate] STATUS: OPEN');
 
                 messageBox.style.display = 'none';
-
-                if (registerForm) {
-                    registerForm.style.display = '';
-                }
+                registerForm.style.display = '';
 
                 if (topupForm) {
                     topupForm.style.display = '';
                 }
 
+                if (registerTabs) {
+                    registerTabs.style.display = '';
+                }
+
                 return;
             }
 
-            // ====================================================
-            // CLOSED
-            // ====================================================
-
-            console.log(
-                '[Registration Gate] STATUS: CLOSED'
-            );
+            console.log('[Registration Gate] STATUS: CLOSED');
 
             messageBox.style.display = 'block';
 
             if (messageTitle) {
-                messageTitle.innerText =
+                messageTitle.textContent =
                     'REGISTRASI SANGKAN DITUTUP';
             }
 
             if (messageText) {
-                messageText.innerHTML =
-                    `Gerbang pendaftaran <strong>${escapeHtml(data.batch_name)}</strong> ` +
-                    `untuk sementara sedang ditutup.<br><br>` +
-                    `Perjalanan berikutnya akan dibuka kembali pada waktu yang telah ditentukan.`;
+                const batchName =
+                    document.createElement('strong');
+
+                batchName.textContent =
+                    data.batch_name || 'SANGKAN';
+
+                messageText.replaceChildren(
+                    document.createTextNode(
+                        'Gerbang pendaftaran '
+                    ),
+                    batchName,
+                    document.createTextNode(
+                        ' untuk sementara sedang ditutup. ' +
+                        'Perjalanan berikutnya akan dibuka ' +
+                        'kembali pada waktu yang telah ditentukan.'
+                    )
+                );
             }
 
-            // ----------------------------------------------------
-            // MATIKAN FORM
-            // ----------------------------------------------------
+            registerForm.style.display = 'none';
+
+            if (topupForm) {
+                topupForm.style.display = 'none';
+            }
+
+            if (registerTabs) {
+                registerTabs.style.display = 'none';
+            }
+
+        } catch (error) {
+            console.error(
+                '[Registration Gate] GAGAL:',
+                error
+            );
+
+            // Fail-closed: jika status tidak dapat diverifikasi,
+            // form tetap tersembunyi.
+            messageBox.style.display = 'block';
+
+            if (messageTitle) {
+                messageTitle.textContent =
+                    'GERBANG BELUM DAPAT DIVERIFIKASI';
+            }
+
+            if (messageText) {
+                messageText.textContent =
+                    'Status registrasi belum dapat diperiksa. ' +
+                    'Silakan coba kembali beberapa saat lagi.';
+            }
 
             if (registerForm) {
                 registerForm.style.display = 'none';
@@ -131,63 +192,19 @@
                 topupForm.style.display = 'none';
             }
 
-            // ----------------------------------------------------
-            // MATIKAN TAB
-            // ----------------------------------------------------
-
-            const registerTabs =
-                document.querySelector('.tabs');
-            
             if (registerTabs) {
                 registerTabs.style.display = 'none';
             }
-
-            // ----------------------------------------------------
-            // MATIKAN CTA YANG MENUJU REGISTRASI
-            // ----------------------------------------------------
-
-            document
-                .querySelectorAll('a[href="#register"]')
-                .forEach(button => {
-                    button.style.display = 'none';
-                });
-
-        } catch (error) {
-
-            console.error(
-                '[Registration Gate] GAGAL:',
-                error
-            );
-
-            /*
-             * Untuk sementara JANGAN sembunyikan form.
-             * Kita perlu melihat error sebenarnya dulu.
-             */
         }
     }
 
-    function escapeHtml(value) {
-
-        return String(value)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-
-    }
-
     if (document.readyState === 'loading') {
-
         document.addEventListener(
             'DOMContentLoaded',
             loadRegistrationGate
         );
-
     } else {
-
         loadRegistrationGate();
-
     }
-
 })();
+
