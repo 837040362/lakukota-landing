@@ -1,8 +1,0 @@
-﻿{
-  "rewrites": [
-    {
-      "source": "/s/:token",
-      "destination": "/selaku-landing.html?token=:token"
-    }
-  ]
-}
