@@ -562,6 +562,71 @@
         }
 
 
+
+        /* =========================================================
+           LOGIN UNTUK SELAKU YANG SUDAH TERDAFTAR
+        ========================================================= */
+
+        .login-prompt {
+            margin: 42px 0 0;
+            padding: 24px 20px;
+            text-align: center;
+            background: linear-gradient(145deg, rgba(212, 175, 55, 0.09), rgba(5, 5, 5, 0.82));
+            border: 1px solid rgba(212, 175, 55, 0.45);
+            border-radius: 10px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+        }
+
+        .login-prompt p {
+            margin: 0 0 15px;
+            color: #f4eee0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .login-prompt p strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 1.05rem;
+            letter-spacing: 1px;
+        }
+
+        .btn-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 54px;
+            padding: 15px 18px;
+            color: #080808;
+            background: linear-gradient(135deg, #f3d778, #d4af37);
+            border: 1px solid #f3d778;
+            border-radius: 6px;
+            box-shadow: 0 4px 16px rgba(212, 175, 55, 0.16);
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            line-height: 1.4;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+
+        .btn-login:hover,
+        .btn-login:focus-visible {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+            box-shadow: 0 7px 22px rgba(212, 175, 55, 0.28);
+        }
+
+        .btn-login:focus-visible {
+            outline: 2px solid #fff;
+            outline-offset: 4px;
+        }
+
         /* =========================================================
            VERY SMALL PHONE
         ========================================================= */
@@ -946,6 +1011,19 @@
     <!-- =====================================================
              GERBANG REGISTRASI (TERHUBUNG KE SUPABASE)
         ====================================================== -->
+        <!-- =====================================================
+             JALUR MASUK UNTUK PEMAIN TERDAFTAR
+        ====================================================== -->
+        <section class="login-prompt" aria-label="Masuk ke LAKUKOTA">
+            <p>
+                <strong>Sudah terdaftar?</strong>
+                Perjalananmu menanti untuk dilanjutkan.
+            </p>
+            <a class="btn-login" href="https://app.lakukota.com/">
+                MASUKI DUNIA LAKUKOTA
+            </a>
+        </section>
+
         <div id="form-daftar" class="form-box" style="margin-top: 60px;">
             <div id="registration-gate-message" style="display:none;margin:20px auto;padding:20px;border:1px solid rgba(212,175,55,0.5);background:rgba(0,0,0,0.45);text-align:center;">
                 <h3 id="registration-gate-title" style="color:#d4af37;margin-top:0;">REGISTRASI SANGKAN</h3>
