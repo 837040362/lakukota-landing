@@ -67,9 +67,9 @@
   <div class="content">
     <h2>Pusaka</h2>
     <div class="carousel-wrapper">
-      <button class="carousel-nav nav-prev" onclick="geserSlider('track-pusaka',-1)">&#10094;</button>
+      <!--<button class="carousel-nav nav-prev" onclick="geserSlider('track-pusaka',-1)">&#10094;</button>
       <button class="carousel-nav nav-next" onclick="geserSlider('track-pusaka',1)">&#10095;</button>
-      <div class="carousel-track" id="track-pusaka">
+      --><div class="carousel-track" id="track-pusaka">
         <div class="carousel-slide"><div class="relic-card">
           <div class="char-image-container"><img src="assets/img/atmaka1.png" alt="Atmaka" class="character-img-dynamic"></div>
           <div class="relic-text-container"><h3>ATMAKA</h3><p>Sesuatu yang tersembunyi di penjuru kota. Sebuah artefak. Atmaka merupakan pusaka yang berkaitan dengan perjalanan dan cerita suatu kota.</p></div>
@@ -150,5 +150,75 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="js/main.js"></script>
 <script src="js/registration-gate.js"></script>
+
+(() => {
+    const slider = document.getElementById('track-pusaka');
+
+    if (!slider) return;
+
+    let isDragging = false;
+    let startX = 0;
+    let startScrollLeft = 0;
+    let moved = false;
+
+    const dragThreshold = 5;
+
+    slider.querySelectorAll('img').forEach(img => {
+        img.draggable = false;
+    });
+
+    slider.addEventListener('pointerdown', event => {
+        // Drag dengan tombol kiri mouse atau sentuhan.
+        if (event.pointerType === 'mouse' && event.button !== 0) {
+            return;
+        }
+
+        isDragging = true;
+        moved = false;
+        startX = event.clientX;
+        startScrollLeft = slider.scrollLeft;
+
+        slider.classList.add('is-dragging');
+        slider.setPointerCapture(event.pointerId);
+    });
+
+    slider.addEventListener('pointermove', event => {
+        if (!isDragging) return;
+
+        const deltaX = event.clientX - startX;
+
+        if (Math.abs(deltaX) > dragThreshold) {
+            moved = true;
+        }
+
+        if (moved) {
+            slider.scrollLeft = startScrollLeft - deltaX;
+        }
+    });
+
+    function stopDragging() {
+        if (!isDragging) return;
+
+        isDragging = false;
+        slider.classList.remove('is-dragging');
+
+        // Kembali ke snap agar slide berhenti dengan rapi.
+        slider.style.scrollSnapType = '';
+    }
+
+    slider.addEventListener('pointerup', stopDragging);
+    slider.addEventListener('pointercancel', stopDragging);
+    slider.addEventListener('lostpointercapture', stopDragging);
+
+    // Jangan sampai drag dianggap sebagai klik.
+    slider.addEventListener('click', event => {
+        if (moved) {
+            event.preventDefault();
+            event.stopPropagation();
+            moved = false;
+        }
+    }, true);
+})();
+  
 </body>
 </html>
