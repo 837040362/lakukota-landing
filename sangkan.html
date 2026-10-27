@@ -728,6 +728,72 @@
                 font-size: 2.2rem;
             }
         }
+
+
+        /* =========================================================
+           FORM REGISTRASI — SPACING LEBIH RINGKAS
+           ========================================================= */
+
+        #reg-form > input,
+        #reg-form > select {
+            margin-bottom: 10px !important;
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+
+        #reg-form .registration-birthbox {
+            margin: 6px 0 18px !important;
+            padding: 12px !important;
+        }
+
+        #reg-form .registration-birthbox label {
+            display: block;
+            line-height: 1.4;
+        }
+
+        #reg-form #reg-tgl-lahir {
+            width: 100%;
+            margin-top: 7px !important;
+            margin-bottom: 0 !important;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        #reg-form #hasil-weton {
+            min-height: 16px !important;
+            margin-top: 6px !important;
+            line-height: 1.4;
+        }
+
+        #reg-form .cta-price {
+            margin-top: 10px;
+            margin-bottom: 16px !important;
+        }
+
+        @media (max-width: 600px) {
+            #reg-form > input,
+            #reg-form > select {
+                margin-bottom: 8px !important;
+                padding-top: 11px;
+                padding-bottom: 11px;
+            }
+
+            #reg-form .registration-birthbox {
+                margin-top: 4px !important;
+                margin-bottom: 14px !important;
+                padding: 10px !important;
+            }
+
+            #reg-form #reg-tgl-lahir {
+                margin-top: 6px !important;
+            }
+
+            #reg-form .cta-price {
+                margin-top: 8px;
+                margin-bottom: 14px !important;
+            }
+        }
+
     </style>
 
 <!-- MANTRA MIDTRANS SNAP 
@@ -827,11 +893,11 @@
 
 
         <!-- =====================================================
-             YANG ENGKAU DAPATKAN
+             APA YANG ENGKAU DAPATKAN
         ====================================================== -->
 
         <h3 class="section-title left">
-            YANG ENGKAU DAPATKAN
+            APA YANG ENGKAU DAPATKAN
         </h3>
 
 
@@ -877,13 +943,13 @@
                 </strong>
 
                 <p class="carousel-description">
-                    Tali kulit dengan satu slot untuk menyematkan Atmakamu sebagai bagian dari perlengkapan perjalanan.
+                    Tali kulit dengan satu slot untuk menyematkan Atmakamu nanti.
                 </p>
 
             </div>
 
 
-            <!-- MAP -->
+            <!-- STRING BAG -->
 
             <div class="carousel-card">
 
@@ -900,7 +966,7 @@
                 </strong>
 
                 <p class="carousel-description">
-                    Tas serut untuk membawa perlengkapan perjalananmu di dunia LAKUKOTA..
+                    Tas serut untuk membawa perlengkapan perjalananmu di dunia LAKUKOTA.
                 </p>
 
             </div>
@@ -944,7 +1010,7 @@
                 </strong>
 
                 <p class="carousel-description">
-                    Identitas fisikmu sebagai SELAKU. Dapatkan <b>FREE khusus FOUNDER.</b>
+                    Identitas fisikmu sebagai SELAKU. <b>GRATIS khusus FOUNDER.</b>
                 </p>
             
             </div>
@@ -1058,7 +1124,7 @@
                 </select>
 
                 <!-- KOTAK TANGGAL LAHIR & WETON -->
-                <div style="text-align: left; margin-bottom: 25px; background: rgba(0,0,0,0.4); padding: 15px; border-left: 3px solid #d4af37; border-radius: 5px;">
+                <div class="registration-birthbox" style="text-align: left; background: rgba(0,0,0,0.4); border-left: 3px solid #d4af37; border-radius: 5px;">
                     <label style="font-size: 0.75rem; color: #d4af37; text-transform: uppercase; letter-spacing: 2px;">Tanggal Lahir</label>
                     <input type="date" id="reg-tgl-lahir" required style="margin-top: 10px; color: #f4eee0;" onchange="hitungWetonDummy()">
                     <div id="hasil-weton" style="font-size: 0.9rem; color: #2ecc71; font-weight: bold; text-align: center; min-height: 20px; margin-top: 10px; font-family: 'Cinzel', serif; letter-spacing: 1px;"></div>
