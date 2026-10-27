@@ -435,3 +435,32 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
             drop-shadow(0 0 22px rgba(212, 175, 55, 0.22));
     }
 }
+
+
+/* =========================================
+   PUSAKA CAROUSEL — CLICK & DRAG
+   ========================================= */
+
+#track-pusaka {
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+    scroll-behavior: auto;
+}
+
+#track-pusaka.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+}
+
+#track-pusaka img {
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+/* Tombol navigasi tidak lagi diperlukan */
+.carousel-nav {
+    display: none;
+}
+
