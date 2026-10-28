@@ -794,6 +794,263 @@
             }
         }
 
+    
+
+        /* =========================================================
+           FOUNDER OFFER POPUP
+        ========================================================= */
+        .founder-offer-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 20000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(7px);
+            -webkit-backdrop-filter: blur(7px);
+        }
+
+        .founder-offer-overlay.is-open {
+            display: flex;
+        }
+
+        .founder-offer-dialog {
+            position: relative;
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+            width: min(900px, 100%);
+            max-height: min(92vh, 760px);
+            overflow: auto;
+            background: #10100f;
+            border: 1px solid rgba(212, 175, 55, 0.72);
+            border-radius: 12px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.72);
+            color: #f4eee0;
+            animation: founderOfferIn 0.24s ease-out both;
+        }
+
+        .founder-offer-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+            padding: 18px;
+            background: #191713;
+        }
+
+        .founder-offer-visual img {
+            display: block;
+            width: 100%;
+            max-height: 620px;
+            height: auto;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        .founder-offer-copy {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 44px 34px 32px;
+            text-align: left;
+        }
+
+        .founder-offer-kicker {
+            margin: 0 0 12px;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            line-height: 1.5;
+            text-transform: uppercase;
+        }
+
+        .founder-offer-copy h2 {
+            margin: 0 0 14px;
+            color: #f4eee0;
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.55rem, 3vw, 2.15rem);
+            line-height: 1.2;
+            letter-spacing: 0.5px;
+        }
+
+        .founder-offer-description {
+            margin: 0 0 16px;
+            color: #d1ccc1;
+            font-size: 0.92rem;
+            line-height: 1.7;
+        }
+
+        .founder-offer-includes {
+            margin: 0 0 18px;
+            padding-left: 19px;
+            color: #e8e1d2;
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        .founder-offer-price-label {
+            margin: 0 0 5px;
+            color: #aaa397;
+            font-size: 0.72rem;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+        }
+
+        .founder-offer-price {
+            margin: 0 0 20px;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.8rem, 4vw, 2.4rem);
+            line-height: 1.1;
+        }
+
+        .founder-offer-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 50px;
+            padding: 14px 17px;
+            color: #080808;
+            background: linear-gradient(135deg, #f3d778, #d4af37);
+            border: 1px solid #f3d778;
+            border-radius: 5px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            line-height: 1.4;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: filter 0.2s ease, transform 0.2s ease;
+        }
+
+        .founder-offer-cta:hover,
+        .founder-offer-cta:focus-visible {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+        }
+
+        .founder-offer-cta:focus-visible,
+        .founder-offer-close:focus-visible {
+            outline: 2px solid #fff;
+            outline-offset: 3px;
+        }
+
+        .founder-offer-note {
+            margin: 12px 0 0;
+            color: #aaa397;
+            font-size: 0.72rem;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .founder-offer-close {
+            position: absolute;
+            z-index: 2;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            color: #f4eee0;
+            background: rgba(5, 5, 5, 0.88);
+            border: 1px solid rgba(212, 175, 55, 0.72);
+            border-radius: 50%;
+            font-size: 27px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        #form-daftar {
+            scroll-margin-top: 84px;
+        }
+
+        @keyframes founderOfferIn {
+            from { opacity: 0; transform: translateY(8px) scale(0.985); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @media (max-width: 680px) {
+            .founder-offer-overlay {
+                padding: 10px;
+                align-items: center;
+            }
+
+            .founder-offer-dialog {
+                grid-template-columns: 1fr;
+                width: min(460px, 100%);
+                max-height: 94dvh;
+                border-radius: 10px;
+            }
+
+            .founder-offer-visual {
+                min-height: 0;
+                max-height: 34dvh;
+                padding: 10px 14px 0;
+            }
+
+            .founder-offer-visual img {
+                width: 100%;
+                max-height: 32dvh;
+                object-fit: contain;
+            }
+
+            .founder-offer-copy {
+                padding: 17px 22px 22px;
+            }
+
+            .founder-offer-kicker {
+                margin-bottom: 7px;
+                font-size: 0.65rem;
+            }
+
+            .founder-offer-copy h2 {
+                margin-bottom: 9px;
+                font-size: 1.5rem;
+            }
+
+            .founder-offer-description {
+                margin-bottom: 9px;
+                font-size: 0.84rem;
+                line-height: 1.55;
+            }
+
+            .founder-offer-includes {
+                margin-bottom: 11px;
+                font-size: 0.78rem;
+                line-height: 1.5;
+            }
+
+            .founder-offer-price-label { font-size: 0.66rem; }
+            .founder-offer-price { margin-bottom: 13px; font-size: 1.9rem; }
+            .founder-offer-cta { min-height: 46px; padding: 12px 14px; font-size: 0.74rem; }
+            .founder-offer-note { margin-top: 8px; font-size: 0.68rem; }
+            .founder-offer-close { top: 8px; right: 8px; width: 36px; height: 36px; }
+        }
+
+        @media (max-width: 360px) {
+            .founder-offer-overlay { padding: 6px; }
+            .founder-offer-copy { padding: 14px 17px 17px; }
+            .founder-offer-visual { max-height: 30dvh; }
+            .founder-offer-visual img { max-height: 28dvh; }
+            .founder-offer-copy h2 { font-size: 1.35rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .founder-offer-dialog { animation: none; }
+            .founder-offer-cta { transition: none; }
+        }
+
     </style>
 
 <!-- MANTRA MIDTRANS SNAP 
@@ -811,6 +1068,60 @@
 </head>
 
 <body>
+
+    <!-- =========================================================
+         PENAWARAN FOUNDER SANGKAN
+         Ditutup dengan X / klik backdrop / Escape.
+    ========================================================== -->
+    <div
+        id="founder-offer-overlay"
+        class="founder-offer-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="founder-offer-title"
+        aria-describedby="founder-offer-description"
+        tabindex="-1"
+        hidden
+    >
+        <div class="founder-offer-dialog" role="document">
+            <button
+                type="button"
+                id="founder-offer-close"
+                class="founder-offer-close"
+                aria-label="Tutup penawaran Founder dan lanjut menjelajah SANGKAN"
+                title="Tutup"
+            >&times;</button>
+
+            <div class="founder-offer-visual">
+                <img
+                    src="assets/img/paketfounder.jpg"
+                    alt="Paket Founder LAKUKOTA SANGKAN berisi Atmaka Tugu, lanyard kulit, tas serut, catatan perjalanan, dan Kartu Selaku"
+                    width="600"
+                    height="450"
+                    fetchpriority="high"
+                >
+            </div>
+
+            <div class="founder-offer-copy">
+                <p class="founder-offer-kicker">Penawaran Founder · Persediaan Terbatas</p>
+                <h2 id="founder-offer-title">Jadilah bagian dari awal perjalanan LAKUKOTA.</h2>
+                <p id="founder-offer-description" class="founder-offer-description">
+                    Mulai perjalanan SANGKAN dengan Founder Kit—bekal fisik dan digital untuk perjalanan pertamamu menyusuri Yogyakarta.
+                </p>
+                <ul class="founder-offer-includes">
+                    <li>Atmaka Tugu dan lanyard kulit</li>
+                    <li>String bag dan kotak penyimpanan ekslusif</li>
+                    <li>Catatan perjalanan Sangkan</li>
+                    <li><b></b>Gratis Kartu Selaku Founder</b></li>
+                </ul>
+                <p class="founder-offer-price-label">Paket Founder SANGKAN</p>
+                <p class="founder-offer-price">Rp 299.000</p>
+                <a href="#form-daftar" id="founder-offer-register" class="founder-offer-cta">LANJUT KE REGISTRASI</a>
+                <p class="founder-offer-note">Tutup penawaran untuk melanjutkan menjelajahi halaman SANGKAN.</p>
+            </div>
+        </div>
+    </div>
+
 
     <!-- =========================================================
          NAVBAR
@@ -1247,6 +1558,75 @@
             KLIK DI LUAR GAMBAR • ESC UNTUK MENUTUP
         </div>
     </div>
+
+
+
+<script>
+    /* =========================================================
+       FOUNDER OFFER POPUP
+       - Muncul sekali per tab/session.
+       - X, backdrop, Escape menutup popup.
+       - CTA menutup popup dan menuju section registrasi.
+    ========================================================= */
+    (function () {
+        const overlay = document.getElementById('founder-offer-overlay');
+        const closeButton = document.getElementById('founder-offer-close');
+        const registerLink = document.getElementById('founder-offer-register');
+        if (!overlay || !closeButton || !registerLink) return;
+
+        const dismissedKey = 'lakukota-sangkan-founder-offer-dismissed-v1';
+        let previousOverflow = '';
+
+        function closeFounderOffer() {
+            if (!overlay.classList.contains('is-open')) return;
+            overlay.classList.remove('is-open');
+            overlay.hidden = true;
+            document.body.style.overflow = previousOverflow;
+            try { sessionStorage.setItem(dismissedKey, '1'); } catch (_) {}
+        }
+
+        function openFounderOffer() {
+            overlay.hidden = false;
+            overlay.classList.add('is-open');
+            previousOverflow = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
+            closeButton.focus({ preventScroll: true });
+        }
+
+        closeButton.addEventListener('click', closeFounderOffer);
+
+        overlay.addEventListener('click', function (event) {
+            if (event.target === overlay) closeFounderOffer();
+        });
+
+        registerLink.addEventListener('click', function (event) {
+            event.preventDefault();
+            closeFounderOffer();
+            const registration = document.getElementById('form-daftar');
+            if (registration) {
+                window.setTimeout(function () {
+                    registration.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    registration.setAttribute('tabindex', '-1');
+                    registration.focus({ preventScroll: true });
+                }, 30);
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') closeFounderOffer();
+        });
+
+        let alreadyDismissed = false;
+        try { alreadyDismissed = sessionStorage.getItem(dismissedKey) === '1'; } catch (_) {}
+        if (!alreadyDismissed) {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', openFounderOffer, { once: true });
+            } else {
+                openFounderOffer();
+            }
+        }
+    })();
+</script>
 
 </body>
 </html>
