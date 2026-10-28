@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritual Pembukaan Atmaka</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #0f172a; /* Warna malam/gelap */
+            color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #38bdf8;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .ui-container {
+            text-align: center;
+            margin-bottom: 20px;
+            height: 80px;
+        }
+        #status { font-size: 1.2rem; color: #94a3b8; margin-bottom: 15px; font-weight: 600; }
+        
+        progress {
+            width: 250px;
+            height: 12px;
+            border-radius: 6px;
+            visibility: hidden;
+        }
+        progress::-webkit-progress-bar { background-color: #1e293b; border-radius: 6px; }
+        /* Warna aura energi untuk progress bar */
+        progress::-webkit-progress-value { background-color: #0ea5e9; border-radius: 6px; transition: width 0.1s; box-shadow: 0 0 10px #0ea5e9; }
+
+        .kamera-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            aspect-ratio: 4/3;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #000;
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.2);
+            border: 2px solid #1e293b;
+            transition: box-shadow 0.3s;
+        }
+        
+        /* Solusi agar kamera tidak mati tapi tidak mengganggu layout */
+        .input_video { 
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+            z-index: -1;
+        } 
+        .output_canvas {
+            position: absolute;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            transform: scaleX(-1);
+            object-fit: cover;
+        }
+        
+        /* Efek saat artefak terbuka */
+        .kamera-container.sukses {
+            box-shadow: 0 0 50px rgba(74, 222, 128, 0.6);
+            border-color: #4ade80;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">Sinkronisasi Panca Indera</div>
+
+    <div class="ui-container">
+        <div id="status">Tadahkan kedua tangan ke layar...</div>
+        <progress id="holdProgress" value="0" max="100"></progress>
+    </div>
+
+    <div class="kamera-container" id="kameraContainer">
+        <!-- Tambahkan autoplay, playsinline, dan muted -->
+        <video class="input_video" autoplay playsinline muted></video>
+        <canvas class="output_canvas" width="640" height="480"></canvas>
+    </div>
+
+    <script>
+        const videoElement = document.querySelector('.input_video');
+        const canvasElement = document.querySelector('.output_canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        const teksStatus = document.getElementById('status');
+        const progressBar = document.getElementById('holdProgress');
+        const kameraContainer = document.getElementById('kameraContainer');
+        
+        // State Validasi
+        let waktuMulaiPose = null;
+        const durasiSyarat = 3000; // 3 detik penahanan
+        let statusTerbuka = false;
+
+        // Inisialisasi Audio (Tanpa file eksternal)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function mainkanSuaraRitual() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            // Membuat suara resonansi mistis
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(600, audioCtx.currentTime); // Frekuensi awal
+            oscillator.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 2); // Menurun menjadi dengung
+            
+            gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2);
+            
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 2);
+        }
+
+        function cekPoseBerdoa(multiHandLandmarks) {
+            if (!multiHandLandmarks || multiHandLandmarks.length !== 2) return false;
+
+            const tangan1 = multiHandLandmarks[0];
+            const tangan2 = multiHandLandmarks[1];
+
+            // Cek arah jari (harus menunjuk ke atas / nilai Y lebih kecil dari pergelangan)
+            const ujungJari = [8, 12, 16, 20];
+            for (let tangan of multiHandLandmarks) {
+                for (let jari of ujungJari) {
+                    if (tangan[jari].y >= tangan[0].y) return false;
+                }
+            }
+
+            // Cek kedekatan pergelangan tangan (X)
+            const jarakPergelangan = Math.abs(tangan1[0].x - tangan2[0].x);
+            if (jarakPergelangan > 0.35) return false; 
+
+            // Cek apakah menengadah (kelingking menempel, jempol di luar)
+            const jarakKelingking = Math.abs(tangan1[17].x - tangan2[17].x);
+            const jarakJempol = Math.abs(tangan1[4].x - tangan2[4].x);
+            
+            if (jarakKelingking >= jarakJempol) return false;
+
+            return true;
+        }
+
+        function onResults(results) {
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                for (let i = 0; i < results.multiHandLandmarks.length; i++) {
+                    // Gambar kerangka tangan dengan warna aura biru muda
+                    drawConnectors(canvasCtx, results.multiHandLandmarks[i], HAND_CONNECTIONS, {color: 'rgba(14, 165, 233, 0.5)', lineWidth: 2});
+                    drawLandmarks(canvasCtx, results.multiHandLandmarks[i], {color: '#38bdf8', lineWidth: 1, radius: 2});
+                }
+            }
+
+            if (statusTerbuka) {
+                canvasCtx.restore();
+                return; // Berhenti memproses jika artefak sudah terbuka
+            }
+
+            const sedangBerdoa = cekPoseBerdoa(results.multiHandLandmarks);
+
+            if (sedangBerdoa) {
+                if (!waktuMulaiPose) {
+                    waktuMulaiPose = Date.now();
+                    progressBar.style.visibility = 'visible';
+                    teksStatus.innerText = "Tahan konsentrasi Anda...";
+                    teksStatus.style.color = "#0ea5e9";
+                }
+
+                const waktuBerjalan = Date.now() - waktuMulaiPose;
+                progressBar.value = (waktuBerjalan / durasiSyarat) * 100;
+
+                if (waktuBerjalan >= durasiSyarat) {
+                    // KONDISI BERHASIL DITAHAN 3 DETIK
+                    statusTerbuka = true;
+                    teksStatus.innerText = "✨ ARTEFAK ATMAKA TERBUKA ✨";
+                    teksStatus.style.color = "#4ade80";
+                    progressBar.value = 100;
+                    
+                    kameraContainer.classList.add('sukses');
+                    mainkanSuaraRitual();
+                    
+                    // Di sini nanti Anda bisa memanggil function Supabase
+                    // unlockNode(userId, nodeId);
+                }
+            } else {
+                // Reset jika tangan turun atau tidak memenuhi syarat
+                waktuMulaiPose = null;
+                progressBar.style.visibility = 'hidden';
+                progressBar.value = 0;
+                teksStatus.innerText = "Tadahkan kedua tangan ke layar...";
+                teksStatus.style.color = "#94a3b8";
+            }
+
+            canvasCtx.restore();
+        }
+
+        const hands = new Hands({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+        }});
+        
+        hands.setOptions({
+            maxNumHands: 2,
+            modelComplexity: 1, // Tetap gunakan 1 agar seimbang antara presisi dan performa HP
+            minDetectionConfidence: 0.7,
+            minTrackingConfidence: 0.7
+        });
+        hands.onResults(onResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => {
+                await hands.send({image: videoElement});
+            },
+            width: 640,
+            height: 480
+        });
+        
+        camera.start().then(() => {
+            teksStatus.innerText = "Mendeteksi getaran aura...";
+        });
+    </script>
+</body>
+</html>
