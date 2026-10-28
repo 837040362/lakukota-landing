@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritual Atmaka: Jari Love</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #0f172a;
+            color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden; /* Mencegah scrollbar saat partikel bermunculan */
+        }
+        .header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #f43f5e;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            z-index: 10;
+        }
+        .ui-container {
+            text-align: center;
+            margin-bottom: 20px;
+            height: 80px;
+            z-index: 10;
+        }
+        #status { font-size: 1.2rem; color: #94a3b8; margin-bottom: 15px; font-weight: 600; }
+        
+        progress {
+            width: 250px;
+            height: 12px;
+            border-radius: 6px;
+            visibility: hidden;
+        }
+        progress::-webkit-progress-bar { background-color: #1e293b; border-radius: 6px; }
+        progress::-webkit-progress-value { 
+            background-color: #f43f5e; 
+            border-radius: 6px; 
+            transition: width 0.1s; 
+            box-shadow: 0 0 10px #f43f5e; 
+        }
+
+        .kamera-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            aspect-ratio: 4/3;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #000;
+            box-shadow: 0 0 30px rgba(244, 63, 94, 0.15);
+            border: 2px solid #1e293b;
+            transition: box-shadow 0.3s;
+            z-index: 10;
+        }
+        
+        .input_video { 
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+            z-index: -1;
+        } 
+        .output_canvas {
+            position: absolute;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            transform: scaleX(-1);
+            object-fit: cover;
+        }
+        
+        .kamera-container.sukses {
+            box-shadow: 0 0 50px rgba(244, 63, 94, 0.8);
+            border-color: #f43f5e;
+        }
+
+        /* --- ANIMASI PARTIKEL HATI --- */
+        .partikel-hati {
+            position: fixed;
+            bottom: -50px;
+            pointer-events: none; /* Agar tidak menghalangi klik */
+            z-index: 5;
+            animation: terbangKeAtas 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes terbangKeAtas {
+            0% { 
+                transform: translateY(0) scale(0.5) rotate(-15deg); 
+                opacity: 0; 
+            }
+            20% { 
+                opacity: 1; 
+                transform: translateY(-20vh) scale(1) rotate(15deg); 
+            }
+            80% { 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateY(-110vh) scale(1.5) rotate(-15deg); 
+                opacity: 0; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">Kunci Hati Atmaka</div>
+
+    <div class="ui-container">
+        <div id="status">Tunjukkan "Jari Love" (Saranghae) ke kamera...</div>
+        <progress id="holdProgress" value="0" max="100"></progress>
+    </div>
+
+    <div class="kamera-container" id="kameraContainer">
+        <video class="input_video" autoplay playsinline muted></video>
+        <canvas class="output_canvas" width="640" height="480"></canvas>
+    </div>
+
+    <script>
+        const videoElement = document.querySelector('.input_video');
+        const canvasElement = document.querySelector('.output_canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        const teksStatus = document.getElementById('status');
+        const progressBar = document.getElementById('holdProgress');
+        const kameraContainer = document.getElementById('kameraContainer');
+        
+        let waktuMulaiPose = null;
+        const durasiSyarat = 3000; 
+        let statusTerbuka = false;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function mainkanSuaraRitual() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); 
+            oscillator.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 1); 
+            
+            gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+            
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 1.5);
+        }
+
+        // --- FUNGSI MUNCULKAN PARTIKEL HATI ---
+        function pancarkanAuraCinta() {
+            const jumlahPartikel = 25;
+            
+            for (let i = 0; i < jumlahPartikel; i++) {
+                const hati = document.createElement('div');
+                hati.innerHTML = '💖'; // Anda bisa ganti dengan SVG atau gambar
+                hati.classList.add('partikel-hati');
+                
+                // Acak posisi horizontal (X) antara 0 sampai 100% lebar layar
+                hati.style.left = Math.random() * 100 + 'vw';
+                
+                // Acak ukuran font (antara 20px sampai 50px)
+                hati.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                
+                // Acak jeda waktu muncul (agar tidak berbarengan)
+                hati.style.animationDelay = (Math.random() * 1.5) + 's';
+                
+                document.body.appendChild(hati);
+                
+                // Bersihkan elemen dari DOM setelah animasi selesai (3 detik + max delay 1.5 detik)
+                setTimeout(() => {
+                    hati.remove();
+                }, 4500);
+            }
+        }
+
+        function cekJariLove(multiHandLandmarks) {
+            if (!multiHandLandmarks || multiHandLandmarks.length === 0) return false;
+
+            for (let i = 0; i < multiHandLandmarks.length; i++) {
+                const tangan = multiHandLandmarks[i];
+
+                const dx = tangan[4].x - tangan[8].x;
+                const dy = tangan[4].y - tangan[8].y;
+                const jarakJempolTelunjuk = Math.sqrt(dx * dx + dy * dy);
+
+                const tengahDitekuk = tangan[12].y > tangan[10].y;
+                const manisDitekuk = tangan[16].y > tangan[14].y;
+                const kelingkingDitekuk = tangan[20].y > tangan[18].y;
+
+                if (jarakJempolTelunjuk < 0.08 && tengahDitekuk && manisDitekuk && kelingkingDitekuk) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function onResults(results) {
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                for (let i = 0; i < results.multiHandLandmarks.length; i++) {
+                    drawConnectors(canvasCtx, results.multiHandLandmarks[i], HAND_CONNECTIONS, {color: 'rgba(244, 63, 94, 0.5)', lineWidth: 2});
+                    drawLandmarks(canvasCtx, results.multiHandLandmarks[i], {color: '#f43f5e', lineWidth: 1, radius: 2});
+                }
+            }
+
+            if (statusTerbuka) {
+                canvasCtx.restore();
+                return; 
+            }
+
+            const sedangLove = cekJariLove(results.multiHandLandmarks);
+
+            if (sedangLove) {
+                if (!waktuMulaiPose) {
+                    waktuMulaiPose = Date.now();
+                    progressBar.style.visibility = 'visible';
+                    teksStatus.innerText = "Tahan formasi jari Anda...";
+                    teksStatus.style.color = "#f43f5e";
+                }
+
+                const waktuBerjalan = Date.now() - waktuMulaiPose;
+                progressBar.value = (waktuBerjalan / durasiSyarat) * 100;
+
+                if (waktuBerjalan >= durasiSyarat) {
+                    statusTerbuka = true;
+                    teksStatus.innerText = "✨ ARTEFAK TERKUNCI TERBUKA ✨";
+                    teksStatus.style.color = "#f43f5e";
+                    progressBar.value = 100;
+                    
+                    kameraContainer.classList.add('sukses');
+                    
+                    // Panggil fungsi suara dan partikel bersamaan
+                    mainkanSuaraRitual();
+                    pancarkanAuraCinta();
+                }
+            } else {
+                waktuMulaiPose = null;
+                progressBar.style.visibility = 'hidden';
+                progressBar.value = 0;
+                teksStatus.innerText = "Tunjukkan \"Jari Love\" (Saranghae) ke kamera...";
+                teksStatus.style.color = "#94a3b8";
+            }
+
+            canvasCtx.restore();
+        }
+
+        const hands = new Hands({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+        }});
+        
+        hands.setOptions({
+            maxNumHands: 2,
+            modelComplexity: 1, 
+            minDetectionConfidence: 0.7,
+            minTrackingConfidence: 0.7
+        });
+        hands.onResults(onResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => {
+                await hands.send({image: videoElement});
+            },
+            width: 640,
+            height: 480
+        });
+        
+        camera.start().then(() => {
+            teksStatus.innerText = "Kamera aktif, mencari tanda cinta...";
+        });
+    </script>
+</body>
+</html>
