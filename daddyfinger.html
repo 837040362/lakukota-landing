@@ -57,7 +57,13 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border: 2px solid #374151;
         }
-        .input_video { display: none; } 
+       .input_video {
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+            z-index: -1;
+        }
         .output_canvas {
             position: absolute;
             left: 0; top: 0;
@@ -80,7 +86,7 @@
     </div>
 
     <div class="kamera-container">
-        <video class="input_video"></video>
+        <video class="input_video" autoplay playsinline muted></video></video>
         <canvas class="output_canvas" width="640" height="480"></canvas>
     </div>
 
