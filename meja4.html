@@ -91,7 +91,9 @@
 
     <!-- ENGINE AR.JS & A-FRAME -->
     <!-- VR button disembunyikan karena kita fokus ke AR -->
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;" vr-mode-ui="enabled: false">
+    <!-- Hapus atribut 'embedded' dan tambahkan parameter dimensi layar -->
+    <a-scene arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960;" 
+    vr-mode-ui="enabled: false">
         
         <!-- TARGET MARKER FISIK (Gunakan Hiro Marker untuk testing) -->
         <a-marker preset="hiro">
