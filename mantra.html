@@ -104,7 +104,7 @@
         const teksStatus = document.getElementById('status');
         const teksSkor = document.getElementById('skorDisplay');
         
-        // --- SETTING BRUSH ---
+        // --- SETTING BRUSH MANTRA ---
         drawingCtx.lineWidth = 8;
         drawingCtx.lineCap = 'round';
         drawingCtx.strokeStyle = '#fbbf24'; 
@@ -115,6 +115,7 @@
         let isDrawing = false;
         let jejakTitik = [];
         let skor = 0;
+        let particles = []; // Array untuk menampung partikel debu sihir
         
         // Daftar Misi
         const daftarBentuk = ["Lingkaran", "Persegi", "Bintang", "Garis Lurus"];
@@ -153,6 +154,45 @@
             osc.start(); osc.stop(audioCtx.currentTime + 0.3);
         }
 
+        // --- SISTEM PARTIKEL DEBU SIHIR ---
+        function buatPartikel(x, y) {
+            // Ciptakan 3-5 partikel setiap frame saat menggambar
+            const jumlahPartikel = Math.random() * 3 + 2; 
+            for (let i = 0; i < jumlahPartikel; i++) {
+                particles.push({
+                    x: x + (Math.random() - 0.5) * 15,
+                    y: y + (Math.random() - 0.5) * 15,
+                    vx: (Math.random() - 0.5) * 3, // Kecepatan X acak
+                    vy: (Math.random() - 0.5) * 3 - 2, // Cenderung melayang ke atas (Y negatif)
+                    life: 1.0, // Umur partikel (1.0 turun ke 0)
+                    size: Math.random() * 4 + 2
+                });
+            }
+        }
+
+        function renderPartikel(ctx) {
+            // Render dan perbarui posisi partikel di atas layer kamera
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.04; // Kecepatan memudar
+
+                if (p.life <= 0) {
+                    particles.splice(i, 1); // Hapus partikel yang sudah mati
+                    continue;
+                }
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(251, 191, 36, ${p.life})`; // Warna emas/kuning
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#fbbf24';
+                ctx.fill();
+                ctx.shadowBlur = 0; // Reset shadow agar tidak mengganggu skeleton
+            }
+        }
+
         // --- ALGORITMA PENGENALAN BENTUK GEOMETRIS ---
         function analisaBentuk(titik) {
             if (titik.length < 15) return "Titik terlalu sedikit";
@@ -160,7 +200,6 @@
             let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
             let panjangGaris = 0;
 
-            // Hitung Kotak Batas (Bounding Box) & Total Panjang Garis
             for (let i = 0; i < titik.length; i++) {
                 let p = titik[i];
                 if (p.x < minX) minX = p.x;
@@ -184,28 +223,24 @@
             let kelilingKotak = 2 * (width + height);
             let rasio = panjangGaris / kelilingKotak;
 
-            // Jarak awal dan akhir (untuk cek apakah bentuknya nyambung/tertutup)
             let dxAkhir = titik[0].x - titik[titik.length-1].x;
             let dyAkhir = titik[0].y - titik[titik.length-1].y;
             let jarakUjung = Math.sqrt(dxAkhir*dxAkhir + dyAkhir*dyAkhir);
             
-            // Toleransi tertutup (ujung ketemu pangkal) maksimal 35% dari ukuran gambar
             let tertutup = jarakUjung < (ukuranMax * 0.35); 
 
             if (!tertutup) {
-                // Cek Garis Lurus (Satu sisi jauh lebih panjang dari sisi lainnya)
                 if (width > 2.5 * height || height > 2.5 * width) {
                     return "Garis Lurus";
                 }
                 return "Bentuk Tak Dikenal";
             } else {
-                // Evaluasi Bentuk Tertutup berdasarkan Rasio Panjang
                 if (rasio < 0.88) {
-                    return "Lingkaran"; // Lingkaran mulus rasionya ~0.78
+                    return "Lingkaran";
                 } else if (rasio >= 0.88 && rasio <= 1.15) {
-                    return "Persegi"; // Persegi bersudut rasionya ~1.0
+                    return "Persegi";
                 } else {
-                    return "Bintang"; // Bintang menyilang ke dalam, rasionya tinggi
+                    return "Bintang";
                 }
             }
         }
@@ -214,10 +249,14 @@
         function onResults(results) {
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            
+            // 1. Gambar latar video kamera
             canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
             if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
                 const tangan = results.multiHandLandmarks[0];
+                
+                // 2. Gambar Skeleton MediaPipe
                 drawConnectors(canvasCtx, tangan, HAND_CONNECTIONS, {color: 'rgba(255,255,255,0.2)', lineWidth: 1});
                 drawLandmarks(canvasCtx, tangan, {color: '#94a3b8', lineWidth: 1, radius: 2});
 
@@ -229,7 +268,7 @@
                 const x = tangan[8].x * drawingCanvas.width;
                 const y = tangan[8].y * drawingCanvas.height;
 
-                // 1. KONDISI MENGHAPUS (Buka Telapak Tangan)
+                // KONDISI MENGHAPUS
                 if (telunjukLurus && tengahLurus && manisLurus && kelingkingLurus) {
                     drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
                     isDrawing = false;
@@ -238,8 +277,11 @@
                     teksMisi.style.color = "#fbbf24";
                     teksMisi.innerText = daftarBentuk[misiSaatIni];
                 } 
-                // 2. KONDISI MENGGAMBAR (Hanya Telunjuk Lurus)
+                // KONDISI MENGGAMBAR
                 else if (telunjukLurus && !tengahLurus && !manisLurus && !kelingkingLurus) {
+                    // Tembakkan partikel debu sihir pada koordinat telunjuk
+                    buatPartikel(x, y);
+
                     if (!isDrawing) {
                         isDrawing = true;
                         jejakTitik = [];
@@ -252,31 +294,27 @@
                         jejakTitik.push({x: x, y: y});
                     }
                 } 
-                // 3. KONDISI KUNCI JAWABAN (Kepalkan Tangan / Selesai Gambar)
+                // KONDISI KUNCI JAWABAN (Selesai Gambar)
                 else {
                     if (isDrawing) {
-                        isDrawing = false; // Transisi dari gambar ke berhenti
+                        isDrawing = false; 
                         
                         if (jejakTitik.length > 15) {
                             teksStatus.innerText = "Menganalisa bentuk...";
                             let hasil = analisaBentuk(jejakTitik);
                             
                             if (hasil === daftarBentuk[misiSaatIni]) {
-                                // BENAR
                                 skor += 10;
                                 teksSkor.innerText = `Skor: ${skor}`;
                                 teksMisi.innerText = "✨ TEPAT! ✨";
                                 teksMisi.style.color = "#4ade80";
                                 mainkanTing();
-                                
                                 setTimeout(setMisiBaru, 1500);
                             } else {
-                                // SALAH
                                 teksMisi.innerText = `Itu ${hasil}!`;
                                 teksMisi.style.color = "#f87171";
                                 mainkanBuzzer();
                                 
-                                // Reset setelah 1.5 detik agar bisa coba lagi
                                 setTimeout(() => {
                                     teksMisi.innerText = daftarBentuk[misiSaatIni];
                                     teksMisi.style.color = "#fbbf24";
@@ -287,9 +325,12 @@
                     }
                 }
             } else {
-                // Tangan keluar kamera
                 if (isDrawing) isDrawing = false;
             }
+
+            // 3. Render partikel sihir yang bertebaran
+            renderPartikel(canvasCtx);
+            
             canvasCtx.restore();
         }
 
