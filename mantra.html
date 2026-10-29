@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritual Atmaka: Misi Guratan Mantra</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #0f172a;
+            color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            width: 640px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0ea5e9;
+        }
+        .ui-container {
+            text-align: center;
+            margin-bottom: 15px;
+            height: 90px;
+        }
+        #misiTarget { font-size: 2.5rem; font-weight: 800; color: #fbbf24; margin: 5px 0; text-transform: uppercase; }
+        #status { font-size: 1.1rem; color: #94a3b8; font-weight: 600; }
+
+        .kamera-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            aspect-ratio: 4/3;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #000;
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.15);
+            border: 2px solid #1e293b;
+        }
+        
+        .input_video { position: absolute; opacity: 0; width: 1px; height: 1px; z-index: -1; } 
+        
+        .output_canvas {
+            position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+            transform: scaleX(-1); object-fit: cover; z-index: 1;
+        }
+        .drawing_canvas {
+            position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+            transform: scaleX(-1); object-fit: cover; z-index: 2;
+        }
+        
+        .instruksi-box {
+            margin-top: 20px; background: #1e293b; padding: 15px 25px; 
+            border-radius: 8px; color: #cbd5e1; font-size: 0.95rem; width: 590px;
+        }
+        .instruksi-box span { color: #38bdf8; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>Ujian Bentuk Mantra</div>
+        <div id="skorDisplay">Skor: 0</div>
+    </div>
+
+    <div class="ui-container">
+        <div id="status">Misi Saat Ini:</div>
+        <div id="misiTarget">Memuat...</div>
+    </div>
+
+    <div class="kamera-container" id="kameraContainer">
+        <video class="input_video" autoplay playsinline muted></video>
+        <canvas class="output_canvas" width="640" height="480"></canvas>
+        <canvas class="drawing_canvas" width="640" height="480"></canvas>
+    </div>
+    
+    <div class="instruksi-box">
+        <p>🪄 <span>Acungkan Telunjuk:</span> Mulai menggambar bentuk.</p>
+        <p>✊ <span>Kepalkan Tangan:</span> Selesai menggambar & kunci jawaban.</p>
+        <p>✋ <span>Buka Telapak:</span> Hapus kanvas jika salah coret.</p>
+    </div>
+
+    <script>
+        const videoElement = document.querySelector('.input_video');
+        const canvasElement = document.querySelector('.output_canvas');
+        const drawingCanvas = document.querySelector('.drawing_canvas');
+        
+        const canvasCtx = canvasElement.getContext('2d');
+        const drawingCtx = drawingCanvas.getContext('2d');
+        
+        const teksMisi = document.getElementById('misiTarget');
+        const teksStatus = document.getElementById('status');
+        const teksSkor = document.getElementById('skorDisplay');
+        
+        // --- SETTING BRUSH ---
+        drawingCtx.lineWidth = 8;
+        drawingCtx.lineCap = 'round';
+        drawingCtx.strokeStyle = '#fbbf24'; 
+        drawingCtx.shadowBlur = 15;
+        drawingCtx.shadowColor = '#f59e0b';
+        
+        // --- STATE GAME ---
+        let isDrawing = false;
+        let jejakTitik = [];
+        let skor = 0;
+        
+        // Daftar Misi
+        const daftarBentuk = ["Lingkaran", "Persegi", "Bintang", "Garis Lurus"];
+        let misiSaatIni = 0;
+
+        function setMisiBaru() {
+            misiSaatIni = Math.floor(Math.random() * daftarBentuk.length);
+            teksMisi.innerText = daftarBentuk[misiSaatIni];
+            teksMisi.style.color = "#fbbf24";
+            drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+        }
+
+        // --- AUDIO ENGINE ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function mainkanTing() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.type = 'sine'; osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+            gain.gain.setValueAtTime(1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function mainkanBuzzer() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        // --- ALGORITMA PENGENALAN BENTUK GEOMETRIS ---
+        function analisaBentuk(titik) {
+            if (titik.length < 15) return "Titik terlalu sedikit";
+
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            let panjangGaris = 0;
+
+            // Hitung Kotak Batas (Bounding Box) & Total Panjang Garis
+            for (let i = 0; i < titik.length; i++) {
+                let p = titik[i];
+                if (p.x < minX) minX = p.x;
+                if (p.x > maxX) maxX = p.x;
+                if (p.y < minY) minY = p.y;
+                if (p.y > maxY) maxY = p.y;
+
+                if (i > 0) {
+                    let dx = p.x - titik[i-1].x;
+                    let dy = p.y - titik[i-1].y;
+                    panjangGaris += Math.sqrt(dx*dx + dy*dy);
+                }
+            }
+
+            let width = maxX - minX;
+            let height = maxY - minY;
+            let ukuranMax = Math.max(width, height);
+
+            if (ukuranMax < 80) return "Gambar terlalu kecil";
+
+            let kelilingKotak = 2 * (width + height);
+            let rasio = panjangGaris / kelilingKotak;
+
+            // Jarak awal dan akhir (untuk cek apakah bentuknya nyambung/tertutup)
+            let dxAkhir = titik[0].x - titik[titik.length-1].x;
+            let dyAkhir = titik[0].y - titik[titik.length-1].y;
+            let jarakUjung = Math.sqrt(dxAkhir*dxAkhir + dyAkhir*dyAkhir);
+            
+            // Toleransi tertutup (ujung ketemu pangkal) maksimal 35% dari ukuran gambar
+            let tertutup = jarakUjung < (ukuranMax * 0.35); 
+
+            if (!tertutup) {
+                // Cek Garis Lurus (Satu sisi jauh lebih panjang dari sisi lainnya)
+                if (width > 2.5 * height || height > 2.5 * width) {
+                    return "Garis Lurus";
+                }
+                return "Bentuk Tak Dikenal";
+            } else {
+                // Evaluasi Bentuk Tertutup berdasarkan Rasio Panjang
+                if (rasio < 0.88) {
+                    return "Lingkaran"; // Lingkaran mulus rasionya ~0.78
+                } else if (rasio >= 0.88 && rasio <= 1.15) {
+                    return "Persegi"; // Persegi bersudut rasionya ~1.0
+                } else {
+                    return "Bintang"; // Bintang menyilang ke dalam, rasionya tinggi
+                }
+            }
+        }
+
+        // --- LOOP KAMERA & LOGIKA GAME ---
+        function onResults(results) {
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                const tangan = results.multiHandLandmarks[0];
+                drawConnectors(canvasCtx, tangan, HAND_CONNECTIONS, {color: 'rgba(255,255,255,0.2)', lineWidth: 1});
+                drawLandmarks(canvasCtx, tangan, {color: '#94a3b8', lineWidth: 1, radius: 2});
+
+                const telunjukLurus = tangan[8].y < tangan[6].y;
+                const tengahLurus = tangan[12].y < tangan[10].y;
+                const manisLurus = tangan[16].y < tangan[14].y;
+                const kelingkingLurus = tangan[20].y < tangan[18].y;
+
+                const x = tangan[8].x * drawingCanvas.width;
+                const y = tangan[8].y * drawingCanvas.height;
+
+                // 1. KONDISI MENGHAPUS (Buka Telapak Tangan)
+                if (telunjukLurus && tengahLurus && manisLurus && kelingkingLurus) {
+                    drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+                    isDrawing = false;
+                    jejakTitik = [];
+                    teksStatus.innerText = "Kanvas dibersihkan ✨";
+                    teksMisi.style.color = "#fbbf24";
+                    teksMisi.innerText = daftarBentuk[misiSaatIni];
+                } 
+                // 2. KONDISI MENGGAMBAR (Hanya Telunjuk Lurus)
+                else if (telunjukLurus && !tengahLurus && !manisLurus && !kelingkingLurus) {
+                    if (!isDrawing) {
+                        isDrawing = true;
+                        jejakTitik = [];
+                        drawingCtx.beginPath();
+                        drawingCtx.moveTo(x, y);
+                        teksStatus.innerText = "Kuas menyala! Sedang menggambar...";
+                    } else {
+                        drawingCtx.lineTo(x, y);
+                        drawingCtx.stroke();
+                        jejakTitik.push({x: x, y: y});
+                    }
+                } 
+                // 3. KONDISI KUNCI JAWABAN (Kepalkan Tangan / Selesai Gambar)
+                else {
+                    if (isDrawing) {
+                        isDrawing = false; // Transisi dari gambar ke berhenti
+                        
+                        if (jejakTitik.length > 15) {
+                            teksStatus.innerText = "Menganalisa bentuk...";
+                            let hasil = analisaBentuk(jejakTitik);
+                            
+                            if (hasil === daftarBentuk[misiSaatIni]) {
+                                // BENAR
+                                skor += 10;
+                                teksSkor.innerText = `Skor: ${skor}`;
+                                teksMisi.innerText = "✨ TEPAT! ✨";
+                                teksMisi.style.color = "#4ade80";
+                                mainkanTing();
+                                
+                                setTimeout(setMisiBaru, 1500);
+                            } else {
+                                // SALAH
+                                teksMisi.innerText = `Itu ${hasil}!`;
+                                teksMisi.style.color = "#f87171";
+                                mainkanBuzzer();
+                                
+                                // Reset setelah 1.5 detik agar bisa coba lagi
+                                setTimeout(() => {
+                                    teksMisi.innerText = daftarBentuk[misiSaatIni];
+                                    teksMisi.style.color = "#fbbf24";
+                                    drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+                                }, 1500);
+                            }
+                        }
+                    }
+                }
+            } else {
+                // Tangan keluar kamera
+                if (isDrawing) isDrawing = false;
+            }
+            canvasCtx.restore();
+        }
+
+        const hands = new Hands({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+        }});
+        
+        hands.setOptions({
+            maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7, minTrackingConfidence: 0.7
+        });
+        hands.onResults(onResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => { await hands.send({image: videoElement}); },
+            width: 640, height: 480
+        });
+        
+        camera.start().then(() => {
+            setMisiBaru();
+            teksStatus.innerText = "Siap! Acungkan telunjuk untuk mulai.";
+        });
+    </script>
+</body>
+</html>
