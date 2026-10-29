@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Penjumlahan Jari: Time Attack</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #1a1a1a;
+            color: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            width: 640px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .ui-container {
+            text-align: center;
+            margin-bottom: 20px;
+            height: 120px;
+        }
+        #soal { font-size: 3.5rem; font-weight: 800; color: #4ade80; margin: 5px 0; }
+        #status { font-size: 1.2rem; color: #9ca3af; height: 30px; }
+        
+        progress {
+            width: 300px;
+            height: 12px;
+            border-radius: 6px;
+            visibility: hidden;
+        }
+        progress::-webkit-progress-bar { background-color: #374151; border-radius: 6px; }
+        progress::-webkit-progress-value { background-color: #f87171; border-radius: 6px; transition: width 0.05s linear; }
+
+        .kamera-container {
+            position: relative;
+            width: 640px;
+            height: 480px;
+            border-radius: 16px;
+            overflow: hidden;
+            background-color: #000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid #374151;
+        }
+        
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+        .overlay h1 { color: #38bdf8; margin-bottom: 5px; }
+        .overlay p { font-size: 1.2rem; margin-bottom: 20px; color: #cbd5e1; }
+        .rekap-box { background: #1e293b; padding: 20px; border-radius: 12px; text-align: left; width: 250px; margin-bottom: 20px; }
+        .rekap-box p { margin: 5px 0; font-size: 1.2rem; display: flex; justify-content: space-between; }
+        
+        button {
+            padding: 12px 32px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: #4ade80;
+            color: #064e3b;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.95); }
+        button:disabled { background: #64748b; cursor: not-allowed; box-shadow: none; color: #cbd5e1; }
+
+        .input_video { position: absolute; opacity: 0; width: 1px; height: 1px; z-index: -1; } 
+        .output_canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform: scaleX(-1); }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div id="soalCounter">Soal: 0 / 20</div>
+        <div id="skorDisplay">Skor: 0</div>
+    </div>
+
+    <div class="ui-container">
+        <div id="soal">Siap?</div>
+        <div id="status">Selesaikan 20 soal secepat mungkin!</div>
+        <progress id="timerProgress" value="100" max="100"></progress>
+    </div>
+
+    <div class="kamera-container">
+        <video class="input_video" autoplay playsinline muted></video>
+        <canvas class="output_canvas" width="640" height="480"></canvas>
+        
+        <div id="startScreen" class="overlay">
+            <h1>Game Hitung Jari</h1>
+            <p>Jawab 20 soal secepat mungkin. Waktu 3 detik/soal!</p>
+            <button id="btnMulai" disabled>Menyiapkan Kamera...</button>
+        </div>
+
+        <div id="endScreen" class="overlay" style="display: none;">
+            <h1>Rekap Permainan</h1>
+            <div class="rekap-box">
+                <p>✅ Benar: <span id="rekapBenar" style="color:#4ade80">0</span></p>
+                <p>❌ Salah: <span id="rekapSalah" style="color:#f87171">0</span></p>
+                <hr style="border-color:#334155; margin:10px 0;">
+                <p>🏆 Skor Akhir: <strong id="rekapSkor" style="color:#fbbf24">0</strong></p>
+            </div>
+            <button onclick="mulaiGame()">Ulangi Permainan</button>
+        </div>
+    </div>
+
+    <script>
+        const videoElement = document.querySelector('.input_video');
+        const canvasElement = document.querySelector('.output_canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        
+        const teksSoal = document.getElementById('soal');
+        const teksStatus = document.getElementById('status');
+        const teksSkor = document.getElementById('skorDisplay');
+        const teksCounter = document.getElementById('soalCounter');
+        const progressBar = document.getElementById('timerProgress');
+        
+        const layarMulai = document.getElementById('startScreen');
+        const layarAkhir = document.getElementById('endScreen');
+        const btnMulai = document.getElementById('btnMulai');
+        
+        const totalSoal = 20;
+        let soalSaatIni = 0;
+        let skor = 0;
+        let jumlahBenar = 0;
+        let jumlahSalah = 0;
+        let targetJawaban = 0;
+        let gameAktif = false;
+        let jedaTransisi = false;
+        
+        let timerInterval;
+        const durasiMax = 3000;
+        let sisaWaktu = durasiMax;
+
+        const tips = [8, 12, 16, 20];
+        const pips = [6, 10, 14, 18];
+
+        // --- AUDIO ENGINE ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function mainkanTing() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine'; // Suara bulat/manis
+            osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+            gain.gain.setValueAtTime(1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function mainkanBuzzer() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.type = 'sawtooth'; // Suara kasar khas buzzer salah
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime); // Nada rendah
+            osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.3); // Nada drop cepat
+            
+            gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        // --- LOGIKA GAME ---
+        btnMulai.addEventListener('click', mulaiGame);
+
+        function mulaiGame() {
+            layarMulai.style.display = 'none';
+            layarAkhir.style.display = 'none';
+            soalSaatIni = 0; skor = 0; jumlahBenar = 0; jumlahSalah = 0;
+            gameAktif = true;
+            updateUIAkhir();
+            lanjutSoal();
+        }
+
+        function lanjutSoal() {
+            if (soalSaatIni >= totalSoal) {
+                akhiriGame();
+                return;
+            }
+
+            soalSaatIni++;
+            jedaTransisi = false;
+            teksCounter.innerText = `Soal: ${soalSaatIni} / ${totalSoal}`;
+            
+            targetJawaban = Math.floor(Math.random() * 10) + 1;
+            const angka1 = Math.floor(Math.random() * (targetJawaban + 1));
+            const angka2 = targetJawaban - angka1;
+            teksSoal.innerText = `${angka1} + ${angka2} = ?`;
+            
+            teksStatus.innerText = "Tunjukkan jarimu!";
+            teksStatus.style.color = "#9ca3af";
+            
+            mulaiTimer();
+        }
+
+        function mulaiTimer() {
+            clearInterval(timerInterval);
+            sisaWaktu = durasiMax;
+            progressBar.max = durasiMax;
+            progressBar.value = sisaWaktu;
+            progressBar.style.visibility = 'visible';
+
+            timerInterval = setInterval(() => {
+                sisaWaktu -= 50;
+                progressBar.value = sisaWaktu;
+
+                if (sisaWaktu <= 0) {
+                    clearInterval(timerInterval);
+                    prosesJawaban(false); 
+                }
+            }, 50);
+        }
+
+        function prosesJawaban(benar) {
+            jedaTransisi = true;
+            clearInterval(timerInterval);
+            progressBar.style.visibility = 'hidden';
+
+            if (benar) {
+                jumlahBenar++;
+                skor += 10;
+                teksStatus.innerText = "✅ BENAR!";
+                teksStatus.style.color = "#4ade80";
+                mainkanTing();
+            } else {
+                jumlahSalah++;
+                teksStatus.innerText = "❌ WAKTU HABIS!";
+                teksStatus.style.color = "#f87171";
+                mainkanBuzzer(); // MEMAINKAN SUARA SALAH DI SINI
+            }
+
+            updateUIAkhir();
+            setTimeout(() => { lanjutSoal(); }, 1000);
+        }
+
+        function updateUIAkhir() { teksSkor.innerText = `Skor: ${skor}`; }
+
+        function akhiriGame() {
+            gameAktif = false;
+            clearInterval(timerInterval);
+            progressBar.style.visibility = 'hidden';
+            
+            document.getElementById('rekapBenar').innerText = jumlahBenar;
+            document.getElementById('rekapSalah').innerText = jumlahSalah;
+            document.getElementById('rekapSkor').innerText = skor;
+            layarAkhir.style.display = 'flex';
+        }
+
+        // --- LOGIKA KAMERA ---
+        function onResults(results) {
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+            let totalJari = 0;
+
+            if (results.multiHandLandmarks) {
+                for (let i = 0; i < results.multiHandLandmarks.length; i++) {
+                    const landmarks = results.multiHandLandmarks[i];
+                    const handedness = results.multiHandedness[i].label;
+                    
+                    drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: '#ffffff', lineWidth: 2});
+                    drawLandmarks(canvasCtx, landmarks, {color: '#4ade80', lineWidth: 1, radius: 3});
+
+                    let jariTanganIni = 0;
+
+                    if (handedness === 'Right') {
+                        if (landmarks[4].x < landmarks[3].x) jariTanganIni++;
+                    } else {
+                        if (landmarks[4].x > landmarks[3].x) jariTanganIni++;
+                    }
+
+                    for (let j = 0; j < 4; j++) {
+                        if (landmarks[tips[j]].y < landmarks[pips[j]].y) {
+                            jariTanganIni++;
+                        }
+                    }
+                    totalJari += jariTanganIni;
+                }
+            }
+
+            if (gameAktif && !jedaTransisi && results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                if (totalJari === targetJawaban) {
+                    prosesJawaban(true);
+                }
+            }
+            canvasCtx.restore();
+        }
+
+        const hands = new Hands({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+        }});
+        
+        hands.setOptions({
+            maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.7, minTrackingConfidence: 0.7
+        });
+        hands.onResults(onResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => { await hands.send({image: videoElement}); },
+            width: 640, height: 480
+        });
+        
+        camera.start().then(() => {
+            btnMulai.disabled = false;
+            btnMulai.innerText = "Mulai Game";
+        });
+    </script>
+</body>
+</html>
