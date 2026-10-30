@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sihir Portal LAKUKOTA</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    
+    <style>
+        body { margin: 0; padding: 0; background-color: #000; color: #fff; font-family: system-ui, sans-serif; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        
+        .ui-layer { position: absolute; top: 20px; text-align: center; z-index: 10; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+        h1 { color: #fbbf24; margin: 0 0 10px 0; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; }
+        #status { font-size: 1.1rem; color: #cbd5e1; }
+        
+        /* Bar Energi Melingkar (Diganti dengan Progress Bar linear untuk UI) */
+        .energi-wadah { width: 250px; height: 10px; background: rgba(255,255,255,0.2); border-radius: 5px; margin: 15px auto; overflow: hidden; box-shadow: 0 0 10px #f59e0b; }
+        #energiBar { width: 0%; height: 100%; background: #fbbf24; transition: width 0.1s; box-shadow: 0 0 15px #f59e0b; }
+
+        .kamera-container { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+        
+        .input_video { position: absolute; opacity: 0; width: 1px; height: 1px; z-index: -1; } 
+        
+        /* PENTING: scaleX(1) karena ini kamera belakang (tidak dicerminkan) */
+        .output_canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; transform: scaleX(1); }
+        
+        /* Layer untuk Mandala Sihir */
+        .mandala_canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; transform: scaleX(1); pointer-events: none; mix-blend-mode: screen; }
+
+        .flash-sukses {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fbbf24; z-index: 20; opacity: 0; pointer-events: none;
+            transition: opacity 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="kamera-container">
+        <video class="input_video" autoplay playsinline muted></video>
+        <canvas class="output_canvas" width="720" height="1280"></canvas>
+        <canvas class="mandala_canvas" width="720" height="1280"></canvas>
+        <div id="flash" class="flash-sukses"></div>
+    </div>
+    
+    <div class="ui-layer">
+        <h1>Ritual Putaran Waktu</h1>
+        <div id="status">Arahkan kamera ke relikui.<br>Tadahkan tangan & putar pergelanganmu!</div>
+        <div class="energi-wadah"><div id="energiBar"></div></div>
+    </div>
+
+    <script>
+        const videoElement = document.querySelector('.input_video');
+        const canvasCtx = document.querySelector('.output_canvas').getContext('2d');
+        const mandalaCanvas = document.querySelector('.mandala_canvas');
+        const mandalaCtx = mandalaCanvas.getContext('2d');
+        
+        const teksStatus = document.getElementById('status');
+        const energiBar = document.getElementById('energiBar');
+        const flashScreen = document.getElementById('flash');
+
+        // --- STATE MANIPULASI WAKTU ---
+        let sudutSebelumnya = null;
+        let totalPutaran = 0; // Mengakumulasi derajat putaran tangan
+        const TARGET_PUTARAN = 1080; // Harus memutar total 3x putaran penuh (3 x 360 = 1080 derajat)
+        let ritualSelesai = false;
+
+        // --- AUDIO ENGINE: SUARA DENGUNGAN PORTAL ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let oscPutaran = null;
+        let gainPutaran = null;
+
+        function mulaiSuaraDengung() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            if (oscPutaran) return; // Jangan tumpuk suara
+
+            oscPutaran = audioCtx.createOscillator();
+            gainPutaran = audioCtx.createGain();
+            oscPutaran.connect(gainPutaran); gainPutaran.connect(audioCtx.destination);
+            
+            oscPutaran.type = 'sawtooth';
+            oscPutaran.frequency.value = 100; // Nada rendah misterius
+            gainPutaran.gain.value = 0.1;
+            
+            oscPutaran.start();
+        }
+
+        function updatePitchDengung(persentase) {
+            if (oscPutaran && gainPutaran) {
+                // Pitch naik semakin banyak diputar (ala film sci-fi)
+                oscPutaran.frequency.value = 100 + (persentase * 4); 
+                gainPutaran.gain.value = 0.1 + (persentase / 200); 
+            }
+        }
+
+        function hentikanDengung() {
+            if (oscPutaran) {
+                oscPutaran.stop();
+                oscPutaran = null; gainPutaran = null;
+            }
+        }
+
+        function mainkanSuaraLedakan() {
+            hentikanDengung();
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 1.5);
+            gain.gain.setValueAtTime(1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
+            osc.start(); osc.stop(audioCtx.currentTime + 1.5);
+        }
+
+        // --- RENDERING MANDALA SIHIR ---
+        // Membuat gambar mandala prosedural menggunakan Canvas API
+        function gambarMandala(x, y, radius, sudutDerajat) {
+            mandalaCtx.clearRect(0, 0, mandalaCanvas.width, mandalaCanvas.height);
+            mandalaCtx.save();
+            
+            // Pindahkan titik pusat kanvas ke tengah-tengah tangan
+            mandalaCtx.translate(x, y);
+            // Putar kanvas sesuai kemiringan tangan pemain
+            mandalaCtx.rotate(sudutDerajat * Math.PI / 180);
+
+            mandalaCtx.strokeStyle = '#fbbf24'; // Warna oranye/emas khas sihir
+            mandalaCtx.lineWidth = 4;
+            mandalaCtx.shadowBlur = 20;
+            mandalaCtx.shadowColor = '#f59e0b';
+
+            // Lingkaran luar
+            mandalaCtx.beginPath();
+            mandalaCtx.arc(0, 0, radius, 0, Math.PI * 2);
+            mandalaCtx.stroke();
+
+            // Lingkaran dalam
+            mandalaCtx.beginPath();
+            mandalaCtx.arc(0, 0, radius * 0.7, 0, Math.PI * 2);
+            mandalaCtx.stroke();
+
+            // Geometri Bintang/Segi Enam di dalam portal
+            mandalaCtx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                let r = i % 2 === 0 ? radius : radius * 0.4;
+                let a = (i * Math.PI) / 3;
+                let px = Math.cos(a) * r;
+                let py = Math.sin(a) * r;
+                if (i === 0) mandalaCtx.moveTo(px, py);
+                else mandalaCtx.lineTo(px, py);
+            }
+            mandalaCtx.closePath();
+            mandalaCtx.stroke();
+
+            // Garis-garis rune pendar
+            for (let i = 0; i < 12; i++) {
+                mandalaCtx.beginPath();
+                mandalaCtx.moveTo(0, 0);
+                mandalaCtx.lineTo(Math.cos(i * Math.PI/6) * (radius * 0.9), Math.sin(i * Math.PI/6) * (radius * 0.9));
+                mandalaCtx.lineWidth = 1;
+                mandalaCtx.stroke();
+            }
+
+            mandalaCtx.restore();
+        }
+
+        // --- LOOP KAMERA ---
+        function onResults(results) {
+            canvasCtx.save(); 
+            canvasCtx.clearRect(0, 0, 720, 1280); 
+            canvasCtx.drawImage(results.image, 0, 0, 720, 1280);
+            
+            if (ritualSelesai) {
+                canvasCtx.restore();
+                return; 
+            }
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                mulaiSuaraDengung();
+                const tangan = results.multiHandLandmarks[0];
+                
+                // Gambar skeleton tipis untuk panduan
+                drawConnectors(canvasCtx, tangan, HAND_CONNECTIONS, {color: 'rgba(251, 191, 36, 0.2)', lineWidth: 1});
+
+                // Tentukan koordinat tengah tangan (Titik 9 = pangkal jari tengah)
+                const tengahX = tangan[9].x * mandalaCanvas.width;
+                const tengahY = tangan[9].y * mandalaCanvas.height;
+
+                // KALKULASI ROTASI TANGAN (Atan2)
+                // Membandingkan posisi pergelangan (0) terhadap pangkal jari (9)
+                const dx = tangan[9].x - tangan[0].x;
+                const dy = tangan[9].y - tangan[0].y;
+                let sudutRad = Math.atan2(dy, dx);
+                let sudutDeg = sudutRad * (180 / Math.PI); // Hasilnya antara -180 sampai 180
+
+                // Hitung seberapa jauh diputar sejak frame terakhir
+                if (sudutSebelumnya !== null) {
+                    let selisih = sudutDeg - sudutSebelumnya;
+                    
+                    // Koreksi jika melewati batas 180 ke -180 (wrap around)
+                    if (selisih > 180) selisih -= 360;
+                    if (selisih < -180) selisih += 360;
+                    
+                    // Kita kumpulkan total jarak putarannya (absolut)
+                    totalPutaran += Math.abs(selisih); 
+                }
+                sudutSebelumnya = sudutDeg;
+
+                // Hitung Persentase
+                let persentase = Math.min(100, (totalPutaran / TARGET_PUTARAN) * 100);
+                energiBar.style.width = persentase + '%';
+                updatePitchDengung(persentase);
+
+                // Gambar Portal Sihir (Ukuran radius diatur dinamis berdasarkan jarak tangan ke kamera)
+                const jarakPergelanganKeJari = Math.hypot(dx, dy) * mandalaCanvas.width;
+                const radiusPortal = Math.max(100, jarakPergelanganKeJari * 1.5); // Portal akan membesar jika tangan dekat
+                
+                // Memutar berlawanan arah dari putaran asli agar visualnya lebih dramatis
+                gambarMandala(tengahX, tengahY, radiusPortal, -totalPutaran * 1.5);
+
+                teksStatus.innerText = "Terus putar pusaran dimensinya!";
+                teksStatus.style.color = "#fbbf24";
+
+                // KONDISI SUKSES
+                if (totalPutaran >= TARGET_PUTARAN) {
+                    ritualSelesai = true;
+                    mandalaCtx.clearRect(0, 0, mandalaCanvas.width, mandalaCanvas.height);
+                    
+                    teksStatus.innerHTML = "✨ KUNCI WAKTU TERBUKA ✨";
+                    teksStatus.style.color = "#4ade80";
+                    
+                    flashScreen.style.opacity = '1';
+                    mainkanSuaraLedakan();
+                    
+                    setTimeout(() => { flashScreen.style.opacity = '0'; }, 800);
+                }
+
+            } else {
+                // Tangan tidak terlihat
+                hentikanDengung();
+                sudutSebelumnya = null;
+                mandalaCtx.clearRect(0, 0, mandalaCanvas.width, mandalaCanvas.height);
+                teksStatus.innerText = "Arahkan kamera ke relikui.\nTadahkan tangan & putar pergelanganmu!";
+                teksStatus.style.color = "#cbd5e1";
+                
+                // Energi perlahan menurun jika pemain berhenti (menambah tensi game)
+                if (totalPutaran > 0 && !ritualSelesai) {
+                    totalPutaran -= 2; // Bocor perlahan
+                    energiBar.style.width = (totalPutaran / TARGET_PUTARAN * 100) + '%';
+                }
+            }
+            canvasCtx.restore();
+        }
+
+        const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+        hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7, minTrackingConfidence: 0.7 });
+        hands.onResults(onResults);
+
+        // MENGAKTIFKAN KAMERA BELAKANG
+        const camera = new Camera(videoElement, { 
+            onFrame: async () => { await hands.send({image: videoElement}); }, 
+            width: 720, height: 1280,
+            facingMode: 'environment' // Mode AR / Lensa punggung HP
+        });
+        camera.start();
+    </script>
+</body>
+</html>
