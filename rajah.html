@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Rajah Sihir - LAKUKOTA</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex; flex-direction: column; align-items: center;
+            background-color: #0f172a; color: #f8fafc; margin: 0; padding: 20px;
+        }
+        .header {
+            display: flex; justify-content: space-between; width: 640px; margin-bottom: 10px;
+            font-size: 1.2rem; font-weight: bold; color: #a855f7;
+        }
+        .ui-container { text-align: center; margin-bottom: 15px; height: 90px; }
+        
+        #skorTeks { font-size: 2.5rem; font-weight: 800; color: #e879f9; margin: 5px 0; transition: color 0.3s; }
+        #status { font-size: 1.1rem; color: #94a3b8; font-weight: 600; }
+
+        .kamera-container {
+            position: relative; width: 100%; max-width: 640px; aspect-ratio: 4/3;
+            border-radius: 12px; overflow: hidden; background-color: #000;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.15); border: 2px solid #1e293b;
+            transition: all 0.3s ease;
+        }
+        
+        /* EFEK AURA KESUKSESAN MANTRA */
+        @keyframes pulseAura {
+            0% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.4); border-color: #4ade80; }
+            50% { box-shadow: 0 0 70px rgba(74, 222, 128, 1); border-color: #22c55e; }
+            100% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.4); border-color: #4ade80; }
+        }
+        .sukses-aura {
+            animation: pulseAura 1.5s ease-in-out infinite !important;
+        }
+        
+        /* EFEK AURA GAGAL */
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); box-shadow: 0 0 30px rgba(244, 63, 94, 0.5); border-color: #f43f5e; }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .gagal-aura {
+            animation: shakeError 0.4s ease-in-out;
+            box-shadow: 0 0 30px rgba(244, 63, 94, 0.8) !important;
+            border-color: #f43f5e !important;
+        }
+
+        .input_video { position: absolute; opacity: 0; width: 1px; height: 1px; z-index: -1; } 
+        .output_canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform: scaleX(-1); z-index: 1; }
+        .drawing_canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform: scaleX(-1); z-index: 2; }
+        
+        .kontrol-panel { margin-top: 15px; display: flex; gap: 10px; }
+        button {
+            padding: 10px 20px; font-size: 1rem; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.95); }
+        .btn-rekam { background: #eab308; color: #422006; }
+        .btn-uji { background: #a855f7; color: white; }
+        
+        .instruksi-box {
+            margin-top: 15px; background: #1e293b; padding: 15px; border-radius: 8px; 
+            color: #cbd5e1; font-size: 0.95rem; width: 610px;
+        }
+        .instruksi-box span { color: #e879f9; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>Pengenalan Rajah Sihir</div>
+        <div id="modeDisplay">MODE: UJI MANTRA</div>
+    </div>
+
+    <div class="ui-container">
+        <div id="status">Belum ada Rajah yang direkam.</div>
+        <div id="skorTeks">-- %</div>
+    </div>
+
+    <div class="kamera-container" id="wadahKamera">
+        <video class="input_video" autoplay playsinline muted></video>
+        <canvas class="output_canvas" width="640" height="480"></canvas>
+        <canvas class="drawing_canvas" width="640" height="480"></canvas>
+    </div>
+    
+    <div class="kontrol-panel">
+        <button class="btn-rekam" onclick="setMode('REKAM')">1. Rekam Rajah Master</button>
+        <button class="btn-uji" onclick="setMode('UJI')">2. Mode Uji Pemain</button>
+    </div>
+
+    <div class="instruksi-box">
+        <p>🪄 <span>Telunjuk:</span> Menggambar segel (satu tarikan garis tanpa putus).</p>
+        <p>✊ <span>Kepalkan Tangan:</span> Selesai menggambar & proses data.</p>
+        <p>✋ <span>Buka Telapak:</span> Hapus / Batal.</p>
+    </div>
+
+    <script>
+        const videoElement = document.querySelector('.input_video');
+        const canvasCtx = document.querySelector('.output_canvas').getContext('2d');
+        const drawingCanvas = document.querySelector('.drawing_canvas');
+        const drawingCtx = drawingCanvas.getContext('2d');
+        
+        const teksStatus = document.getElementById('status');
+        const teksSkor = document.getElementById('skorTeks');
+        const teksMode = document.getElementById('modeDisplay');
+        const wadahKamera = document.getElementById('wadahKamera');
+
+        let isDrawing = false;
+        let jejakTitik = [];
+        let masterTemplate = null; 
+        let modeSaatIni = "UJI"; 
+
+        // Fungsi Reset Kuas ke mode standar (Ungu)
+        function setKuasStandar() {
+            drawingCtx.lineWidth = 6; 
+            drawingCtx.lineCap = 'round';
+            drawingCtx.strokeStyle = '#e879f9'; 
+            drawingCtx.shadowBlur = 15; 
+            drawingCtx.shadowColor = '#d946ef';
+        }
+        setKuasStandar();
+
+        // Fungsi untuk menggambar ulang rajah dengan efek menyala terang
+        function redrawMantraSukses(titikMantra) {
+            drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            drawingCtx.beginPath();
+            drawingCtx.lineWidth = 8;
+            drawingCtx.strokeStyle = '#4ade80'; // Hijau terang
+            drawingCtx.shadowBlur = 25;
+            drawingCtx.shadowColor = '#22c55e';
+            
+            drawingCtx.moveTo(titikMantra[0].x, titikMantra[0].y);
+            for(let i = 1; i < titikMantra.length; i++) {
+                drawingCtx.lineTo(titikMantra[i].x, titikMantra[i].y);
+            }
+            drawingCtx.stroke();
+        }
+
+        // --- ALGORITMA PENGENALAN POLA (MINI UNISTROKE) ---
+        const JUMLAH_SAMPEL = 64;
+
+        function hitungPanjangJalur(titik) {
+            let d = 0;
+            for (let i = 1; i < titik.length; i++) {
+                d += Math.hypot(titik[i].x - titik[i-1].x, titik[i].y - titik[i-1].y);
+            }
+            return d;
+        }
+
+        function resample(titik, n) {
+            let I = hitungPanjangJalur(titik) / (n - 1);
+            let D = 0;
+            let titikBaru = [{x: titik[0].x, y: titik[0].y}];
+            let tempTitik = [...titik];
+
+            for (let i = 1; i < tempTitik.length; i++) {
+                let d = Math.hypot(tempTitik[i].x - tempTitik[i-1].x, tempTitik[i].y - tempTitik[i-1].y);
+                if (D + d >= I) {
+                    let qx = tempTitik[i-1].x + ((I - D) / d) * (tempTitik[i].x - tempTitik[i-1].x);
+                    let qy = tempTitik[i-1].y + ((I - D) / d) * (tempTitik[i].y - tempTitik[i-1].y);
+                    let q = {x: qx, y: qy};
+                    titikBaru.push(q);
+                    tempTitik.splice(i, 0, q);
+                    D = 0;
+                } else {
+                    D += d;
+                }
+            }
+            if (titikBaru.length === n - 1) titikBaru.push({x: titik[titik.length-1].x, y: titik[titik.length-1].y});
+            return titikBaru;
+        }
+
+        function normalisasi(titik) {
+            let resampled = resample(titik, JUMLAH_SAMPEL);
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            
+            resampled.forEach(p => {
+                minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
+                minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
+            });
+            
+            let lebar = maxX - minX;
+            let tinggi = maxY - minY;
+            
+            return resampled.map(p => ({
+                x: (p.x - minX) / (lebar || 1) - 0.5,
+                y: (p.y - minY) / (tinggi || 1) - 0.5
+            }));
+        }
+
+        function cocokanPola(polaPemain, polaMaster) {
+            let totalJarak = 0;
+            for (let i = 0; i < JUMLAH_SAMPEL; i++) {
+                totalJarak += Math.hypot(polaPemain[i].x - polaMaster[i].x, polaPemain[i].y - polaMaster[i].y);
+            }
+            let jarakRataRata = totalJarak / JUMLAH_SAMPEL;
+            let persentase = Math.max(0, 100 - (jarakRataRata * 250)); 
+            return persentase.toFixed(1);
+        }
+
+        // --- KONTROL UI ---
+        function setMode(mode) {
+            modeSaatIni = mode;
+            teksMode.innerText = `MODE: ${mode === 'REKAM' ? 'REKAM RAJAH' : 'UJI MANTRA'}`;
+            teksMode.style.color = mode === 'REKAM' ? '#eab308' : '#a855f7';
+            
+            resetEfek(); // Bersihkan sisa efek aura jika ada
+            
+            if (mode === 'REKAM') {
+                teksStatus.innerText = "Siap merekam! Gambar Rajah/Template lalu kepalkan tangan.";
+            } else {
+                if (!masterTemplate) {
+                    teksStatus.innerText = "⚠️ Harap rekam Master Template dulu!";
+                } else {
+                    teksStatus.innerText = "Tiru Master Rajah! Gambar lalu kepalkan tangan.";
+                }
+            }
+        }
+
+        function resetEfek() {
+            drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            jejakTitik = [];
+            teksSkor.innerText = "-- %";
+            teksSkor.style.color = "#e879f9";
+            wadahKamera.classList.remove('sukses-aura', 'gagal-aura');
+            setKuasStandar();
+        }
+
+        // --- AUDIO ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSfx(sukses) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            
+            osc.type = sukses ? 'sine' : 'sawtooth';
+            osc.frequency.setValueAtTime(sukses ? 800 : 150, audioCtx.currentTime);
+            if (sukses) osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.5);
+            else osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.3);
+            
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (sukses ? 0.5 : 0.3));
+            
+            osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+        }
+
+        // --- LOOP KAMERA ---
+        function onResults(results) {
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, 640, 480);
+            canvasCtx.drawImage(results.image, 0, 0, 640, 480);
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                const tangan = results.multiHandLandmarks[0];
+                drawConnectors(canvasCtx, tangan, HAND_CONNECTIONS, {color: 'rgba(255,255,255,0.2)', lineWidth: 1});
+                drawLandmarks(canvasCtx, tangan, {color: '#94a3b8', lineWidth: 1, radius: 2});
+
+                const telunjukLurus = tangan[8].y < tangan[6].y;
+                const tengahLurus = tangan[12].y < tangan[10].y;
+                const manisLurus = tangan[16].y < tangan[14].y;
+                const kelingkingLurus = tangan[20].y < tangan[18].y;
+
+                const x = tangan[8].x * drawingCanvas.width;
+                const y = tangan[8].y * drawingCanvas.height;
+
+                // 1. BATAL / HAPUS (Buka Telapak)
+                if (telunjukLurus && tengahLurus && manisLurus && kelingkingLurus) {
+                    resetEfek();
+                    teksStatus.innerText = "Kanvas bersih. Siap menggambar.";
+                } 
+                // 2. MENGGAMBAR (Hanya Telunjuk)
+                else if (telunjukLurus && !tengahLurus && !manisLurus && !kelingkingLurus) {
+                    if (!isDrawing) {
+                        isDrawing = true; 
+                        resetEfek(); // Pastikan efek sebelumnya hilang saat mulai gambar baru
+                        drawingCtx.beginPath(); drawingCtx.moveTo(x, y);
+                    } else {
+                        drawingCtx.lineTo(x, y); drawingCtx.stroke();
+                        jejakTitik.push({x: x, y: y});
+                    }
+                } 
+                // 3. KEPAL TANGAN (Proses Hasil)
+                else {
+                    if (isDrawing && jejakTitik.length > 10) {
+                        isDrawing = false;
+                        
+                        let dataNormal = normalisasi(jejakTitik);
+
+                        if (modeSaatIni === 'REKAM') {
+                            masterTemplate = dataNormal;
+                            teksStatus.innerText = "✅ Rajah Master Berhasil Disimpan!";
+                            teksSkor.innerText = "SIMPAN";
+                            teksSkor.style.color = "#eab308";
+                            playSfx(true);
+                            setTimeout(() => { resetEfek(); teksStatus.innerText="Siap menguji. Pindah ke Mode Uji Pemain."; }, 1500);
+                        } 
+                        else if (modeSaatIni === 'UJI') {
+                            if (!masterTemplate) {
+                                teksStatus.innerText = "⚠️ Rekam Rajah Master dulu!";
+                            } else {
+                                let kecocokan = cocokanPola(dataNormal, masterTemplate);
+                                teksSkor.innerText = `${kecocokan}%`;
+                                
+                                if (kecocokan > 80) { 
+                                    // EFEK KESUKSESAN
+                                    teksStatus.innerText = "✨ RAJAH SEMPURNA! GERBANG TERBUKA ✨";
+                                    teksSkor.style.color = "#4ade80";
+                                    wadahKamera.classList.add('sukses-aura');
+                                    redrawMantraSukses(jejakTitik);
+                                    playSfx(true);
+                                } else {
+                                    // EFEK GAGAL
+                                    teksStatus.innerText = "❌ Tarikan garis kurang tepat, ulangi!";
+                                    teksSkor.style.color = "#f87171";
+                                    wadahKamera.classList.add('gagal-aura');
+                                    playSfx(false);
+                                    
+                                    // Hapus class gagal setelah animasi goyang selesai agar bisa digoyang lagi nanti
+                                    setTimeout(() => { wadahKamera.classList.remove('gagal-aura'); }, 500);
+                                }
+                                
+                                // Bersihkan kanvas setelah beberapa detik
+                                setTimeout(() => { resetEfek(); teksStatus.innerText="Tiru Master Rajah! Gambar lalu kepalkan tangan."; }, 2500);
+                            }
+                        }
+                    }
+                }
+            }
+            canvasCtx.restore();
+        }
+
+        const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+        hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7, minTrackingConfidence: 0.7 });
+        hands.onResults(onResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => { await hands.send({image: videoElement}); },
+            width: 640, height: 480
+        });
+        camera.start();
+    </script>
+</body>
+</html>
