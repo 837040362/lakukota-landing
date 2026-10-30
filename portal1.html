@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Sling Ring (Lite Version)</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    
+    <style>
+        body { margin: 0; padding: 0; background-color: #000; color: #fff; font-family: system-ui, sans-serif; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        
+        .ui-layer { position: absolute; top: 30px; text-align: center; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); width: 100%; padding: 0 20px; box-sizing: border-box;}
+        h1 { color: #fbbf24; margin: 0 0 5px 0; font-size: 1.3rem; letter-spacing: 1px; text-transform: uppercase; }
+        #status { font-size: 1rem; color: #cbd5e1; }
+        
+        .energi-wadah { width: 80%; max-width: 300px; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; margin: 10px auto; overflow: hidden; }
+        #energiBar { width: 0%; height: 100%; background: #fbbf24; transition: width 0.1s; }
+
+        .kamera-container { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+        .input_video { position: absolute; opacity: 0; width: 1px; height: 1px; z-index: -1; } 
+        
+        .output_canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; transform: scaleX(1); }
+        
+        /* Layar portal menggunakan screen blend agar warna emas bersinar alami menumpuk video tanpa efek bayangan berat */
+        .mandala_canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; transform: scaleX(1); pointer-events: none; mix-blend-mode: screen; opacity: 0.9; }
+
+        .flash-sukses { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fbbf24; z-index: 20; opacity: 0; pointer-events: none; transition: opacity 0.4s ease-out; }
+    </style>
+</head>
+<body>
+
+    <div class="kamera-container">
+        <video class="input_video" autoplay playsinline muted></video>
+        <canvas class="output_canvas"></canvas>
+        <canvas class="mandala_canvas"></canvas>
+        <div id="flash" class="flash-sukses"></div>
+    </div>
+    
+    <div class="ui-layer">
+        <h1>Portal LAKUKOTA Lite</h1>
+        <div id="status">Angkat dua jari, gambar lingkaran!</div>
+        <div class="energi-wadah"><div id="energiBar"></div></div>
+    </div>
+
+    <script>
+        const videoElement = document.querySelector('.input_video');
+        const outputCanvas = document.querySelector('.output_canvas');
+        const canvasCtx = outputCanvas.getContext('2d', { alpha: false }); // Optimasi rendering background
+        const mandalaCanvas = document.querySelector('.mandala_canvas');
+        const mandalaCtx = mandalaCanvas.getContext('2d');
+        
+        const teksStatus = document.getElementById('status');
+        const energiBar = document.getElementById('energiBar');
+        const flashScreen = document.getElementById('flash');
+
+        let sudutSebelumnya = null;
+        let totalPutaran = 0; 
+        const TARGET_PUTARAN = 1080; 
+        let ritualSelesai = false;
+        let partikelSparks = [];
+        let checkpointGetar = 0; // Untuk mengatur getaran agar tidak spam
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let oscPutaran = null, gainPutaran = null;
+
+        function mulaiSuaraDengung() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            if (oscPutaran) return;
+            oscPutaran = audioCtx.createOscillator(); gainPutaran = audioCtx.createGain();
+            oscPutaran.connect(gainPutaran); gainPutaran.connect(audioCtx.destination);
+            oscPutaran.type = 'triangle'; // Triangle lebih ringan dari sawtooth
+            oscPutaran.frequency.value = 80; gainPutaran.gain.value = 0.1;
+            oscPutaran.start();
+        }
+
+        function updatePitchDengung(persentase) {
+            if (oscPutaran && gainPutaran) {
+                oscPutaran.frequency.value = 80 + (persentase * 4); 
+                gainPutaran.gain.value = 0.1 + (persentase / 150); 
+            }
+        }
+
+        function hentikanDengung() {
+            if (oscPutaran) { oscPutaran.stop(); oscPutaran = null; gainPutaran = null; }
+        }
+
+        function mainkanSuaraLedakan() {
+            hentikanDengung();
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 1.5);
+            gain.gain.setValueAtTime(1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
+            osc.start(); osc.stop(audioCtx.currentTime + 1.5);
+        }
+
+        // Fungsi menggambar portal super ringan (Tanpa ShadowBlur)
+        function gambarMandalaLite(x, y, radius, sudutDerajat) {
+            mandalaCtx.clearRect(0, 0, mandalaCanvas.width, mandalaCanvas.height);
+            
+            if (radius > 5) {
+                mandalaCtx.save();
+                mandalaCtx.translate(x, y);
+                mandalaCtx.rotate(sudutDerajat * Math.PI / 180);
+
+                // Garis solid biasa, glow diurus CSS
+                mandalaCtx.strokeStyle = '#fbbf24'; 
+                mandalaCtx.lineWidth = 3 + (radius/80);
+
+                mandalaCtx.beginPath(); mandalaCtx.arc(0, 0, radius, 0, Math.PI * 2); mandalaCtx.stroke();
+                mandalaCtx.beginPath(); mandalaCtx.arc(0, 0, radius * 0.8, 0, Math.PI * 2); mandalaCtx.stroke();
+
+                mandalaCtx.beginPath();
+                for (let i = 0; i < 8; i++) {
+                    let r = i % 2 === 0 ? radius : radius * 0.5;
+                    let a = (i * Math.PI) / 4;
+                    if (i === 0) mandalaCtx.moveTo(Math.cos(a)*r, Math.sin(a)*r);
+                    else mandalaCtx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+                }
+                mandalaCtx.closePath(); mandalaCtx.stroke();
+                mandalaCtx.restore();
+            }
+            
+            // Partikel dikurangi menjadi bentuk kotak kecil murni (fill rectangle sangat cepat di GPU)
+            mandalaCtx.fillStyle = '#fbbf24';
+            for (let i = partikelSparks.length - 1; i >= 0; i--) {
+                let p = partikelSparks[i];
+                p.x += p.vx; p.y += p.vy;
+                p.vy += 0.3; // Gravitasi lebih kuat agar cepat jatuh
+                p.life -= 0.08; // Mati lebih cepat
+                
+                if (p.life <= 0) { partikelSparks.splice(i, 1); continue; }
+                
+                mandalaCtx.globalAlpha = p.life;
+                mandalaCtx.fillRect(p.x, p.y, p.size, p.size);
+            }
+            mandalaCtx.globalAlpha = 1.0;
+        }
+
+        function onResults(results) {
+            if (outputCanvas.width !== results.image.width) {
+                outputCanvas.width = results.image.width; outputCanvas.height = results.image.height;
+                mandalaCanvas.width = results.image.width; mandalaCanvas.height = results.image.height;
+            }
+
+            canvasCtx.drawImage(results.image, 0, 0, outputCanvas.width, outputCanvas.height);
+            
+            if (ritualSelesai) return; 
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                const tangan = results.multiHandLandmarks[0];
+                
+                const telunjukLurus = tangan[8].y < tangan[6].y;
+                const tengahLurus = tangan[12].y < tangan[10].y;
+                
+                const pusatPortalX = mandalaCanvas.width / 2;
+                const pusatPortalY = mandalaCanvas.height / 2;
+
+                if (telunjukLurus && tengahLurus) {
+                    mulaiSuaraDengung();
+                    
+                    const pijarX = ((tangan[8].x + tangan[12].x) / 2) * mandalaCanvas.width;
+                    const pijarY = ((tangan[8].y + tangan[12].y) / 2) * mandalaCanvas.height;
+
+                    const dx = pijarX - pusatPortalX;
+                    const dy = pijarY - pusatPortalY;
+                    let sudutRad = Math.atan2(dy, dx);
+                    let sudutDeg = sudutRad * (180 / Math.PI); 
+
+                    let selisih = 0;
+                    if (sudutSebelumnya !== null) {
+                        selisih = sudutDeg - sudutSebelumnya;
+                        if (selisih > 180) selisih -= 360;
+                        if (selisih < -180) selisih += 360;
+                        
+                        if (selisih > 0) totalPutaran += selisih; 
+                    }
+                    sudutSebelumnya = sudutDeg;
+
+                    let persentase = Math.min(100, (totalPutaran / TARGET_PUTARAN) * 100);
+                    energiBar.style.width = persentase + '%';
+                    updatePitchDengung(persentase);
+
+                    // Haptic Feedback irit: getar tiap kelipatan 20%
+                    if (persentase >= checkpointGetar + 20) {
+                        checkpointGetar += 20;
+                        if(navigator.vibrate) navigator.vibrate(30);
+                    }
+
+                    const maxRadius = Math.min(mandalaCanvas.width, mandalaCanvas.height) * 0.4;
+                    const radiusPortal = (totalPutaran / TARGET_PUTARAN) * maxRadius;
+                    
+                    // Spawn partikel sedikit saja (1-2 per frame gesekan)
+                    if (selisih > 3) {
+                        let jumlahSparks = Math.random() > 0.5 ? 2 : 1; 
+                        for(let i=0; i<jumlahSparks; i++) {
+                            partikelSparks.push({
+                                x: pijarX, y: pijarY,
+                                vx: Math.random() * 6 - 3, vy: Math.random() * 6 - 5, 
+                                life: 1.0, size: Math.random() * 3 + 1
+                            });
+                        }
+                    }
+
+                    gambarMandalaLite(pusatPortalX, pusatPortalY, radiusPortal, totalPutaran);
+
+                    teksStatus.innerText = "Terus putar lingkarannya!";
+                    teksStatus.style.color = "#fbbf24";
+
+                    if (totalPutaran >= TARGET_PUTARAN) {
+                        ritualSelesai = true;
+                        mandalaCtx.clearRect(0, 0, mandalaCanvas.width, mandalaCanvas.height);
+                        teksStatus.innerHTML = "✨ PORTAL TERBUKA ✨";
+                        teksStatus.style.color = "#4ade80";
+                        flashScreen.style.opacity = '1';
+                        
+                        if(navigator.vibrate) navigator.vibrate([200, 100, 200]); // Getaran sukses
+                        mainkanSuaraLedakan();
+                        
+                        setTimeout(() => { flashScreen.style.opacity = '0'; }, 800);
+                    }
+
+                } else {
+                    hentikanDengung(); sudutSebelumnya = null;
+                    teksStatus.innerText = "Angkat telunjuk & jari tengah,\nlalu gambar lingkaran di udara!";
+                    teksStatus.style.color = "#cbd5e1";
+                    
+                    if (totalPutaran > 0 && !ritualSelesai) {
+                        totalPutaran -= 2; 
+                        energiBar.style.width = (totalPutaran / TARGET_PUTARAN * 100) + '%';
+                        checkpointGetar = Math.max(0, checkpointGetar - 5);
+                        
+                        const maxRadius = Math.min(mandalaCanvas.width, mandalaCanvas.height) * 0.4;
+                        gambarMandalaLite(pusatPortalX, pusatPortalY, Math.max(0, (totalPutaran / TARGET_PUTARAN) * maxRadius), totalPutaran);
+                    } else {
+                        mandalaCtx.clearRect(0, 0, mandalaCanvas.width, mandalaCanvas.height);
+                    }
+                }
+            } else {
+                hentikanDengung(); sudutSebelumnya = null;
+            }
+        }
+
+        const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+        // OPTIMASI UTAMA: modelComplexity 0 dan confidence diturunkan agar enteng
+        hands.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
+        hands.onResults(onResults);
+
+        const camera = new Camera(videoElement, { 
+            onFrame: async () => { await hands.send({image: videoElement}); }, 
+            width: 1280, height: 720,
+            facingMode: 'environment' 
+        });
+        camera.start();
+    </script>
+</body>
+</html>
