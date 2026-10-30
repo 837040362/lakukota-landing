@@ -49,6 +49,7 @@
         .btn-rekam { background: #eab308; color: #422006; }
         .btn-uji { background: #a855f7; color: white; }
         .btn-ekspor { background: #3b82f6; color: white; }
+        .btn-muat { background: #f97316; color: white; }
         
         .instruksi-box { margin-top: 15px; background: #1e293b; padding: 15px; border-radius: 8px; color: #cbd5e1; font-size: 0.95rem; width: 610px; }
         .instruksi-box span { color: #e879f9; font-weight: bold; }
@@ -73,10 +74,14 @@
     </div>
     
     <div class="kontrol-panel">
-        <button class="btn-rekam" onclick="setMode('REKAM')">1. Rekam Rajah Baru</button>
+        <button class="btn-rekam" onclick="setMode('REKAM')">1. Rekam Baru</button>
         <button class="btn-uji" onclick="setMode('UJI')">2. Uji Mantra</button>
-        <button class="btn-ekspor" onclick="eksporRajah()">💾 Unduh JSON Rajah</button>
+        <button class="btn-ekspor" onclick="eksporRajah()">💾 Unduh</button>
+        <button class="btn-muat" onclick="triggerLoad()">📂 Muat JSON</button>
     </div>
+
+    <!-- Input file tersembunyi -->
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
 
     <div class="instruksi-box">
         <p>🪄 <span>Telunjuk:</span> Menggambar segel (satu tarikan garis tanpa putus).</p>
@@ -94,6 +99,7 @@
         const teksSkor = document.getElementById('skorTeks');
         const teksMode = document.getElementById('modeDisplay');
         const wadahKamera = document.getElementById('wadahKamera');
+        const fileInput = document.getElementById('fileInput');
 
         let isDrawing = false;
         let jejakTitik = [];
@@ -117,33 +123,77 @@
             drawingCtx.stroke();
         }
 
-        // --- FUNGSI EKSPOR JSON ---
+        // --- VISUALISASI GHOST TEMPLATE ---
+        // Fungsi ini merender rajah transparan sebagai panduan pemain
+        function gambarGhostTemplate(ctx) {
+            if (!masterTemplate || modeSaatIni !== 'UJI') return;
+            
+            ctx.beginPath();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = 'rgba(234, 179, 8, 0.4)'; // Kuning emas transparan
+            ctx.setLineDash([10, 10]); // Garis putus-putus
+            ctx.lineCap = 'round';
+            
+            // Skala rajah menjadi ukuran 300x300 piksel di tengah layar
+            const skala = 300;
+            const offsetX = 640 / 2;
+            const offsetY = 480 / 2;
+
+            masterTemplate.forEach((p, i) => {
+                let px = (p.x * skala) + offsetX;
+                let py = (p.y * skala) + offsetY;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            });
+            ctx.stroke();
+            ctx.setLineDash([]); // Matikan putus-putus untuk fitur lain
+        }
+
+        // --- MANAJEMEN FILE ---
         function eksporRajah() {
             if (!masterTemplate) {
-                alert("Belum ada Rajah yang direkam! Silakan rekam pola terlebih dahulu.");
-                return;
+                alert("Belum ada Rajah yang direkam!"); return;
             }
-            // Konversi array ke format JSON string
             const dataJSON = JSON.stringify(masterTemplate, null, 2);
             const namaFile = `rajah_lakukota_${Date.now()}.json`;
-            
-            // Buat Blob dan trigger unduhan
             const blob = new Blob([dataJSON], { type: "application/json" });
             const url = URL.createObjectURL(blob);
             
             const a = document.createElement("a");
-            a.href = url;
-            a.download = namaFile;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            teksStatus.innerText = `✅ File ${namaFile} berhasil diunduh!`;
+            a.href = url; a.download = namaFile;
+            document.body.appendChild(a); a.click();
+            document.body.removeChild(a); URL.revokeObjectURL(url);
+            teksStatus.innerText = `✅ File ${namaFile} diunduh!`;
         }
 
-        const JUMLAH_SAMPEL = 64;
+        function triggerLoad() { fileInput.click(); }
 
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    // Validasi sederhana: pastikan file punya array titik
+                    if(Array.isArray(data) && data.length > 0 && data[0].hasOwnProperty('x')) {
+                        masterTemplate = data;
+                        setMode('UJI');
+                        teksStatus.innerText = `✅ Rajah dari file [${file.name}] berhasil dimuat dan divisualisasikan!`;
+                    } else {
+                        throw new Error("Struktur JSON tidak sesuai.");
+                    }
+                } catch (err) {
+                    alert("Gagal membaca file. Pastikan file JSON dari sistem ini.");
+                }
+                fileInput.value = ""; // Reset input
+            };
+            reader.readAsText(file);
+        });
+
+        // --- ALGORITMA MATH ---
+        const JUMLAH_SAMPEL = 64;
         function hitungPanjangJalur(titik) {
             let d = 0;
             for (let i = 1; i < titik.length; i++) d += Math.hypot(titik[i].x - titik[i-1].x, titik[i].y - titik[i-1].y);
@@ -190,13 +240,14 @@
             return persentase.toFixed(1);
         }
 
+        // --- LOGIKA UI & AUDIO ---
         function setMode(mode) {
             modeSaatIni = mode;
             teksMode.innerText = `MODE: ${mode === 'REKAM' ? 'REKAM RAJAH' : 'UJI MANTRA'}`;
             teksMode.style.color = mode === 'REKAM' ? '#eab308' : '#a855f7';
             resetEfek();
             if (mode === 'REKAM') teksStatus.innerText = "Siap merekam! Gambar Rajah/Template lalu kepalkan tangan.";
-            else teksStatus.innerText = masterTemplate ? "Tiru Master Rajah! Gambar lalu kepalkan tangan." : "⚠️ Harap rekam Master Template dulu!";
+            else teksStatus.innerText = masterTemplate ? "Ikuti pola putus-putus kuning! Gambar lalu kepalkan tangan." : "⚠️ Harap rekam Master Template dulu!";
         }
 
         function resetEfek() {
@@ -221,8 +272,17 @@
             osc.start(); osc.stop(audioCtx.currentTime + 0.5);
         }
 
+        // --- LOOP UTAMA KAMERA ---
         function onResults(results) {
-            canvasCtx.save(); canvasCtx.clearRect(0, 0, 640, 480); canvasCtx.drawImage(results.image, 0, 0, 640, 480);
+            canvasCtx.save(); 
+            canvasCtx.clearRect(0, 0, 640, 480); 
+            
+            // 1. Gambar latar kamera
+            canvasCtx.drawImage(results.image, 0, 0, 640, 480);
+            
+            // 2. Gambar panduan rajah (jika ada file dimuat)
+            gambarGhostTemplate(canvasCtx);
+
             if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
                 const tangan = results.multiHandLandmarks[0];
                 drawConnectors(canvasCtx, tangan, HAND_CONNECTIONS, {color: 'rgba(255,255,255,0.2)', lineWidth: 1});
@@ -230,7 +290,6 @@
 
                 const telunjukLurus = tangan[8].y < tangan[6].y; const tengahLurus = tangan[12].y < tangan[10].y;
                 const manisLurus = tangan[16].y < tangan[14].y; const kelingkingLurus = tangan[20].y < tangan[18].y;
-
                 const x = tangan[8].x * drawingCanvas.width; const y = tangan[8].y * drawingCanvas.height;
 
                 if (telunjukLurus && tengahLurus && manisLurus && kelingkingLurus) {
@@ -250,7 +309,7 @@
                             masterTemplate = dataNormal;
                             teksStatus.innerText = "✅ Rajah Master Berhasil Disimpan!";
                             teksSkor.innerText = "SIMPAN"; teksSkor.style.color = "#eab308"; playSfx(true);
-                            setTimeout(() => { resetEfek(); teksStatus.innerText="Siap menguji. Pindah ke Mode Uji Pemain."; }, 1500);
+                            setTimeout(() => { resetEfek(); setMode('UJI'); }, 1500);
                         } else if (modeSaatIni === 'UJI') {
                             if (!masterTemplate) teksStatus.innerText = "⚠️ Rekam Rajah Master dulu!";
                             else {
@@ -265,7 +324,7 @@
                                     teksSkor.style.color = "#f87171"; wadahKamera.classList.add('gagal-aura'); playSfx(false);
                                     setTimeout(() => { wadahKamera.classList.remove('gagal-aura'); }, 500);
                                 }
-                                setTimeout(() => { resetEfek(); teksStatus.innerText="Tiru Master Rajah! Gambar lalu kepalkan tangan."; }, 2500);
+                                setTimeout(() => { resetEfek(); setMode('UJI'); }, 2500);
                             }
                         }
                     }
