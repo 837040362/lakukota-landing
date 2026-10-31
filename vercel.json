@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/s/:token",
-      "destination": "/s/index.html?token=:token"
+      "destination": "/s/index.html"
     }
   ]
 }
