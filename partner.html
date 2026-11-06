@@ -10,6 +10,68 @@
 @media(max-width:760px){.nav{padding:18px 5vw}.nav small{max-width:145px;text-align:right;line-height:1.4}.hero{padding:68px 0 58px}.motif{transform:scale(.62) rotate(8deg);transform-origin:top right;right:-4%;top:35px;opacity:.45}.hero h1{font-size:clamp(3rem,14vw,5rem);max-width:560px}.section{padding:56px 0}.section-head{display:block}.section-head p{margin-top:18px}.pillars{grid-template-columns:1fr 1fr}.pillar{min-height:0;border-bottom:1px solid var(--line)}.pillar:nth-child(2){border-right:0}.pillar:nth-child(3),.pillar:nth-child(4){border-bottom:0}.story-grid,.quest-layout,.principle-inner{grid-template-columns:1fr;gap:28px}.quest-list{grid-template-columns:1fr 1fr}.sectors{grid-template-columns:1fr 1fr}.sector{min-height:180px;padding:20px 16px}.closing{padding:65px 0}.foot{font-size:.76rem}}
 @media(max-width:420px){.quest-list{grid-template-columns:1fr}.pillar{padding:20px 15px}.sector{min-height:190px}.btn{width:100%}.hero-foot{align-items:stretch;flex-direction:column}.text-link{align-self:flex-start}}
 
+
+/* Atmospheric section backgrounds */
+.section{position:relative;isolation:isolate}
+.section>.wrap{position:relative;z-index:1}
+.section-story{
+ background:
+  radial-gradient(ellipse at 84% 18%,rgba(255,230,129,.10),transparent 32%),
+  linear-gradient(112deg,#14265c 0%,#1b3478 52%,#172b66 100%);
+}
+.section-story:before{
+ content:"";position:absolute;inset:0;z-index:-1;opacity:.12;
+ background-image:url("https://images.pexels.com/photos/35086543/pexels-photo-35086543.jpeg?auto=compress&cs=tinysrgb&w=1800");
+ background-size:cover;background-position:center 45%;
+ mix-blend-mode:screen;
+}
+.section-experience{
+ background:
+  radial-gradient(circle at 12% 90%,rgba(255,230,129,.12),transparent 24%),
+  linear-gradient(125deg,#294991 0%,#203b88 48%,#1a3274 100%);
+}
+.section-experience:after{
+ content:"";position:absolute;z-index:-1;right:-110px;top:-145px;width:360px;height:360px;
+ border:1px solid rgba(255,230,129,.17);border-radius:50%;
+ box-shadow:0 0 0 28px rgba(255,230,129,.025),0 0 0 58px rgba(255,230,129,.02);
+}
+.section-quest{
+ background:
+  linear-gradient(90deg,rgba(12,24,57,.96) 0%,rgba(15,31,72,.90) 48%,rgba(16,32,73,.84) 100%),
+  url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&w=1800") center/cover;
+}
+.section-quest .quest{background:rgba(7,17,47,.48);backdrop-filter:blur(3px);border-color:rgba(255,230,129,.22)}
+.section-quest .note{background:rgba(255,230,129,.08)}
+.section-partner-types{
+ background:
+  radial-gradient(ellipse at 92% 8%,rgba(255,230,129,.12),transparent 28%),
+  linear-gradient(135deg,#172b66 0%,#203b88 58%,#294991 100%);
+}
+.principle{
+ position:relative;isolation:isolate;overflow:hidden;
+ background:
+  radial-gradient(circle at 12% 85%,rgba(255,230,129,.12),transparent 25%),
+  linear-gradient(120deg,#101f4d 0%,#172d68 50%,#10204e 100%);
+}
+.principle:after{
+ content:"";position:absolute;z-index:-1;right:-90px;top:-180px;width:460px;height:460px;
+ border:1px solid rgba(255,230,129,.18);border-radius:50%;
+ box-shadow:0 0 0 35px rgba(255,230,129,.025),0 0 0 75px rgba(255,230,129,.02),0 0 0 115px rgba(255,230,129,.015);
+}
+.closing{
+ position:relative;isolation:isolate;overflow:hidden;
+ background:linear-gradient(135deg,#203b88 0%,#294991 50%,#172b66 100%);
+}
+.closing:before{
+ content:"";position:absolute;z-index:-1;inset:0;opacity:.10;
+ background:url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&w=1600") center/cover;
+}
+@media(max-width:760px){
+ .section-story:before{background-position:65% center;opacity:.08}
+ .section-quest{background-position:58% center}
+ .principle:after{right:-240px;top:-120px}
+}
+
 /* Partner visual layer */
 .hero-layout{display:grid;grid-template-columns:1.02fr .98fr;gap:42px;align-items:center}
 .hero-copy{position:relative;z-index:2}
@@ -54,7 +116,7 @@
   <div class="visual-stamp"><span>LAKUKOTA</span><strong>DISCOVER<br>THE PLACE.</strong></div>
 </div>
 </div></section>
-<section class="section" id="cerita-partner"><div class="wrap story-grid">
+<section class="section section-story" id="cerita-partner"><div class="wrap story-grid">
   <div>
     <div class="eyebrow">The story behind the place</div>
     <p class="story-title">Setiap tempat menyimpan cerita.<br><em>Begitu pula tempatmu.</em></p>
@@ -68,13 +130,13 @@
     <p>Tak harus selalu tentang hadiah. Tak harus selalu tentang transaksi. Terkadang, pengalaman yang paling berarti adalah alasan untuk menjelajah lebih jauh, mengenal sesuatu lebih dalam, atau ingin kembali lagi.</p>
   </div>
 </div></section>
-<section class="section" id="pengalaman"><div class="wrap">
+<section class="section section-experience" id="pengalaman"><div class="wrap">
 <div class="section-head"><h2>Ordinary visits.<br>Extraordinary discoveries.</h2><p>Lapisan pengalaman digital di atas tempat fisik yang sudah ada—dirancang agar pengunjung memiliki sesuatu untuk ditemukan.</p></div>
 <div class="pillars"><article class="pillar"><div class="number">01</div><h3>DISCOVER</h3><p>Menemukan detail, cerita, atau hal menarik yang sebelumnya terlewat.</p></article><article class="pillar"><div class="number">02</div><h3>EXPLORE</h3><p>Menjelajahi tempat dengan petunjuk, tantangan, dan tujuan.</p></article><article class="pillar"><div class="number">03</div><h3>ENGAGE</h3><p>Berinteraksi dengan ruang, produk, cerita, atau aktivitas secara lebih bermakna.</p></article><article class="pillar"><div class="number">04</div><h3>RETURN</h3><p>Membuka kemungkinan alasan baru untuk datang kembali.</p></article></div>
 </div></section>
-<section class="section"><div class="wrap quest-layout"><div><div class="eyebrow">Partner Quest</div><p class="quote">Your place.<br><em>Your story.</em><br>Your quest.</p><p class="bodycopy">Elemen yang sudah dimiliki mitra dapat menjadi bagian dari permainan eksplorasi. Quest bisa berangkat dari menu, benda, ruang, sejarah, kebiasaan, atau cerita khas suatu tempat.</p><div class="note">Tidak semua tempat membutuhkan mekanisme yang sama. Pengalaman dirancang sesuai karakter tempat dan tujuan bisnisnya.</div></div>
+<section class="section section-quest"><div class="wrap quest-layout"><div><div class="eyebrow">Partner Quest</div><p class="quote">Your place.<br><em>Your story.</em><br>Your quest.</p><p class="bodycopy">Elemen yang sudah dimiliki mitra dapat menjadi bagian dari permainan eksplorasi. Quest bisa berangkat dari menu, benda, ruang, sejarah, kebiasaan, atau cerita khas suatu tempat.</p><div class="note">Tidak semua tempat membutuhkan mekanisme yang sama. Pengalaman dirancang sesuai karakter tempat dan tujuan bisnisnya.</div></div>
 <div class="quest-list"><article class="quest"><div class="icon">⌕</div><h3>Observation Quest</h3><p>Menemukan detail tersembunyi di lokasi.</p></article><article class="quest"><div class="icon">◇</div><h3>Quiz &amp; Riddle</h3><p>Menjawab pertanyaan atau memecahkan teka-teki.</p></article><article class="quest"><div class="icon">▦</div><h3>QR Checkpoint</h3><p>Membuka tahapan melalui kode di lokasi.</p></article><article class="quest"><div class="icon">✦</div><h3>Hidden Reward</h3><p>Menemukan hadiah atau pengalaman khusus jika sesuai tujuan.</p></article><article class="quest" style="grid-column:1/-1"><div class="icon">✧</div><h3>Story Quest</h3><p>Mengikuti narasi yang terhubung dengan karakter dan cerita tempat.</p></article></div></div></section>
-<section class="section" id="kolaborasi"><div class="wrap"><div class="section-head"><h2>Different places.<br>Different purposes.</h2><p>Satu platform, beragam pengalaman. Titik awalnya bukan memilih fitur, melainkan memahami apa yang ingin dicapai oleh tempat Anda.</p></div><div class="sectors">
+<section class="section section-partner-types" id="kolaborasi"><div class="wrap"><div class="section-head"><h2>Different places.<br>Different purposes.</h2><p>Satu platform, beragam pengalaman. Titik awalnya bukan memilih fitur, melainkan memahami apa yang ingin dicapai oleh tempat Anda.</p></div><div class="sectors">
 <article class="sector" style="--sector-image:url('https://images.pexels.com/photos/34037351/pexels-photo-34037351.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900')"><small>01 / F&amp;B</small><h3>Café &amp; Restaurant</h3><p>Eksplorasi menu, pengenalan produk, pengalaman saat menunggu, atau kunjungan ulang.</p></article>
 <article class="sector" style="--sector-image:url('https://images.pexels.com/photos/14025913/pexels-photo-14025913.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900')"><small>02 / HOSPITALITY</small><h3>Hotel</h3><p>Aktivitas tamu, eksplorasi fasilitas, dan cerita tentang lingkungan sekitar.</p></article>
 <article class="sector" style="--sector-image:url('https://images.pexels.com/photos/18356313/pexels-photo-18356313.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900')"><small>03 / RETAIL</small><h3>Retail &amp; Store</h3><p>Penemuan produk, tantangan ringan, dan pengalaman berbelanja yang berbeda.</p></article>
