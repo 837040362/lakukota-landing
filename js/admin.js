@@ -762,7 +762,8 @@ if (registrationQuotaSaveButton) {
                 await loadRegistrationGate();
             }
             finally {
-                registrationQuotaSaveButton.disabled = false;
+                // Preserve the disabled state decided by loadRegistrationGate().
+                // If gate status cannot be read, keep quota controls locked.
                 registrationQuotaSaveButton.textContent = 'SIMPAN KUOTA';
             }
         }
