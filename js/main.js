@@ -43,7 +43,32 @@ if (formDaftar) {
                 return;
             }
 
-            // 2. DAFTARKAN KE SUPABASE AUTH (SEKALIGUS TITIP DATA)
+            // 2. PERIKSA GERBANG SEKALI LAGI SEBELUM SIGNUP.
+            // Pemeriksaan final tetap dilakukan secara atomik oleh trigger database.
+            const {
+                data: registrationGate,
+                error: registrationGateError
+            } = await supabaseClient
+                .from('registration_gate')
+                .select('is_open, batch_name, closed_reason')
+                .eq('id', 1)
+                .single();
+
+            if (registrationGateError) {
+                throw new Error(
+                    'Status gerbang pendaftaran belum dapat diverifikasi. Silakan coba kembali.'
+                );
+            }
+
+            if (!registrationGate?.is_open) {
+                throw new Error(
+                    registrationGate?.closed_reason === 'quota'
+                        ? 'Kuota pendaftaran batch ini telah terpenuhi. Silakan menunggu pembukaan kuota berikutnya.'
+                        : 'Gerbang pendaftaran SANGKAN sedang ditutup.'
+                );
+            }
+
+            // 3. DAFTARKAN KE SUPABASE AUTH (DIPAGARI TRIGGER DATABASE)
             const { data: authData, error: authError } = await supabaseClient.auth.signUp({
                 email: email,
                 password: password,
@@ -107,7 +132,30 @@ if (formDaftar) {
 
         } catch (error) {
             console.error("Terjadi Gangguan Mistis:", error);
-            alert("Gagal melakukan ritual: " + error.message);
+
+            let pesanError = error.message;
+
+            // Jika pendaftaran kalah dalam perlombaan slot terakhir,
+            // baca lagi status gerbang agar pesan tetap mudah dipahami.
+            if (/database error saving new user/i.test(pesanError || '')) {
+                try {
+                    const { data: gateTerbaru } = await supabaseClient
+                        .from('registration_gate')
+                        .select('is_open, closed_reason')
+                        .eq('id', 1)
+                        .single();
+
+                    if (gateTerbaru && gateTerbaru.is_open === false) {
+                        pesanError = gateTerbaru.closed_reason === 'quota'
+                            ? 'Kuota pendaftaran batch ini baru saja terpenuhi. Silakan menunggu kuota berikutnya.'
+                            : 'Gerbang pendaftaran SANGKAN baru saja ditutup.';
+                    }
+                } catch (gateError) {
+                    console.warn('Status gerbang setelah signup gagal belum dapat dibaca:', gateError);
+                }
+            }
+
+            alert("Gagal melakukan ritual: " + pesanError);
         } finally {
             btnSubmit.innerText = originalText;
             btnSubmit.disabled = false;

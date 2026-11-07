@@ -69,6 +69,15 @@ const registrationGateStatus =
 const registrationGateButton =
     document.getElementById('registration-gate-btn');
 
+const registrationQuotaLimitInput =
+    document.getElementById('registration-quota-limit');
+
+const registrationQuotaSaveButton =
+    document.getElementById('registration-quota-save-btn');
+
+const registrationQuotaSummary =
+    document.getElementById('registration-quota-summary');
+
 // ========================================================
 // CEK ELEMENT
 // ========================================================
@@ -485,10 +494,31 @@ async function cekSession() {
 }
 
 // ========================================================
-// REGISTRATION GATE
+// REGISTRATION GATE + AUTOMATIC QUOTA
 // ========================================================
 
 let registrationGateOpen = true;
+let registrationGateCloseReason = null;
+let registrationGateQuotaLimit = 0;
+let registrationGateRegisteredCount = 0;
+
+function updateRegistrationQuotaSummary() {
+    if (!registrationQuotaSummary) return;
+
+    if (registrationGateQuotaLimit === 0) {
+        registrationQuotaSummary.textContent =
+            `${registrationGateRegisteredCount} Selaku pada batch aktif · Tanpa batas kuota`;
+        return;
+    }
+
+    const remaining = Math.max(
+        0,
+        registrationGateQuotaLimit - registrationGateRegisteredCount
+    );
+
+    registrationQuotaSummary.textContent =
+        `${registrationGateRegisteredCount} / ${registrationGateQuotaLimit} terdaftar · Sisa ${remaining} slot`;
+}
 
 async function loadRegistrationGate() {
 
@@ -497,7 +527,10 @@ async function loadRegistrationGate() {
         !registeredCount ||
         !paidCount ||
         !registrationGateStatus ||
-        !registrationGateButton
+        !registrationGateButton ||
+        !registrationQuotaLimitInput ||
+        !registrationQuotaSaveButton ||
+        !registrationQuotaSummary
     ) {
         console.warn(
             'Element registration gate belum lengkap.'
@@ -506,101 +539,60 @@ async function loadRegistrationGate() {
     }
 
     try {
-
         const {
-            data: gate,
-            error: gateError
-        } =
-            await supabaseClient
-                .from('registration_gate')
-                .select(
-                    'id,batch_name,is_open,updated_at'
-                )
-                .eq('id', 1)
-                .single();
+            data,
+            error
+        } = await supabaseClient.rpc(
+            'admin_registration_gate_status'
+        );
 
-        if (gateError) {
-            throw gateError;
+        if (error) throw error;
+
+        const gate = Array.isArray(data) ? data[0] : data;
+
+        if (!gate) {
+            throw new Error('Data registration gate tidak ditemukan.');
         }
 
         registrationGateOpen =
             gate.is_open === true;
 
+        registrationGateCloseReason =
+            gate.closed_reason ?? null;
+
+        registrationGateQuotaLimit =
+            Number(gate.quota_limit ?? 0);
+
+        registrationGateRegisteredCount =
+            Number(gate.registered_count ?? 0);
+
         registrationBatchName.textContent =
-            gate.batch_name;
-
-        // ============================================
-        // HITUNG TERDAFTAR
-        // ============================================
-
-        const {
-            count: registered,
-            error: registeredError
-        } =
-            await supabaseClient
-                .from('users')
-                .select(
-                    'user_id',
-                    {
-                        count: 'exact',
-                        head: true
-                    }
-                );
-
-        if (registeredError) {
-            throw registeredError;
-        }
-
-        // ============================================
-        // HITUNG PAID
-        // ============================================
-
-        const {
-            count: paid,
-            error: paidError
-        } =
-            await supabaseClient
-                .from('users')
-                .select(
-                    'user_id',
-                    {
-                        count: 'exact',
-                        head: true
-                    }
-                )
-                .eq(
-                    'payment_status',
-                    'paid'
-                );
-
-        if (paidError) {
-            throw paidError;
-        }
+            gate.batch_name || '—';
 
         registeredCount.textContent =
-            registered ?? 0;
+            registrationGateRegisteredCount;
 
         paidCount.textContent =
-            paid ?? 0;
+            Number(gate.paid_count ?? 0);
 
+        registrationQuotaLimitInput.value =
+            registrationGateQuotaLimit;
+
+        updateRegistrationQuotaSummary();
         renderRegistrationGate();
 
+        registrationQuotaSaveButton.disabled = false;
+        registrationQuotaLimitInput.disabled = false;
     }
     catch (error) {
-
         console.error(
             'Gagal membaca registration gate:',
             error
         );
 
-        registrationBatchName.textContent =
-            '—';
-
-        registeredCount.textContent =
-            '?';
-
-        paidCount.textContent =
-            '?';
+        registrationBatchName.textContent = '—';
+        registeredCount.textContent = '?';
+        paidCount.textContent = '?';
 
         registrationGateStatus.textContent =
             'GAGAL MEMBACA STATUS';
@@ -610,9 +602,11 @@ async function loadRegistrationGate() {
             'is-closed'
         );
 
-        registrationGateButton.disabled =
-            true;
-
+        registrationGateButton.disabled = true;
+        registrationQuotaLimitInput.disabled = true;
+        registrationQuotaSaveButton.disabled = true;
+        registrationQuotaSummary.textContent =
+            'Kuota belum dapat dibaca. Coba segarkan dashboard.';
     }
 }
 
@@ -631,87 +625,68 @@ function renderRegistrationGate() {
     );
 
     if (registrationGateOpen) {
-
         registrationGateStatus.textContent =
             '🟢 REGISTRASI TERBUKA';
 
-        registrationGateStatus.classList.add(
-            'is-open'
-        );
-
+        registrationGateStatus.classList.add('is-open');
         registrationGateButton.textContent =
             'TUTUP REGISTRASI';
-
-    } else {
-
+    } else if (registrationGateCloseReason === 'quota') {
         registrationGateStatus.textContent =
-            '🔴 REGISTRASI DITUTUP';
+            '🔴 KUOTA TERCAPAI — GERBANG DITUTUP OTOMATIS';
 
-        registrationGateStatus.classList.add(
-            'is-closed'
-        );
+        registrationGateStatus.classList.add('is-closed');
+        registrationGateButton.textContent =
+            'KUOTA PENUH — UBAH BATAS';
+    } else {
+        registrationGateStatus.textContent =
+            '🔴 REGISTRASI DITUTUP MANUAL';
 
+        registrationGateStatus.classList.add('is-closed');
         registrationGateButton.textContent =
             'BUKA REGISTRASI';
-
     }
 
-    registrationGateButton.disabled =
-        false;
+    registrationGateButton.disabled = false;
+    updateRegistrationQuotaSummary();
 }
 
 if (registrationGateButton) {
-
     registrationGateButton.addEventListener(
         'click',
         async function() {
+            const nextState = !registrationGateOpen;
 
-            const nextState =
-                !registrationGateOpen;
-
-            const pesan =
-                nextState
-                    ? 'Buka kembali registrasi SANGKAN?'
-                    : 'Tutup registrasi SANGKAN?';
-
-            const yakin =
-                confirm(pesan);
-
-            if (!yakin) {
+            if (
+                nextState &&
+                registrationGateCloseReason === 'quota'
+            ) {
+                alert(
+                    'Kuota batch sudah terpenuhi. Naikkan batas kuota atau set 0 untuk tanpa batas. Gerbang akan terbuka kembali setelah kuota baru menyediakan slot.'
+                );
                 return;
             }
 
-            registrationGateButton.disabled =
-                true;
+            const pesan = nextState
+                ? 'Buka kembali registrasi SANGKAN?'
+                : 'Tutup registrasi SANGKAN secara manual?';
 
-            registrationGateButton.textContent =
-                'MENYIMPAN...';
+            if (!confirm(pesan)) return;
+
+            registrationGateButton.disabled = true;
+            registrationGateButton.textContent = 'MENYIMPAN...';
 
             try {
+                const { error } = await supabaseClient.rpc(
+                    'admin_set_registration_gate',
+                    { p_is_open: nextState }
+                );
 
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient.rpc(
-                        'admin_set_registration_gate',
-                        {
-                            p_is_open: nextState
-                        }
-                    );
+                if (error) throw error;
 
-                if (error) {
-                    throw error;
-                }
-
-                registrationGateOpen =
-                    data?.is_open === true;
-
-                renderRegistrationGate();
-
+                await loadRegistrationGate();
             }
             catch (error) {
-
                 console.error(
                     'Gagal mengubah registration gate:',
                     error
@@ -722,7 +697,73 @@ if (registrationGateButton) {
                     error.message
                 );
 
-                renderRegistrationGate();
+                await loadRegistrationGate();
+            }
+        }
+    );
+}
+
+if (registrationQuotaSaveButton) {
+    registrationQuotaSaveButton.addEventListener(
+        'click',
+        async function() {
+            const rawValue =
+                registrationQuotaLimitInput?.value?.trim() ?? '';
+
+            const quota = Number(rawValue);
+
+            if (
+                rawValue === '' ||
+                !Number.isSafeInteger(quota) ||
+                quota < 0 ||
+                quota > 100000
+            ) {
+                alert(
+                    'Masukkan kuota berupa bilangan bulat antara 0 sampai 100.000. Gunakan 0 untuk tanpa batas.'
+                );
+                registrationQuotaLimitInput?.focus();
+                return;
+            }
+
+            const confirmation = quota === 0
+                ? 'Simpan kuota 0 (tanpa batas) untuk batch aktif?'
+                : `Tetapkan batas ${quota} Selaku untuk batch aktif?`;
+
+            if (!confirm(confirmation)) return;
+
+            registrationQuotaSaveButton.disabled = true;
+            registrationQuotaSaveButton.textContent = 'MENYIMPAN...';
+
+            try {
+                const { error } = await supabaseClient.rpc(
+                    'admin_set_registration_quota',
+                    { p_quota_limit: quota }
+                );
+
+                if (error) throw error;
+
+                await loadRegistrationGate();
+
+                alert(
+                    'Batas kuota berhasil disimpan. Status gerbang telah disesuaikan dengan jumlah pendaftar saat ini.'
+                );
+            }
+            catch (error) {
+                console.error(
+                    'Gagal menyimpan kuota pendaftaran:',
+                    error
+                );
+
+                alert(
+                    'Gagal menyimpan kuota:\n\n' +
+                    error.message
+                );
+
+                await loadRegistrationGate();
+            }
+            finally {
+                registrationQuotaSaveButton.disabled = false;
+                registrationQuotaSaveButton.textContent = 'SIMPAN KUOTA';
             }
         }
     );

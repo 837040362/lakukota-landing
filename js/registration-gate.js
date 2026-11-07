@@ -88,7 +88,7 @@
         try {
             const { data, error } = await gateClient
                 .from('registration_gate')
-                .select('id,batch_name,is_open,updated_at')
+                .select('id,batch_name,is_open,quota_limit,closed_reason,updated_at')
                 .eq('id', 1)
                 .single();
 
@@ -130,7 +130,9 @@
 
             if (messageTitle) {
                 messageTitle.textContent =
-                    'REGISTRASI SANGKAN DITUTUP';
+                    data.closed_reason === 'quota'
+                        ? 'KUOTA PENDAFTARAN TELAH TERPENUHI'
+                        : 'REGISTRASI SANGKAN DITUTUP';
             }
 
             if (messageText) {
@@ -142,13 +144,15 @@
 
                 messageText.replaceChildren(
                     document.createTextNode(
-                        'Gerbang pendaftaran '
+                        data.closed_reason === 'quota'
+                            ? 'Kuota pendaftaran '
+                            : 'Gerbang pendaftaran '
                     ),
                     batchName,
                     document.createTextNode(
-                        ' untuk sementara sedang ditutup. ' +
-                        'Perjalanan berikutnya akan dibuka ' +
-                        'kembali pada waktu yang telah ditentukan.'
+                        data.closed_reason === 'quota'
+                            ? ' telah terpenuhi. Pendaftaran akan dibuka kembali ketika batch berikutnya atau kuota baru ditetapkan.'
+                            : ' untuk sementara sedang ditutup. Perjalanan berikutnya akan dibuka kembali pada waktu yang telah ditentukan.'
                     )
                 );
             }
