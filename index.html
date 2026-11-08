@@ -12,6 +12,7 @@
   <div class="nav-links">
     <a href="#hero">Prolog</a>
     <a href="#cerita">Cerita</a>
+    <a href="#karakter">Karakter</a>
     <a href="#menanti">Yang Menanti</a>
     <a href="#pusaka">Pusaka</a>
     <a href="#partners">Partners</a>
@@ -43,6 +44,113 @@
   </div>
 </section>
 
+<section id="karakter" class="cinematic-section bg-alt">
+  <div class="content character-content">
+    <p class="character-eyebrow">TOKOH DI BALIK PERJALANAN</p>
+    <h2>Karakter LAKUKOTA</h2>
+    <p class="character-intro">
+      Setiap perjalanan memiliki sosok yang menyimpan cerita.
+      Kenali mereka yang akan hadir di sepanjang perjalanan LAKUKOTA.
+    </p>
+
+    <div class="character-carousel" aria-label="Galeri karakter LAKUKOTA">
+      <div class="character-track" id="track-karakter">
+        <article class="character-slide">
+          <div class="character-art">
+            <img
+              src="assets/img/Laku_landing.png"
+              alt="Ilustrasi karakter Laku"
+              loading="lazy"
+              decoding="async"
+            >
+          </div>
+          <div class="character-copy">
+            <span class="character-index">01 / 03</span>
+            <h3>LAKU</h3>
+            <p>
+              Seorang siswa SMA tingkat akhir. Pemuda yang latar belakangnya
+              tidak banyak diketahui. Ia sudah lama berada di Yogyakarta dan
+              memiliki hubungan yang unik dengan kota ini. Ada banyak hal
+              tentang dirinya yang sulit dijelaskan. Namun satu hal pasti:
+              Laku mengenal Jogja dengan caranya sendiri.
+            </p>
+          </div>
+        </article>
+
+        <article class="character-slide">
+          <div class="character-art">
+            <img
+              src="assets/img/Sela_landing.png"
+              alt="Ilustrasi karakter Sela"
+              loading="lazy"
+              decoding="async"
+            >
+          </div>
+          <div class="character-copy">
+            <span class="character-index">02 / 03</span>
+            <h3>SELA</h3>
+            <p>
+              Siswi SMA tingkat akhir yang baru kembali ke Yogyakarta.
+              Berdarah asli Jogja, tetapi sejak kecil mengikuti orang tuanya
+              berpindah-pindah. Kini ia kembali ke kota yang secara darah
+              merupakan rumahnya... namun terasa asing. Perjalanan ini
+              mempertemukannya dengan Laku.
+            </p>
+          </div>
+        </article>
+
+        <article class="character-slide">
+          <div class="character-art">
+            <img
+              src="assets/img/Kersa_landing.png"
+              alt="Ilustrasi karakter Kersa"
+              loading="lazy"
+              decoding="async"
+            >
+          </div>
+          <div class="character-copy">
+            <span class="character-index">03 / 03</span>
+            <h3>KERSA</h3>
+            <p>
+              Seseorang yang akan menemani perjalananmu. Ia hampir terdengar
+              seperti kakek tua yang bijak, walaupun kadang juga menjengkelkan.
+              Tak banyak yang bisa diketahui tentang dirinya selain bahwa ia
+              memiliki pengetahuan yang luas tentang kota ini. Mungkin dialah
+              satu-satunya orang yang mengetahui tentang sejarah Atmaka.
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <div class="character-carousel-controls">
+        <button
+          type="button"
+          class="character-arrow"
+          id="character-prev"
+          aria-label="Karakter sebelumnya"
+          disabled
+        >&#8592;</button>
+
+        <div class="character-dots" role="group" aria-label="Pilih karakter">
+          <button type="button" class="character-dot is-active" data-index="0" aria-label="Lihat Laku" aria-current="true"></button>
+          <button type="button" class="character-dot" data-index="1" aria-label="Lihat Sela"></button>
+          <button type="button" class="character-dot" data-index="2" aria-label="Lihat Kersa"></button>
+        </div>
+
+        <span class="character-counter" id="character-counter" aria-live="polite">01 / 03</span>
+
+        <button
+          type="button"
+          class="character-arrow"
+          id="character-next"
+          aria-label="Karakter berikutnya"
+        >&#8594;</button>
+      </div>
+      <p class="character-hint">Gunakan panah atau geser untuk mengenal karakter lainnya.</p>
+    </div>
+  </div>
+</section>
+
 <section id="menanti" class="cinematic-section">
   <div class="content left-align">
     <h2>Yang Menantimu di SANGKAN</h2>
@@ -59,11 +167,7 @@
     <a href="https://lakukota.com/sangkan.html" class="btn-primary">MASUKI SANGKAN</a>
   </div>
 </section>
-
-<section id="karakter" class="cinematic-section" style="display:none;">
-  <div class="content"><h2>Karakter</h2></div>
-</section>
-
+\n
 <section id="pusaka" class="cinematic-section bg-alt">
   <div class="content">
     <h2>Pusaka</h2>
@@ -199,6 +303,7 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="js/main.js"></script>
 <script src="js/registration-gate.js"></script>
+<script src="js/character-carousel.js"></script>
 
 <script>
 (() => {
