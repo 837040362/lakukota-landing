@@ -1255,6 +1255,28 @@
                 background: rgba(0,0,0,0.18);
             }
 
+            .registration-batch-name-field {
+                margin-bottom: 16px;
+            }
+
+            .registration-batch-name-field input {
+                display: block;
+                width: 100%;
+                height: 42px;
+                padding: 0 12px;
+                border: 1px solid #333;
+                outline: none;
+                background: #080808;
+                color: #eee;
+                font: inherit;
+                font-size: 14px;
+            }
+
+            .registration-batch-name-field input:focus {
+                border-color: var(--gold);
+                box-shadow: 0 0 0 1px rgba(212,175,55,0.10);
+            }
+
             .registration-quota-label {
                 display: block;
                 margin-bottom: 9px;
@@ -1538,6 +1560,24 @@
         
         
             <div class="registration-quota-editor">
+                <div class="registration-batch-name-field">
+                    <label
+                        class="registration-quota-label"
+                        for="registration-batch-name-input"
+                    >
+                        NAMA BATCH AKTIF / BATCH BERIKUTNYA
+                    </label>
+
+                    <input
+                        type="text"
+                        id="registration-batch-name-input"
+                        maxlength="80"
+                        autocomplete="off"
+                        spellcheck="false"
+                        aria-label="Nama batch aktif atau batch berikutnya"
+                    >
+                </div>
+
                 <label
                     class="registration-quota-label"
                     for="registration-quota-limit"
@@ -1563,13 +1603,12 @@
                         class="btn-secondary"
                         disabled
                     >
-                        SIMPAN KUOTA
+                        SIMPAN BATCH &amp; KUOTA
                     </button>
                 </div>
 
                 <p class="registration-quota-help">
-                    0 = tanpa batas. Kuota menghitung semua Selaku pada batch aktif,
-                    termasuk yang belum menyelesaikan pembayaran.
+                    0 = tanpa batas. Kuota menghitung semua Selaku pada batch aktif, termasuk yang belum menyelesaikan pembayaran. Batch baru akan tetap tertutup sampai kamu membukanya secara manual.
                 </p>
 
                 <p

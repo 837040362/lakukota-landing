@@ -57,6 +57,9 @@ const pendingCount =
 const registrationBatchName =
     document.getElementById('registration-batch-name');
 
+const registrationBatchNameInput =
+    document.getElementById('registration-batch-name-input');
+
 const registeredCount =
     document.getElementById('registered-count');
 
@@ -498,6 +501,7 @@ async function cekSession() {
 // ========================================================
 
 let registrationGateOpen = true;
+let registrationGateBatchName = '';
 let registrationGateCloseReason = null;
 let registrationGateQuotaLimit = 0;
 let registrationGateRegisteredCount = 0;
@@ -524,6 +528,7 @@ async function loadRegistrationGate() {
 
     if (
         !registrationBatchName ||
+        !registrationBatchNameInput ||
         !registeredCount ||
         !paidCount ||
         !registrationGateStatus ||
@@ -566,8 +571,14 @@ async function loadRegistrationGate() {
         registrationGateRegisteredCount =
             Number(gate.registered_count ?? 0);
 
+        registrationGateBatchName =
+            gate.batch_name || '';
+
         registrationBatchName.textContent =
-            gate.batch_name || '—';
+            registrationGateBatchName || '—';
+
+        registrationBatchNameInput.value =
+            registrationGateBatchName;
 
         registeredCount.textContent =
             registrationGateRegisteredCount;
@@ -582,6 +593,7 @@ async function loadRegistrationGate() {
         renderRegistrationGate();
 
         registrationQuotaSaveButton.disabled = false;
+        registrationBatchNameInput.disabled = false;
         registrationQuotaLimitInput.disabled = false;
     }
     catch (error) {
@@ -603,6 +615,7 @@ async function loadRegistrationGate() {
         );
 
         registrationGateButton.disabled = true;
+        registrationBatchNameInput.disabled = true;
         registrationQuotaLimitInput.disabled = true;
         registrationQuotaSaveButton.disabled = true;
         registrationQuotaSummary.textContent =
@@ -707,10 +720,24 @@ if (registrationQuotaSaveButton) {
     registrationQuotaSaveButton.addEventListener(
         'click',
         async function() {
+            const rawBatchName =
+                registrationBatchNameInput?.value?.trim() ?? '';
+
             const rawValue =
                 registrationQuotaLimitInput?.value?.trim() ?? '';
 
             const quota = Number(rawValue);
+
+            if (
+                !rawBatchName ||
+                rawBatchName.length > 80
+            ) {
+                alert(
+                    'Masukkan nama batch antara 1 sampai 80 karakter.'
+                );
+                registrationBatchNameInput?.focus();
+                return;
+            }
 
             if (
                 rawValue === '' ||
@@ -725,9 +752,21 @@ if (registrationQuotaSaveButton) {
                 return;
             }
 
-            const confirmation = quota === 0
-                ? 'Simpan kuota 0 (tanpa batas) untuk batch aktif?'
-                : `Tetapkan batas ${quota} Selaku untuk batch aktif?`;
+            const batchChanged =
+                rawBatchName !== registrationGateBatchName;
+
+            if (batchChanged && registrationGateOpen) {
+                alert(
+                    'Tutup gerbang registrasi terlebih dahulu sebelum mengganti batch. Ini mencegah pendaftaran masuk ke batch yang sedang dipindahkan.'
+                );
+                return;
+            }
+
+            const confirmation = batchChanged
+                ? `Ganti batch "${registrationGateBatchName}" menjadi "${rawBatchName}" dengan kuota ${quota === 0 ? 'tanpa batas' : quota + ' Selaku'}?\n\nData batch lama tetap tersimpan. Batch baru mulai dari 0 dan gerbang akan tetap tertutup sampai kamu membukanya secara manual.`
+                : quota === 0
+                    ? 'Simpan kuota 0 (tanpa batas) untuk batch aktif?'
+                    : `Tetapkan batas ${quota} Selaku untuk batch aktif?`;
 
             if (!confirm(confirmation)) return;
 
@@ -736,8 +775,11 @@ if (registrationQuotaSaveButton) {
 
             try {
                 const { error } = await supabaseClient.rpc(
-                    'admin_set_registration_quota',
-                    { p_quota_limit: quota }
+                    'admin_set_registration_batch',
+                    {
+                        p_batch_name: rawBatchName,
+                        p_quota_limit: quota
+                    }
                 );
 
                 if (error) throw error;
@@ -745,26 +787,27 @@ if (registrationQuotaSaveButton) {
                 await loadRegistrationGate();
 
                 alert(
-                    'Batas kuota berhasil disimpan. Status gerbang telah disesuaikan dengan jumlah pendaftar saat ini.'
+                    batchChanged
+                        ? `Batch baru "${rawBatchName}" berhasil disiapkan. Gerbang masih tertutup. Tekan BUKA REGISTRASI saat kamu siap menerima pendaftar.`
+                        : 'Nama batch dan batas kuota berhasil disimpan. Status gerbang telah disesuaikan dengan jumlah pendaftar saat ini.'
                 );
             }
             catch (error) {
                 console.error(
-                    'Gagal menyimpan kuota pendaftaran:',
+                    'Gagal menyimpan batch dan kuota:',
                     error
                 );
 
                 alert(
-                    'Gagal menyimpan kuota:\n\n' +
+                    'Gagal menyimpan batch dan kuota:\n\n' +
                     error.message
                 );
 
                 await loadRegistrationGate();
             }
             finally {
-                // Preserve the disabled state decided by loadRegistrationGate().
-                // If gate status cannot be read, keep quota controls locked.
-                registrationQuotaSaveButton.textContent = 'SIMPAN KUOTA';
+                // Preserve disabled state when the gate status is unavailable.
+                registrationQuotaSaveButton.textContent = 'SIMPAN BATCH & KUOTA';
             }
         }
     );
