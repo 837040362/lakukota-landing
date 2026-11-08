@@ -42,15 +42,22 @@
         });
     }
 
-    function goTo(index) {
+    function goTo(index, requestedBehavior = null) {
         const targetIndex = clampIndex(index);
         const targetSlide = slides[targetIndex];
+        const trackRect = track.getBoundingClientRect();
+        const slideRect = targetSlide.getBoundingClientRect();
+        const targetLeft =
+            track.scrollLeft + (slideRect.left - trackRect.left);
+
+        const behavior = requestedBehavior ||
+            (window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                ? 'auto'
+                : 'smooth');
 
         track.scrollTo({
-            left: targetSlide.offsetLeft,
-            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-                ? 'auto'
-                : 'smooth'
+            left: targetLeft,
+            behavior
         });
 
         renderControls(targetIndex);
@@ -72,13 +79,15 @@
         }
 
         scrollFrame = requestAnimationFrame(() => {
-            const center = track.scrollLeft + track.clientWidth / 2;
+            const trackRect = track.getBoundingClientRect();
+            const trackCenter = trackRect.left + trackRect.width / 2;
             let nearestIndex = 0;
             let nearestDistance = Infinity;
 
             slides.forEach((slide, index) => {
-                const slideCenter = slide.offsetLeft + slide.clientWidth / 2;
-                const distance = Math.abs(center - slideCenter);
+                const slideRect = slide.getBoundingClientRect();
+                const slideCenter = slideRect.left + slideRect.width / 2;
+                const distance = Math.abs(trackCenter - slideCenter);
 
                 if (distance < nearestDistance) {
                     nearestDistance = distance;
@@ -94,10 +103,7 @@
     window.addEventListener('resize', () => {
         const slide = slides[activeIndex];
         if (slide) {
-            track.scrollTo({
-                left: slide.offsetLeft,
-                behavior: 'auto'
-            });
+            goTo(activeIndex, 'auto');
         }
     });
 
