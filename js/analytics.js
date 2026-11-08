@@ -53,4 +53,36 @@
             });
         });
     }
+
+    // Signup success is identified from the existing success modal.
+    // The event contains no name, email, password, or Supabase user ID.
+    const successModal = document.getElementById('custom-modal');
+    const successTitle = document.getElementById('modal-title');
+    const successMessage = document.getElementById('modal-message');
+    let signupTracked = false;
+
+    function detectSuccessfulSignup() {
+        if (signupTracked || !successModal || !successTitle || !successMessage) return;
+        const isVisible = !successModal.classList.contains('hidden');
+        const isSignupSuccess =
+            successTitle.textContent.trim() === 'RITUAL BERHASIL' &&
+            successMessage.textContent.includes('LAKU-CODE Anda:');
+
+        if (isVisible && isSignupSuccess) {
+            signupTracked = true;
+            track('sign_up', {
+                method: 'email',
+                journey: 'sangkan'
+            });
+        }
+    }
+
+    if (successModal) {
+        new MutationObserver(detectSuccessfulSignup).observe(successModal, {
+            attributes: true,
+            attributeFilter: ['class'],
+            childList: true,
+            subtree: true
+        });
+    }
 })();
