@@ -723,3 +723,28 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
         transition: none;
     }
 }
+
+
+/* =========================================================
+   LANGUAGE SWITCH — BILINGUAL HOMEPAGE
+   ========================================================= */
+.language-switch {
+    flex: 0 0 auto; min-width: 48px; padding: 8px 11px;
+    border: 1px solid rgba(212, 175, 55, 0.75); border-radius: 3px;
+    background: rgba(5, 5, 5, 0.78); color: #d4af37;
+    font-family: 'Cinzel', serif; font-size: 0.76rem; font-weight: 700;
+    letter-spacing: 0.12em; cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.language-switch:hover, .language-switch:focus-visible {
+    background: #d4af37; color: #080808;
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.28); outline: none;
+}
+@media (max-width: 900px) {
+    .language-switch { position: absolute; top: 12px; right: 16px; }
+}
+@media (max-width: 768px) {
+    .navbar { flex-direction: row; justify-content: center; align-items: center; min-height: 54px; padding: 10px 16px; }
+    .navbar .logo { align-self: center; margin: 0 auto; font-size: 1.25rem; }
+    .language-switch { top: 50%; transform: translateY(-50%); }
+}
