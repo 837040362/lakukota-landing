@@ -1065,6 +1065,15 @@
     lanyard1.png   -> lanyard1.webp
     arta1.png      -> arta1.webp
 -->
+    <!-- Google Analytics 4 — LAKUKOTA -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SHSCNJ7M1J"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SHSCNJ7M1J');
+    </script>
+    <script defer src="/js/analytics.js"></script>
 </head>
 
 <body>
@@ -1588,6 +1597,9 @@
         function openFounderOffer() {
             overlay.hidden = false;
             overlay.classList.add('is-open');
+            window.lakukotaAnalytics?.track('view_founder_offer', {
+                journey: 'sangkan'
+            });
             previousOverflow = document.body.style.overflow;
             document.body.style.overflow = 'hidden';
             closeButton.focus({ preventScroll: true });
