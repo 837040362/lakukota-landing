@@ -56,6 +56,7 @@
   "aboutTitle": "About LAKUKOTA",
   "aboutLead": "A city is more than a place to pass through.",
   "aboutIntro": "LAKUKOTA is a city-exploration platform powered by quests and stories.",
+      "aboutDetail": "Through clues, challenges, and stories connected to real places, LAKUKOTA invites you to explore the city differently. Observe your surroundings, follow the traces you uncover, and piece every fragment together into a meaningful journey.",
   "aboutSubhead2": "Explore the city straight from your browser.",
   "aboutPwa": "LAKUKOTA is available as a Progressive Web App (PWA). You can access the experience through your phone's browser without downloading an app from an app store. On supported devices and browsers, you can also add it to your home screen for quicker access.",
   "aboutClosing": "Sometimes, what makes a city fascinating is not the destination itself, but something we have overlooked all along.",
