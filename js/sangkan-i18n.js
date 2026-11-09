@@ -54,6 +54,7 @@
   "registrationPrice": "IDR 299,000",
   "paymentLimitation": "Payment currently uses Indonesian QRIS with WhatsApp confirmation. International payment methods are not available yet.",
   "submitPayment": "CONTINUE TO PAYMENT",
+  "modalAcknowledge": "Got it",
   "qrisAlt": "SANGKAN QRIS payment code",
   "lightboxAria": "Asset detail",
   "lightboxCloseAria": "Close image detail",

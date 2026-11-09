@@ -216,7 +216,19 @@ function hitungWetonDummy() {
         setTimeout(() => {
             const weton = hitungWetonAsli(tglInput);
             tempatHasil.style.color = '#2ecc71';
-            tempatHasil.innerText = sangkanT("wetonDetected",`✨ Weton Terdeteksi: ${weton.teks}`,{weton:weton.teks});
+            const englishDay = {
+                Minggu: 'Sunday',
+                Senin: 'Monday',
+                Selasa: 'Tuesday',
+                Rabu: 'Wednesday',
+                Kamis: 'Thursday',
+                Jumat: 'Friday',
+                Sabtu: 'Saturday'
+            };
+            const wetonDisplay = document.documentElement.lang === 'en'
+                ? `${englishDay[weton.hari] || weton.hari} ${weton.pasaran} (Neptu: ${weton.neptu})`
+                : weton.teks;
+            tempatHasil.innerText = sangkanT("wetonDetected",`✨ Weton Terdeteksi: ${weton.teks}`,{weton:wetonDisplay});
             
             tempatHasil.setAttribute('data-hari', weton.hari);
             tempatHasil.setAttribute('data-pasaran', weton.pasaran);
