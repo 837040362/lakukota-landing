@@ -748,3 +748,76 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     .navbar .logo { align-self: center; margin: 0 auto; font-size: 1.25rem; }
     .language-switch { top: 50%; transform: translateY(-50%); }
 }
+
+
+/* =========================================================
+   SHARED CAROUSEL INTERACTION — DRAG / SWIPE ONLY
+   Homepage character + relic galleries and SANGKAN products.
+   ========================================================= */
+.drag-carousel,
+.drag-carousel.character-track,
+.drag-carousel.carousel-track,
+.drag-carousel.carousel-container {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-behavior: auto !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none !important;
+    scrollbar-color: transparent transparent !important;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y pinch-zoom;
+}
+
+.drag-carousel::-webkit-scrollbar,
+.drag-carousel::-webkit-scrollbar-track,
+.drag-carousel::-webkit-scrollbar-thumb {
+    display: none !important;
+    width: 0;
+    height: 0;
+    background: transparent;
+}
+
+.drag-carousel.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none !important;
+    scroll-behavior: auto !important;
+}
+
+.drag-carousel > * {
+    scroll-snap-stop: always;
+}
+
+.drag-carousel img {
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.drag-carousel:focus-visible {
+    outline: 1px solid rgba(212, 175, 55, 0.58);
+    outline-offset: 4px;
+}
+
+.character-carousel-status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 28px;
+    margin: 2px auto 0;
+}
+
+.character-carousel-status .character-counter {
+    color: #a9966f;
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .drag-carousel {
+        scroll-behavior: auto !important;
+    }
+}

@@ -65,7 +65,7 @@
     --></p>
 
     <div class="character-carousel" aria-label="Galeri karakter LAKUKOTA" data-i18n-aria="characterGalleryAria">
-      <div class="character-track" id="track-karakter">
+      <div class="character-track drag-carousel" id="track-karakter" tabindex="0" data-carousel-counter="character-counter">
         <article class="character-slide">
           <div class="character-art">
             <img
@@ -132,31 +132,9 @@
         </article>
       </div>
 
-      <div class="character-carousel-controls">
-        <button
-          type="button"
-          class="character-arrow"
-          id="character-prev"
-          aria-label="Karakter sebelumnya" data-i18n-aria="characterPrevAria"
-          disabled
-        >&#8592;</button>
-
-        <div class="character-dots" role="group" aria-label="Pilih karakter" data-i18n-aria="characterDotsAria">
-          <button type="button" class="character-dot is-active" data-index="0" aria-label="Lihat Laku" data-i18n-aria="dotLakuAria" aria-current="true"></button>
-          <button type="button" class="character-dot" data-index="1" aria-label="Lihat Sela" data-i18n-aria="dotSelaAria"></button>
-          <button type="button" class="character-dot" data-index="2" aria-label="Lihat Kersa" data-i18n-aria="dotKersaAria"></button>
-        </div>
-
+      <div class="character-carousel-status" aria-hidden="false">
         <span class="character-counter" id="character-counter" aria-live="polite">01 / 03</span>
-
-        <button
-          type="button"
-          class="character-arrow"
-          id="character-next"
-          aria-label="Karakter berikutnya" data-i18n-aria="characterNextAria"
-        >&#8594;</button>
       </div>
-      <!--<p class="character-hint">Gunakan panah atau geser untuk mengenal karakter lainnya.</p>-->
     </div>
   </div>
 </section>
@@ -167,7 +145,7 @@
     <div class="carousel-wrapper">
       <!--<button class="carousel-nav nav-prev" onclick="geserSlider('track-pusaka',-1)">&#10094;</button>
       <button class="carousel-nav nav-next" onclick="geserSlider('track-pusaka',1)">&#10095;</button>
-      --><div class="carousel-track" id="track-pusaka">
+      --><div class="carousel-track drag-carousel" id="track-pusaka" tabindex="0">
         <div class="carousel-slide"><div class="relic-card">
           <div class="char-image-container"><img src="assets/img/atmaka1.png" alt="Atmaka" class="character-img-dynamic"></div>
           <div class="relic-text-container"><h3>ATMAKA</h3><p data-i18n="atmakaDesc">Merupakan jiwa kota. Pusaka yang lahir hasil dari perjalananmu. Sesuatu yang dapat kamu temukan dan simpan sebagai bagian dari cerita LAKUKOTA.</p></div>
@@ -313,68 +291,9 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="js/main.js"></script>
 <script src="js/registration-gate.js"></script>
-<script src="js/character-carousel.js"></script>
 <script src="js/i18n.js"></script>
 
-<script>
-(() => {
-    const slider = document.getElementById('track-pusaka');
-    if (!slider) return;
-
-    let isDragging = false;
-    let startX = 0;
-    let startScrollLeft = 0;
-    let moved = false;
-    const dragThreshold = 5;
-
-    slider.querySelectorAll('img').forEach(img => {
-        img.draggable = false;
-    });
-
-    slider.addEventListener('pointerdown', event => {
-        if (event.pointerType === 'mouse' && event.button !== 0) return;
-
-        isDragging = true;
-        moved = false;
-        startX = event.clientX;
-        startScrollLeft = slider.scrollLeft;
-
-        slider.classList.add('is-dragging');
-        slider.setPointerCapture(event.pointerId);
-    });
-
-    slider.addEventListener('pointermove', event => {
-        if (!isDragging) return;
-
-        const deltaX = event.clientX - startX;
-        if (Math.abs(deltaX) > dragThreshold) moved = true;
-
-        if (moved) {
-            slider.scrollLeft = startScrollLeft - deltaX;
-        }
-    });
-
-    function stopDragging() {
-        if (!isDragging) return;
-
-        isDragging = false;
-        slider.classList.remove('is-dragging');
-        slider.style.scrollSnapType = '';
-    }
-
-    slider.addEventListener('pointerup', stopDragging);
-    slider.addEventListener('pointercancel', stopDragging);
-    slider.addEventListener('lostpointercapture', stopDragging);
-
-    slider.addEventListener('click', event => {
-        if (moved) {
-            event.preventDefault();
-            event.stopPropagation();
-            moved = false;
-        }
-    }, true);
-})();
-</script>
+<script src="js/carousel-drag.js"></script>
 
 </body>
 </html>
