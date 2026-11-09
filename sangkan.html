@@ -1066,6 +1066,106 @@
         }
         .registration-payment-note {margin:12px 0 16px;color:#aaa397;font-size:.72rem;line-height:1.55;text-align:center;}
 
+        /* =========================================================
+           REGISTRATION FORM — DARK / GOLD INPUT STATES
+           Consistent on ID & EN, including browser autofill.
+        ========================================================= */
+        #reg-form input,
+        #reg-form select {
+            width: 100%;
+            min-height: 46px;
+            padding: 12px 13px;
+            color: #f4eee0 !important;
+            -webkit-text-fill-color: #f4eee0;
+            caret-color: #d4af37;
+            background-color: rgba(10, 10, 10, 0.94) !important;
+            border: 1px solid rgba(212, 175, 55, 0.34);
+            border-bottom-color: rgba(212, 175, 55, 0.72);
+            border-radius: 4px;
+            font-family: 'Special Elite', sans-serif;
+            font-size: 0.84rem;
+            letter-spacing: 0.06em;
+            line-height: 1.35;
+            text-align: center;
+            color-scheme: dark;
+            box-sizing: border-box;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+        }
+
+        #reg-form input::placeholder {
+            color: rgba(212, 175, 55, 0.72);
+            -webkit-text-fill-color: rgba(212, 175, 55, 0.72);
+            opacity: 1;
+        }
+
+        #reg-form select:invalid {
+            color: rgba(212, 175, 55, 0.78) !important;
+            -webkit-text-fill-color: rgba(212, 175, 55, 0.78);
+        }
+
+        #reg-form select option {
+            color: #f4eee0;
+            background: #0a0a0a;
+        }
+
+        #reg-form input:focus,
+        #reg-form select:focus {
+            color: #fff !important;
+            -webkit-text-fill-color: #fff;
+            background-color: rgba(14, 12, 8, 0.98) !important;
+            border-color: rgba(212, 175, 55, 0.9);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.12), 0 0 14px rgba(212, 175, 55, 0.08);
+        }
+
+        /* Chrome / Edge / Safari autofill can otherwise paint a pale box. */
+        #reg-form input:-webkit-autofill,
+        #reg-form input:-webkit-autofill:hover,
+        #reg-form input:-webkit-autofill:focus,
+        #reg-form input:-webkit-autofill:active {
+            -webkit-text-fill-color: #f4eee0 !important;
+            caret-color: #f4eee0;
+            background-color: #0a0a0a !important;
+            -webkit-box-shadow: 0 0 0 1000px #0a0a0a inset !important;
+            box-shadow: 0 0 0 1000px #0a0a0a inset !important;
+            border-color: rgba(212, 175, 55, 0.34);
+            border-bottom-color: rgba(212, 175, 55, 0.72);
+            transition: background-color 99999s ease-out 0s;
+        }
+
+        #reg-form input:autofill {
+            color: #f4eee0 !important;
+            -webkit-text-fill-color: #f4eee0 !important;
+            box-shadow: 0 0 0 1000px #0a0a0a inset !important;
+        }
+
+        #reg-form input[type="date"] {
+            color-scheme: dark;
+            text-align: center;
+        }
+
+        #reg-form input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(73%) sepia(43%) saturate(750%) hue-rotate(5deg) brightness(88%) contrast(88%);
+            cursor: pointer;
+        }
+
+        #reg-form input:focus-visible,
+        #reg-form select:focus-visible,
+        #reg-form button:focus-visible {
+            outline: 2px solid rgba(212, 175, 55, 0.72);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 600px) {
+            #reg-form input,
+            #reg-form select {
+                min-height: 44px;
+                padding: 11px 10px;
+                font-size: 0.8rem;
+            }
+        }
+
+
         .founder-offer-language-switch {
             position: absolute;
             z-index: 3;
