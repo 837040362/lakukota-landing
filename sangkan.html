@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>SANGKAN - Perjalanan Pertama LAKUKOTA</title>
+    <meta name="description" id="sangkan-page-description" content="Mulai perjalanan SANGKAN, quest eksplorasi kota pertama LAKUKOTA di Yogyakarta." />
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -1051,7 +1052,20 @@
             .founder-offer-cta { transition: none; }
         }
 
-    </style>
+    
+        .sangkan-language-switch {
+            position:absolute;right:max(16px,env(safe-area-inset-right));top:50%;
+            transform:translateY(-50%);min-width:48px;padding:8px 11px;
+            color:#d4af37;background:rgba(5,5,5,.88);
+            border:1px solid rgba(212,175,55,.75);border-radius:4px;
+            font-family:'Cinzel',serif;font-size:.76rem;font-weight:700;
+            letter-spacing:.12em;cursor:pointer;
+        }
+        .sangkan-language-switch:hover,.sangkan-language-switch:focus-visible {
+            color:#080808;background:#d4af37;outline:2px solid #fff;outline-offset:2px;
+        }
+        .registration-payment-note {margin:12px 0 16px;color:#aaa397;font-size:.72rem;line-height:1.55;text-align:center;}
+</style>
 
 <!-- MANTRA MIDTRANS SNAP 
     <script type="text/javascript"
@@ -1097,14 +1111,14 @@
                 type="button"
                 id="founder-offer-close"
                 class="founder-offer-close"
-                aria-label="Tutup penawaran Founder dan lanjut menjelajah SANGKAN"
-                title="Tutup"
+                aria-label="Tutup penawaran Founder dan lanjut menjelajah SANGKAN" data-i18n-aria="founderClose"
+                title="Tutup" data-i18n-title="closeTitle"
             >&times;</button>
 
             <div class="founder-offer-visual">
                 <img
                     src="assets/img/paketfounder.jpg"
-                    alt="Paket Founder LAKUKOTA SANGKAN berisi Atmaka Tugu, lanyard kulit, tas serut, catatan perjalanan, dan Kartu Selaku"
+                    alt="Paket Founder LAKUKOTA SANGKAN berisi Atmaka Tugu, lanyard kulit, tas serut, catatan perjalanan, dan Kartu Selaku" data-i18n-alt="founderKitAlt"
                     width="600"
                     height="450"
                     fetchpriority="high"
@@ -1112,21 +1126,21 @@
             </div>
 
             <div class="founder-offer-copy">
-                <p class="founder-offer-kicker">Penawaran Founder · Persediaan Terbatas</p>
-                <h2 id="founder-offer-title">Jadilah bagian dari awal perjalanan LAKUKOTA.</h2>
-                <p id="founder-offer-description" class="founder-offer-description">
+                <p data-i18n="founderKicker" class="founder-offer-kicker">Penawaran Founder · Persediaan Terbatas</p>
+                <h2 data-i18n="founderTitle" id="founder-offer-title">Jadilah bagian dari awal perjalanan LAKUKOTA.</h2>
+                <p data-i18n="founderDescription" id="founder-offer-description" class="founder-offer-description">
                     Mulai perjalanan SANGKAN dengan Founder Kit—bekal fisik dan digital untuk perjalanan pertamamu menyusuri Yogyakarta.
                 </p>
                 <ul class="founder-offer-includes">
-                    <li>Atmaka Tugu dan lanyard kulit</li>
-                    <li>String bag dan kotak penyimpanan ekslusif</li>
-                    <li>Catatan perjalanan Sangkan</li>
-                    <li><b>Gratis Kartu Selaku Founder *</b></li>
+                    <li data-i18n="founderInclude1">Atmaka Tugu dan lanyard kulit</li>
+                    <li data-i18n="founderInclude2">String bag dan kotak penyimpanan ekslusif</li>
+                    <li data-i18n="founderInclude3">Catatan perjalanan Sangkan</li>
+                    <li data-i18n="founderInclude4"><b>Gratis Kartu Selaku Founder *</b></li>
                 </ul>
-                <p class="founder-offer-price-label">Paket Founder SANGKAN</p>
-                <p class="founder-offer-price">Rp 299.000</p>
-                <a href="#form-daftar" id="founder-offer-register" class="founder-offer-cta">LANJUT KE REGISTRASI</a>
-                <p class="founder-offer-note">* Penawaran gratis khusus Founder Sangkan</p>
+                <p data-i18n="founderPriceLabel" class="founder-offer-price-label">Paket Founder SANGKAN</p>
+                <p class="founder-offer-price" data-i18n="founderPrice">Rp 299.000</p>
+                <a data-i18n="founderRegister" href="#form-daftar" id="founder-offer-register" class="founder-offer-cta">LANJUT KE REGISTRASI</a>
+                <p data-i18n="founderNote" class="founder-offer-note">* Penawaran gratis khusus Founder Sangkan</p>
             </div>
         </div>
     </div>
@@ -1142,6 +1156,7 @@
             src="assets/img/logo-lakukota.svg"
             alt="LAKUKOTA"
         ></a>
+        <button type="button" id="sangkan-language-toggle" class="sangkan-language-switch" aria-label="Switch language to English" aria-pressed="false">EN</button>
     </nav>
 
 
@@ -1157,7 +1172,7 @@
             SANGKAN
         </h1>
 
-        <p class="sangkan-subtitle">
+        <p data-i18n="heroSubtitle" class="sangkan-subtitle">
             SEBUAH AWAL
         </p>
 
@@ -1166,7 +1181,7 @@
 
         <div class="quote-box">
 
-            <p>
+            <p data-i18n="kersaQuote">
                 "Seringkali ada yang terlewat dari kota ini...<br>
                 Sesuatu yang tersembunyi, yang hanya bisa ditemukan dengan melangkah kaki."
             </p>
@@ -1180,7 +1195,7 @@
 
         <!-- INTRO -->
 
-        <p class="intro-text">
+        <p data-i18n="sangkanIntro" class="intro-text">
             Sangkan bukan sekadar permainan, melainkan suatu cara untuk melihat Yogyakarta dari sudut yang berbeda.
             Ikuti petunjuk, pecahkan teka-teki di sudut-sudut kota yang mungkin sering engkau lewati.
             Kumpulkan 5 Fragmen untuk membentuk satu manifestasi kota—sebagai pengingatmu atas kota ini.
@@ -1191,7 +1206,7 @@
              RUTE PERJALANAN
         ====================================================== -->
 
-        <h3 class="section-title center">
+        <h3 data-i18n="routeHeading" class="section-title center">
             RUTE PERJALANAN
         </h3>
 
@@ -1199,14 +1214,14 @@
 
             <img
                 src="assets/img/map-sumbu.png"
-                alt="Peta Sumbu Filosofis Yogyakarta"
-                title="Klik untuk melihat peta lebih besar"
+                alt="Peta Sumbu Filosofis Yogyakarta" data-i18n-alt="routeMapAlt"
+                title="Klik untuk melihat peta lebih besar" data-i18n-title="zoomMapTitle"
                 onclick="bukaAset(this)"
             >
 
         </div>
 
-        <p class="route-description">
+        <p data-i18n="routeDescription" class="route-description">
             "Engkau akan menjalani sebuah perjalanan menyusuri jejak memori kota,
             membentang di sepanjang Sumbu Filosofis antara Tugu hingga Alun-Alun Utara Yogyakarta."
         </p>
@@ -1216,7 +1231,7 @@
              APA YANG ENGKAU DAPATKAN
         ====================================================== -->
 
-        <h3 class="section-title left">
+        <h3 data-i18n="whatYouGetHeading" class="section-title left">
             APA YANG ENGKAU DAPATKAN
         </h3>
 
@@ -1229,9 +1244,9 @@
 
                 <img
                     src="assets/img/atmaka1.png"
-                    alt="Atmaka Tugu"
+                    alt="Atmaka Tugu" data-i18n-alt="atmakaAlt"
                     class="carousel-image asset-zoom"
-                    title="Klik untuk melihat lebih besar"
+                    title="Klik untuk melihat lebih besar" data-i18n-title="zoomAssetTitle"
                     onclick="bukaAset(this)"
                 >
 
@@ -1239,7 +1254,7 @@
                     ATMAKA TUGU
                 </strong>
 
-                <p class="carousel-description">
+                <p data-i18n="atmakaProductDesc" class="carousel-description">
                     Collectible manifestasi fisik jiwa kota.
                 </p>
 
@@ -1252,9 +1267,9 @@
 
                 <img
                     src="assets/img/lanyard1.png"
-                    alt="Lanyard Kulit 1 Slot"
+                    alt="Lanyard Kulit 1 Slot" data-i18n-alt="lanyardAlt"
                     class="carousel-image asset-zoom"
-                    title="Klik untuk melihat lebih besar"
+                    title="Klik untuk melihat lebih besar" data-i18n-title="zoomAssetTitle"
                     onclick="bukaAset(this)"
                 >
 
@@ -1262,7 +1277,7 @@
                     LANYARD KULIT (1 SLOT)
                 </strong>
 
-                <p class="carousel-description">
+                <p data-i18n="lanyardProductDesc" class="carousel-description">
                     Tali kulit dengan satu slot untuk menyematkan Atmakamu nanti.
                 </p>
 
@@ -1275,9 +1290,9 @@
 
             <img
                 src="assets/img/stringbag.png"
-                alt="String Bag"
+                alt="String Bag" data-i18n-alt="stringBagAlt"
                 class="carousel-image asset-zoom"
-                title="Klik untuk melihat lebih besar"
+                title="Klik untuk melihat lebih besar" data-i18n-title="zoomAssetTitle"
                 onclick="bukaAset(this)"
             >
 
@@ -1285,7 +1300,7 @@
                     STRING BAG
                 </strong>
 
-                <p class="carousel-description">
+                <p data-i18n="stringBagProductDesc" class="carousel-description">
                     Tas serut untuk membawa perlengkapan perjalananmu di dunia LAKUKOTA.
                 </p>
 
@@ -1298,9 +1313,9 @@
 
                 <img
                     src="assets/img/arta1.png"
-                    alt="1.000 Arta"
+                    alt="1.000 Arta" data-i18n-alt="artaAlt"
                     class="carousel-image asset-zoom"
-                    title="Klik untuk melihat lebih besar"
+                    title="Klik untuk melihat lebih besar" data-i18n-title="zoomAssetTitle"
                     onclick="bukaAset(this)"
                 >
 
@@ -1308,7 +1323,7 @@
                     1.000 ARTA
                 </strong>
 
-                <p class="carousel-description">
+                <p data-i18n="artaProductDesc" class="carousel-description">
                     Bekal mata uang digital di semesta LAKUKOTA.
                 </p>
             </div> <!-- Penutup kartu ARTA -->
@@ -1319,9 +1334,9 @@
 
                 <img
                     src="assets/img/selakucard.png"
-                    alt="Selaku Card"
+                    alt="Selaku Card" data-i18n-alt="selakuCardAlt"
                     class="carousel-image asset-zoom"
-                    title="Klik untuk melihat lebih besar"
+                    title="Klik untuk melihat lebih besar" data-i18n-title="zoomAssetTitle"
                     onclick="bukaAset(this)"
                 >
 
@@ -1329,7 +1344,7 @@
                     Kartu Selaku 
                 </strong>
 
-                <p class="carousel-description">
+                <p data-i18n="selakuProductDesc" class="carousel-description">
                     Identitas fisikmu sebagai SELAKU. <b>GRATIS khusus FOUNDER.</b>
                 </p>
             
@@ -1342,32 +1357,32 @@
              PERSIAPAN PERJALANAN
         ====================================================== -->
 
-        <h3 class="section-title left">
+        <h3 data-i18n="preparationHeading" class="section-title left">
             PERSIAPAN PERJALANAN
         </h3>
 
         <ul class="preparation-list">
 
-            <li>
+            <li data-i18n="prepTerrain">
                 <strong>Medan & Alas Kaki:</strong>
                 Perjalanan menyusuri Sumbu Filosofis Yogyakarta
                 (± 2.5 KM). Gunakan sepatu/alas kaki yang nyaman.
             </li>
 
-            <li>
+            <li data-i18n="prepDuration">
                 <strong>Waktu Tempuh:</strong>
                 Estimasi 2-3 jam. Engkau bebas memulai kapan saja
                 dan berhenti sejenak untuk istirahat, makan atau minum kopi.
             </li>
 
-            <li>
+            <li data-i18n="prepDevice">
                 <strong>Perangkat:</strong>
                 Pastikan baterai <i>smartphone</i> terisi penuh
                 (bawa <i>powerbank</i> sangat direkomendasikan),
                 kuota internet stabil, dan fitur GPS menyala.
             </li>
 
-            <li>
+            <li data-i18n="prepWeather">
                 <strong>Lain-lain:</strong>
                 Yogyakarta sudah mulai memasuki musim penghujan, walaupun kamu
                 tetap dapat rehat -berteduh selama perjalanan nanti, 
@@ -1405,12 +1420,12 @@
         <!-- =====================================================
              JALUR MASUK UNTUK PEMAIN TERDAFTAR
         ====================================================== -->
-        <section class="login-prompt" aria-label="Masuk ke LAKUKOTA">
-            <p>
+        <section class="login-prompt" aria-label="Masuk ke LAKUKOTA" data-i18n-aria="loginAria">
+            <p data-i18n="loginPrompt">
                 <strong>Sudah terdaftar?</strong>
                 Perjalananmu menanti untuk dilanjutkan.
             </p>
-            <a class="btn-login" href="https://app.lakukota.com/">
+            <a data-i18n="loginButton" class="btn-login" href="https://app.lakukota.com/">
                 MASUKI DUNIA LAKUKOTA
             </a>
         </section>
@@ -1420,10 +1435,10 @@
         ====================================================== -->
         <div id="form-daftar" class="form-box" style="margin-top: 60px;">
             <div id="registration-gate-message" style="display:none;margin:20px auto;padding:20px;border:1px solid rgba(212,175,55,0.5);background:rgba(0,0,0,0.45);text-align:center;">
-                <h3 id="registration-gate-title" style="color:#d4af37;margin-top:0;">REGISTRASI SANGKAN</h3>
-                <p id="registration-gate-text" style="color:#f4eee0;line-height:1.7;margin-bottom:0;">Memeriksa status gerbang registrasi...</p>
+                <h3 id="registration-gate-title" data-i18n="gateCheckingTitle" style="color:#d4af37;margin-top:0;">REGISTRASI SANGKAN</h3>
+                <p id="registration-gate-text" data-i18n="gateCheckingText" style="color:#f4eee0;line-height:1.7;margin-bottom:0;">Memeriksa status gerbang registrasi...</p>
             </div>
-            <h3 style="color: #d4af37; margin-top: 0; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 10px; font-family: 'Cinzel', serif; text-align: center;">
+            <h3 data-i18n="registrationHeading" style="color: #d4af37; margin-top: 0; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 10px; font-family: 'Cinzel', serif; text-align: center;">
                 REGISTRASI LAKUMU
             </h3>
         <!--    <p class="cta-small" style="margin-bottom: 25px; text-align: left;">
@@ -1431,29 +1446,30 @@
             </p>-->
             
             <form id="reg-form" style="text-align: left;">
-                <input type="text" id="reg-nama" placeholder="Nama Selaku (Tanpa Spasi)" required>
+                <input type="text" id="reg-nama" placeholder="Nama Selaku (Tanpa Spasi)" data-i18n-placeholder="selakuPlaceholder" required>
                 
-                <input type="email" id="reg-email" placeholder="Alamat Email Aktif" required>
+                <input type="email" id="reg-email" placeholder="Alamat Email Aktif" data-i18n-placeholder="emailPlaceholder" required>
                 
-                <input type="password" id="reg-password" placeholder="Kata Sandi Batin" required>
+                <input type="password" id="reg-password" placeholder="Kata Sandi Batin" data-i18n-placeholder="passwordPlaceholder" required>
                 
                 <select id="reg-gender" required>
-                    <option value="" disabled selected>-- Gender --</option>
-                    <option value="L">Maskulin</option>
-                    <option value="P">Feminin</option>
+                    <option value="" disabled selected data-i18n="genderPlaceholder">-- Gender --</option>
+                    <option value="L" data-i18n="genderMale">Maskulin</option>
+                    <option value="P" data-i18n="genderFemale">Feminin</option>
                 </select>
 
                 <!-- KOTAK TANGGAL LAHIR & WETON -->
                 <div class="registration-birthbox" style="text-align: left; background: rgba(0,0,0,0.4); border-left: 3px solid #d4af37; border-radius: 5px;">
-                    <label style="font-size: 0.75rem; color: #d4af37; text-transform: uppercase; letter-spacing: 2px;">Tanggal Lahir</label>
+                    <label data-i18n="birthdateLabel" style="font-size: 0.75rem; color: #d4af37; text-transform: uppercase; letter-spacing: 2px;">Tanggal Lahir</label>
                     <input type="date" id="reg-tgl-lahir" required style="margin-top: 10px; color: #f4eee0;" onchange="hitungWetonDummy()">
                     <div id="hasil-weton" style="font-size: 0.9rem; color: #2ecc71; font-weight: bold; text-align: center; min-height: 20px; margin-top: 10px; font-family: 'Cinzel', serif; letter-spacing: 1px;"></div>
                 </div>
 
-                <h2 class="cta-price" style="text-align: center; margin-bottom: 20px;">Rp 299.000</h2>
+                <h2 class="cta-price" data-i18n="registrationPrice" style="text-align: center; margin-bottom: 20px;">Rp 299.000</h2>
 
+                <p class="registration-payment-note" data-i18n="paymentLimitation">Pembayaran saat ini menggunakan QRIS Indonesia dan konfirmasi WhatsApp. Metode pembayaran internasional belum tersedia.</p>
                 <!-- TOMBOL SUBMIT (Akan ditangkap oleh js/main.js sampeyan) -->
-                <button type="submit" id="btn-bayar-sangkan" class="btn-primary" style="width:100%; border: none; cursor: pointer; font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 1px;">
+                <button data-i18n="submitPayment" type="submit" id="btn-bayar-sangkan" class="btn-primary" style="width:100%; border: none; cursor: pointer; font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 1px;">
                     LANJUT PEMBAYARAN
                 </button>
             </form>
@@ -1510,6 +1526,7 @@
     });
 </script>
 
+<script src="js/sangkan-i18n.js"></script>
 <script src="js/main.js"></script>
 <script src="js/registration-gate.js"></script>
 
@@ -1527,7 +1544,7 @@
             <div id="qris-container" class="hidden" style="margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px; border: 1px dashed rgba(212,175,55,0.5);">
                 <p style="font-size: 0.85rem; color: #d4af37; margin-bottom: 10px; font-family: 'Cinzel', serif;">SCAN QRIS UNTUK PEMBAYARAN</p>
                 <!-- Pastikan file gambar qris sampeyan taruh di assets/img/qris.png -->
-                <img src="assets/img/qris.png" alt="QRIS Sangkan" style="width: 100%; max-width: 220px; height: auto; border-radius: 4px; background: #fff; padding: 5px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;">
+                <img src="assets/img/qris.png" alt="QRIS Sangkan" data-i18n-alt="qrisAlt" style="width: 100%; max-width: 220px; height: auto; border-radius: 4px; background: #fff; padding: 5px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;">
                 <p style="font-size: 0.75rem; color: #aaa; margin: 0;">Nominal: <strong style="color: #d4af37;">Rp 299.000</strong></p>
             </div>
 
@@ -1546,13 +1563,13 @@
         class="asset-lightbox"
         role="dialog"
         aria-modal="true"
-        aria-label="Detail aset"
+        aria-label="Detail aset" data-i18n-aria="lightboxAria"
         onclick="tutupAset(event)"
     >
         <button
             type="button"
             class="asset-lightbox-close"
-            aria-label="Tutup"
+            aria-label="Tutup" data-i18n-aria="lightboxCloseAria"
             onclick="tutupAset(event)"
         >&times;</button>
 
@@ -1563,7 +1580,7 @@
             onclick="event.stopPropagation()"
         >
 
-        <div class="asset-lightbox-hint">
+        <div data-i18n="lightboxHint" class="asset-lightbox-hint">
             KLIK DI LUAR GAMBAR • ESC UNTUK MENUTUP
         </div>
     </div>

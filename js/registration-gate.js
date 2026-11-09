@@ -5,6 +5,10 @@
 
 (() => {
     console.log('[Registration Gate] SCRIPT LOADED');
+    const gateT=(key,fallback)=>{
+        const translator=window.LAKUKOTA_SANGKAN_I18N;
+        return translator&&translator.getLanguage()==='en'?(translator.t(key)||fallback):fallback;
+    };
 
     const SUPABASE_PROJECT_URL =
         'https://tihixoswhxlihrsatfft.supabase.co';
@@ -66,12 +70,12 @@
         }
 
         if (messageTitle) {
-            messageTitle.textContent = 'MEMERIKSA GERBANG REGISTRASI';
+            messageTitle.textContent = gateT('gateCheckingAgain','MEMERIKSA GERBANG REGISTRASI');
         }
 
         if (messageText) {
             messageText.textContent =
-                'Mohon tunggu, status gerbang sedang diperiksa.';
+                gateT('gatePleaseWait','Mohon tunggu, status gerbang sedang diperiksa.');
         }
 
         if (!messageBox || !registerForm) {
@@ -98,7 +102,7 @@
 
             if (!data || typeof data.is_open !== 'boolean') {
                 throw new Error(
-                    'Status gerbang tidak valid.'
+                    gateT('gateInvalid','Status gerbang tidak valid.')
                 );
             }
 
@@ -131,8 +135,8 @@
             if (messageTitle) {
                 messageTitle.textContent =
                     data.closed_reason === 'quota'
-                        ? 'KUOTA PENDAFTARAN TELAH TERPENUHI'
-                        : 'REGISTRASI SANGKAN DITUTUP';
+                        ? gateT('gateQuotaTitle','KUOTA PENDAFTARAN TELAH TERPENUHI')
+                        : gateT('gateClosedTitle','REGISTRASI SANGKAN DITUTUP');
             }
 
             if (messageText) {
@@ -145,14 +149,14 @@
                 messageText.replaceChildren(
                     document.createTextNode(
                         data.closed_reason === 'quota'
-                            ? 'Kuota pendaftaran '
-                            : 'Gerbang pendaftaran '
+                            ? gateT('gateQuotaPrefix','Kuota pendaftaran ')
+                            : gateT('gateClosedPrefix','Gerbang pendaftaran ')
                     ),
                     batchName,
                     document.createTextNode(
                         data.closed_reason === 'quota'
-                            ? ' telah terpenuhi. Pendaftaran akan dibuka kembali ketika batch berikutnya atau kuota baru ditetapkan.'
-                            : ' untuk sementara sedang ditutup. Perjalanan berikutnya akan dibuka kembali pada waktu yang telah ditentukan.'
+                            ? gateT('gateQuotaSuffix',' telah terpenuhi. Pendaftaran akan dibuka kembali ketika batch berikutnya atau kuota baru ditetapkan.')
+                            : gateT('gateClosedSuffix',' untuk sementara sedang ditutup. Perjalanan berikutnya akan dibuka kembali pada waktu yang telah ditentukan.')
                     )
                 );
             }
@@ -179,13 +183,12 @@
 
             if (messageTitle) {
                 messageTitle.textContent =
-                    'GERBANG BELUM DAPAT DIVERIFIKASI';
+                    gateT('gateVerifyTitle','GERBANG BELUM DAPAT DIVERIFIKASI');
             }
 
             if (messageText) {
                 messageText.textContent =
-                    'Status registrasi belum dapat diperiksa. ' +
-                    'Silakan coba kembali beberapa saat lagi.';
+                    gateT('gateUnavailable','Status registrasi belum dapat diperiksa. Silakan coba kembali beberapa saat lagi.');
             }
 
             if (registerForm) {
@@ -201,6 +204,10 @@
             }
         }
     }
+
+    window.addEventListener('lakukota:languagechange',()=>{
+        if(messageBox&&messageBox.style.display!=='none')loadRegistrationGate();
+    });
 
     if (document.readyState === 'loading') {
         document.addEventListener(

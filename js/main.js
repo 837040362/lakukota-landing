@@ -4,6 +4,11 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_vzlNczrbFT5sBTa-kNT3Bg_4vDvXbxG
 
 const supabaseLib = window.supabase || supabase;
 const supabaseClient = supabaseLib.createClient(SUPABASE_PROJECT_URL, SUPABASE_PUBLISHABLE_KEY);
+function sangkanT(key,fallback,values={}){
+ const translator=window.LAKUKOTA_SANGKAN_I18N;
+ if(!translator||translator.getLanguage()!=='en')return fallback;
+ return translator.t(key,values)||fallback;
+}
 
 // ========================================================
 // RITUAL PENDAFTARAN SELAKU
@@ -20,7 +25,7 @@ if (formDaftar) {
         const btnSubmit = this.querySelector('button[type="submit"]');
         const originalText = btnSubmit.innerText;
 
-        btnSubmit.innerText = "Membuka Gerbang...";
+        btnSubmit.innerText = sangkanT('openingGate','Membuka Gerbang...');
         btnSubmit.disabled = true;
 
     try {
@@ -37,7 +42,7 @@ if (formDaftar) {
             const neptuTotal = divWeton.getAttribute('data-neptu');
 
             if (!wetonHari) {
-                alert("Harap tunggu sejenak, garis takdir belum selesai dibaca.");
+                alert(sangkanT("wetonWait","Harap tunggu sejenak, garis takdir belum selesai dibaca."));
                 btnSubmit.innerText = originalText;
                 btnSubmit.disabled = false;
                 return;
@@ -56,15 +61,15 @@ if (formDaftar) {
 
             if (registrationGateError) {
                 throw new Error(
-                    'Status gerbang pendaftaran belum dapat diverifikasi. Silakan coba kembali.'
+                    sangkanT('gateCheckFailed','Status gerbang pendaftaran belum dapat diverifikasi. Silakan coba kembali.')
                 );
             }
 
             if (!registrationGate?.is_open) {
                 throw new Error(
                     registrationGate?.closed_reason === 'quota'
-                        ? 'Kuota pendaftaran batch ini telah terpenuhi. Silakan menunggu pembukaan kuota berikutnya.'
-                        : 'Gerbang pendaftaran SANGKAN sedang ditutup.'
+                        ? sangkanT('gateQuotaClosed','Kuota pendaftaran batch ini telah terpenuhi. Silakan menunggu pembukaan kuota berikutnya.')
+                        : sangkanT('gateManualClosed','Gerbang pendaftaran SANGKAN sedang ditutup.')
                 );
             }
 
@@ -86,38 +91,39 @@ if (formDaftar) {
             });
 
             if (authError) throw authError;
-            if (!authData.user) throw new Error("User Auth gagal dibuat.");
+            if (!authData.user) throw new Error(sangkanT("authCreateFailed","User Auth gagal dibuat."));
 
             // 3. GENERATE LAKU-CODE LANGSUNG DI FRONTEND
             const newUserId = authData.user.id;
             const userCode = "USR-" + newUserId.substring(0, 5);
 
             // 4. RITUAL BERHASIL (MUNCULKAN QRIS & KONFIRMASI WA)
-            const pesanSukses = 
+            const pesanSukses = sangkanT('successMessage',
                 `Selamat datang, <strong style="color:#d4af37;">${nama}</strong>.<br>` +
                 `LAKU-CODE Anda: <span style="color:#d4af37;">${userCode}</span><br><br>` +
-                `Silakan selesaikan mahar pendaratan senilai <strong style="color:#d4af37;">Rp 299.000</strong> melalui QRIS di bawah ini, lalu konfirmasikan ke WhatsApp Admin.`;
+                `Silakan selesaikan mahar pendaratan senilai <strong style="color:#d4af37;">Rp 299.000</strong> melalui QRIS di bawah ini, lalu konfirmasikan ke WhatsApp Admin.`,
+                {name:nama,userCode});
 
             tampilkanPesanQRIS(
-                "RITUAL BERHASIL", 
-                pesanSukses, 
-                `Kirim Bukti ke WhatsApp`, 
+                sangkanT("successTitle","RITUAL BERHASIL"),
+                pesanSukses,
+                sangkanT("whatsappButton","Kirim Bukti ke WhatsApp"), 
                      function() {
                         const noAdmin = "628562942151";
                     
-                                const textWA = encodeURIComponent(
+                                const textWA = encodeURIComponent(sangkanT('whatsappMessage',
                             `KONFIRMASI MAHAR SANGKAN
-                            
-                            Nama Selaku : ${nama}
-                            User ID     : ${newUserId}
-                            Email       : ${email}
-                            Nominal     : Rp 299.000
-                            
-                            Saya telah melakukan transfer mahar SANGKAN dengan bukti transfer terlampir.
-                            Tolong diverifikasi pembayaran dan pendaftaran saya.
-                            
-                            Terima kasih.`
-                                );
+
+Nama Selaku : ${nama}
+User ID     : ${newUserId}
+Email       : ${email}
+Nominal     : Rp 299.000
+
+Saya telah melakukan transfer mahar SANGKAN dengan bukti transfer terlampir.
+Tolong diverifikasi pembayaran dan pendaftaran saya.
+
+Terima kasih.`,
+                            {name:nama,userId:newUserId,email}));
                             
                                 window.location.href = `https://wa.me/${noAdmin}?text=${textWA}`;
                     }
@@ -147,17 +153,17 @@ if (formDaftar) {
 
                     if (gateTerbaru && gateTerbaru.is_open === false) {
                         pesanError = gateTerbaru.closed_reason === 'quota'
-                            ? 'Kuota pendaftaran batch ini baru saja terpenuhi. Silakan menunggu kuota berikutnya.'
-                            : 'Gerbang pendaftaran SANGKAN baru saja ditutup.';
+                            ? sangkanT('gateQuotaRace','Kuota pendaftaran batch ini baru saja terpenuhi. Silakan menunggu kuota berikutnya.')
+                            : sangkanT('gateManualRace','Gerbang pendaftaran SANGKAN baru saja ditutup.');
                     }
                 } catch (gateError) {
                     console.warn('Status gerbang setelah signup gagal belum dapat dibaca:', gateError);
                 }
             }
 
-            alert("Gagal melakukan ritual: " + pesanError);
+            alert(sangkanT("ritualFailedPrefix","Gagal melakukan ritual: ") + pesanError);
         } finally {
-            btnSubmit.innerText = originalText;
+            btnSubmit.innerText = sangkanT('submitPayment',originalText);
             btnSubmit.disabled = false;
         }
     });
@@ -205,12 +211,12 @@ function hitungWetonDummy() {
 
     if (tglInput) {
         tempatHasil.style.color = '#d4af37';
-        tempatHasil.innerText = "Membaca garis takdir...";
+        tempatHasil.innerText = sangkanT("wetonReading","Membaca garis takdir...");
         
         setTimeout(() => {
             const weton = hitungWetonAsli(tglInput);
             tempatHasil.style.color = '#2ecc71';
-            tempatHasil.innerText = `✨ Weton Terdeteksi: ${weton.teks}`;
+            tempatHasil.innerText = sangkanT("wetonDetected",`✨ Weton Terdeteksi: ${weton.teks}`,{weton:weton.teks});
             
             tempatHasil.setAttribute('data-hari', weton.hari);
             tempatHasil.setAttribute('data-pasaran', weton.pasaran);
@@ -232,7 +238,7 @@ let aksiModalBerikutnya = null;
 function tampilkanPesanQRIS(judul, pesan, teksTombol, fungsiAksi) {
     document.getElementById('modal-title').innerHTML = judul;
     document.getElementById('modal-message').innerHTML = pesan;
-    document.getElementById('modal-btn').innerHTML = teksTombol ? teksTombol : "Mengerti";
+    document.getElementById('modal-btn').innerHTML = teksTombol ? teksTombol : sangkanT('modalAcknowledge','Mengerti');
     
     // Munculkan kotak QRIS
     const qrisBox = document.getElementById('qris-container');
