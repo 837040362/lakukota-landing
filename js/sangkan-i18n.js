@@ -100,7 +100,7 @@
   alt:new Map(groups.alt.map(n=>[n,n.getAttribute('alt')||''])),
   aria:new Map(groups.aria.map(n=>[n,n.getAttribute('aria-label')||'']))
  };
- const toggle=document.getElementById('sangkan-language-toggle'),meta=document.getElementById('sangkan-page-description');
+ const toggles=Array.from(document.querySelectorAll('#sangkan-language-toggle,#founder-language-toggle')),meta=document.getElementById('sangkan-page-description');
  const originalTitle=document.title,originalDescription=meta?meta.content:'',storageKey='lakukota-language';
  function t(key,values={}){
   if(document.documentElement.lang!=='en')return '';
@@ -119,12 +119,17 @@
   document.documentElement.lang=lang;
   document.title=lang==='en'?'SANGKAN — LAKUKOTA’s First Journey through Yogyakarta':originalTitle;
   if(meta)meta.content=lang==='en'?'Explore Yogyakarta on a self-guided quest through the city’s Philosophical Axis with SANGKAN by LAKUKOTA.':originalDescription;
-  if(toggle){toggle.textContent=lang==='id'?'EN':'ID';toggle.setAttribute('aria-label',lang==='id'?'Switch language to English':'Change language to Indonesian');toggle.setAttribute('aria-pressed',lang==='en'?'true':'false');}
+  toggles.forEach(toggle=>{
+   toggle.textContent=lang==='id'?'EN':'ID';
+   toggle.setAttribute('aria-label',lang==='id'?'Switch language to English':'Change language to Indonesian');
+   toggle.setAttribute('title',lang==='id'?'Switch language to English':'Change language to Indonesian');
+   toggle.setAttribute('aria-pressed',lang==='en'?'true':'false');
+  });
   if(persist){try{localStorage.setItem(storageKey,lang);}catch(error){}}
   document.dispatchEvent(new CustomEvent('lakukota:languagechange',{detail:{language:lang}}));
  }
  let initial='id';try{const saved=localStorage.getItem(storageKey);if(saved==='en'||saved==='id')initial=saved;}catch(error){}
  window.LAKUKOTA_SANGKAN_I18N={t,getLanguage:()=>document.documentElement.lang==='en'?'en':'id'};
- if(toggle)toggle.addEventListener('click',()=>applyLanguage(document.documentElement.lang==='en'?'id':'en'));
+ toggles.forEach(toggle=>toggle.addEventListener('click',()=>applyLanguage(document.documentElement.lang==='en'?'id':'en')));
  applyLanguage(initial,false);
 })();

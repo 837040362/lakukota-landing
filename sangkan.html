@@ -1065,6 +1065,43 @@
             color:#080808;background:#d4af37;outline:2px solid #fff;outline-offset:2px;
         }
         .registration-payment-note {margin:12px 0 16px;color:#aaa397;font-size:.72rem;line-height:1.55;text-align:center;}
+
+        .founder-offer-language-switch {
+            position: absolute;
+            z-index: 3;
+            top: 10px;
+            left: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 46px;
+            min-height: 40px;
+            padding: 8px 10px;
+            color: #d4af37;
+            background: rgba(5, 5, 5, 0.9);
+            border: 1px solid rgba(212, 175, 55, 0.72);
+            border-radius: 5px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            cursor: pointer;
+        }
+        .founder-offer-language-switch:hover,
+        .founder-offer-language-switch:focus-visible {
+            color: #080808;
+            background: #d4af37;
+            outline: 2px solid #fff;
+            outline-offset: 2px;
+        }
+        @media (max-width: 680px) {
+            .founder-offer-language-switch {
+                top: 8px;
+                left: 8px;
+                min-width: 40px;
+                min-height: 36px;
+            }
+        }
 </style>
 
 <!-- MANTRA MIDTRANS SNAP 
@@ -1107,6 +1144,14 @@
         hidden
     >
         <div class="founder-offer-dialog" role="document">
+            <button
+                type="button"
+                id="founder-language-toggle"
+                class="founder-offer-language-switch"
+                aria-label="Switch language to English"
+                aria-pressed="false"
+                title="Switch language"
+            >EN</button>
             <button
                 type="button"
                 id="founder-offer-close"
