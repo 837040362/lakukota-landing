@@ -163,6 +163,149 @@
 
 
         /* =========================================================
+           SANGKAN PLAYTHROUGH — VISUAL STEP-BY-STEP
+        ========================================================= */
+        .sangkan-playthrough {
+            margin-top: 48px;
+        }
+
+        .sangkan-playthrough .section-title {
+            margin-top: 0;
+            margin-bottom: 18px;
+        }
+
+        .playthrough-intro {
+            max-width: 540px;
+            margin: 0 auto 24px;
+            color: #c9c3b7;
+            font-size: 0.92rem;
+            line-height: 1.8;
+            text-align: center;
+        }
+
+        .playthrough-steps {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 14px;
+            text-align: left;
+        }
+
+        .playthrough-step {
+            display: grid;
+            grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+            align-items: center;
+            gap: 15px;
+            min-width: 0;
+            padding: 11px;
+            background: linear-gradient(115deg, rgba(212, 175, 55, 0.075), rgba(10, 10, 10, 0.72));
+            border: 1px solid rgba(212, 175, 55, 0.22);
+            border-radius: 8px;
+        }
+
+        .playthrough-image {
+            min-width: 0;
+            height: 150px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 5px;
+            background: #111;
+        }
+
+        .playthrough-image img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .playthrough-copy {
+            min-width: 0;
+            padding: 5px 4px;
+        }
+
+        .playthrough-number {
+            display: inline-block;
+            margin-bottom: 7px;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+        }
+
+        .playthrough-copy h4 {
+            margin: 0 0 8px;
+            color: #e4c66f;
+            font-family: 'Cinzel', serif;
+            font-size: 0.93rem;
+            line-height: 1.45;
+            letter-spacing: 0.06em;
+        }
+
+        .playthrough-copy p {
+            margin: 0;
+            color: #c9c3b7;
+            font-size: 0.8rem;
+            line-height: 1.7;
+        }
+
+        .playthrough-closing {
+            margin: 23px 6px 0;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            letter-spacing: 0.04em;
+            text-align: center;
+        }
+
+        @media (min-width: 600px) {
+            .sangkan-playthrough {
+                margin-top: 58px;
+            }
+
+            .playthrough-step {
+                grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+                gap: 20px;
+                padding: 14px;
+            }
+
+            .playthrough-image {
+                height: 178px;
+            }
+
+            .playthrough-copy h4 {
+                font-size: 1rem;
+            }
+
+            .playthrough-copy p {
+                font-size: 0.86rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .playthrough-step {
+                grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+                gap: 10px;
+                padding: 8px;
+            }
+
+            .playthrough-image {
+                height: 138px;
+            }
+
+            .playthrough-copy h4 {
+                font-size: 0.82rem;
+            }
+
+            .playthrough-copy p {
+                font-size: 0.74rem;
+                line-height: 1.6;
+            }
+        }
+
+
+        /* =========================================================
            SECTION TITLE
         ========================================================= */
 
@@ -1345,6 +1488,90 @@
             Ikuti petunjuk, pecahkan teka-teki di sudut-sudut kota yang mungkin sering engkau lewati.
             Kumpulkan 5 Fragmen untuk membentuk satu manifestasi kota—sebagai pengingatmu atas kota ini.
         </p>
+
+        <!-- =====================================================
+             BAGAIMANA SANGKAN DIMAINKAN
+        ====================================================== -->
+        <section class="sangkan-playthrough" aria-labelledby="playthrough-heading">
+            <h3 id="playthrough-heading" data-i18n="playthroughHeading" class="section-title center">
+                BAGAIMANA SANGKAN DIMAINKAN?
+            </h3>
+
+            <p data-i18n="playthroughIntro" class="playthrough-intro">
+                SANGKAN dimainkan melalui PWA LAKUKOTA di smartphone saat kamu menjelajahi Yogyakarta.
+                KERSA memandu perjalananmu dari satu Node ke Node berikutnya.
+            </p>
+
+            <div class="playthrough-steps">
+                <article class="playthrough-step">
+                    <div class="playthrough-image">
+                        <img src="assets/img/01-login-lakukota.webp"
+                             alt="Halaman masuk PWA LAKUKOTA di ponsel" data-i18n-alt="playStep1Alt"
+                             loading="lazy" decoding="async">
+                    </div>
+                    <div class="playthrough-copy">
+                        <span class="playthrough-number">01</span>
+                        <h4 data-i18n="playStep1Title">MASUK KE LAKUKOTA</h4>
+                        <p data-i18n="playStep1Text">
+                            Buka PWA LAKUKOTA di ponsel, lalu daftar atau masuk ke akun SELAKU-mu.
+                            Izinkan akses lokasi agar perjalanan dapat dimulai.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="playthrough-step">
+                    <div class="playthrough-image">
+                        <img src="assets/img/02-menuju-node-golong-gilig.webp"
+                             alt="Seorang penjelajah berjalan menuju Node Tugu Golong Gilig" data-i18n-alt="playStep2Alt"
+                             loading="lazy" decoding="async">
+                    </div>
+                    <div class="playthrough-copy">
+                        <span class="playthrough-number">02</span>
+                        <h4 data-i18n="playStep2Title">IKUTI PETUNJUK KE NODE</h4>
+                        <p data-i18n="playStep2Text">
+                            Ikuti petunjuk KERSA dan arah perjalanan di PWA menuju titik-titik Node
+                            yang tersebar di sepanjang rute SANGKAN.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="playthrough-step">
+                    <div class="playthrough-image">
+                        <img src="assets/img/03-memecahkan-teka-teki.webp"
+                             alt="Seorang pemain mengamati teka-teki pada ponsel" data-i18n-alt="playStep3Alt"
+                             loading="lazy" decoding="async">
+                    </div>
+                    <div class="playthrough-copy">
+                        <span class="playthrough-number">03</span>
+                        <h4 data-i18n="playStep3Title">AMATI & PECAHKAN TEKA-TEKI</h4>
+                        <p data-i18n="playStep3Text">
+                            Amati tempat yang kamu kunjungi, baca petunjuk, lalu selesaikan tantangan
+                            pada Node untuk menemukan Fragmen SANGKAN.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="playthrough-step">
+                    <div class="playthrough-image">
+                        <img src="assets/img/04-fragmen-sangkan-ditemukan.webp"
+                             alt="Dua pemain merayakan keberhasilan menemukan Fragmen SANGKAN" data-i18n-alt="playStep4Alt"
+                             loading="lazy" decoding="async">
+                    </div>
+                    <div class="playthrough-copy">
+                        <span class="playthrough-number">04</span>
+                        <h4 data-i18n="playStep4Title">MANIFESTASIKAN ATMAKA</h4>
+                        <p data-i18n="playStep4Text">
+                            Kumpulkan 5 Fragmen, lalu gunakan Arta di PWA untuk melakukan Manifestasi.
+                            Atmaka Tugu menjadi kenang-kenangan fisik dari perjalananmu.
+                        </p>
+                    </div>
+                </article>
+            </div>
+
+            <p data-i18n="playthroughClosing" class="playthrough-closing">
+                Ponsel menjadi panduan. Yogyakarta menjadi ruang petualanganmu.
+            </p>
+        </section>
 
 
         <!-- =====================================================
