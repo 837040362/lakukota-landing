@@ -124,6 +124,27 @@
 @media(max-width:760px){.hero-visual{min-height:340px;gap:8px}.hero-photo-main{min-height:340px}.hero-photo figcaption{font-size:.52rem;left:9px;bottom:9px}.visual-stamp{right:22%;padding:10px 13px}.visual-stamp strong{font-size:.82rem}.sector{min-height:225px}}
 @media(max-width:420px){.hero-visual{min-height:285px}.hero-photo-main{min-height:285px}.visual-stamp{right:20%;top:42%}}
 
+
+/* Refined package presentation */
+.package-section .section-head{align-items:end}
+.package-section .section-head h2{max-width:540px}
+.package-card{position:relative;overflow:hidden;border-radius:3px;padding:0 23px 25px;box-shadow:0 18px 40px rgba(4,12,36,.18);transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.package-card:hover{transform:translateY(-5px);box-shadow:0 24px 48px rgba(4,12,36,.28);border-color:var(--gold)}
+.package-visual{height:154px;margin:0 -23px 22px;position:relative;overflow:hidden;background:#101b43}
+.package-visual img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.78) contrast(1.04);transition:transform .55s ease}
+.package-card:hover .package-visual img{transform:scale(1.05)}
+.package-visual:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,16,43,.78),transparent 72%)}
+.package-level{display:inline-block;padding:5px 8px;border:1px solid rgba(255,230,129,.34);border-radius:2px}
+.package-card h3{font-size:1.8rem;letter-spacing:.045em;margin-top:12px}
+.package-price{font-size:1.25rem;letter-spacing:-.02em}
+.package-card ul{padding-left:19px}
+.package-card li{padding-left:2px;line-height:1.55}
+.package-card li::marker{color:var(--gold)}
+.package-card.featured{box-shadow:0 20px 48px rgba(4,12,36,.3)}
+.modular-box,.package-term{border-radius:3px}
+.package-foot{line-height:1.7}
+@media(max-width:760px){.package-card{padding-left:20px;padding-right:20px}.package-visual{margin-left:-20px;margin-right:-20px;height:170px}.package-card h3{font-size:1.65rem}}
+
 </style>
 </head>
 <body>
@@ -173,22 +194,22 @@
 <section class="section package-section" id="paket-partner">
 <div class="wrap">
   <div class="eyebrow">Partner packages</div>
-  <div class="section-head"><h2>One platform.<br>Three ways to begin.</h2><p>Paket membantu memperkirakan skala pekerjaan dan kebutuhan produksi. Pengalaman tetap dirancang berdasarkan cerita, karakter tempat, dan tujuan mitra—bukan semata-mata ukuran bisnisnya.</p></div>
+  <div class="section-head"><h2>One platform.<br>Three ways to begin.</h2><p>Tiga titik awal untuk merancang pengalaman—dari eksplorasi ringan, narasi yang lebih dalam, hingga pengalaman imersif yang dirancang khusus. Pilihan paket mengikuti kebutuhan produksi dan kompleksitas pengalaman, bukan ukuran bisnis mitra.</p></div>
   <div class="package-grid">
     <article class="package-card">
-      <div class="package-level">01 / ENTRY EXPERIENCE</div><h3>MICRO</h3><div class="package-sub">Exploration Experience</div>
+      <figure class="package-visual"><img src="https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900" alt="Pengunjung menjelajahi ruang dan menemukan detail tempat" loading="lazy"></figure><div class="package-level">01 / EXPLORATION EXPERIENCE</div><h3>EXPLORE</h3><div class="package-sub">Exploration Experience</div>
       <div class="package-price">Rp1,5–2,5 juta</div>
       <p>Untuk memulai pengalaman eksplorasi yang ringan, terarah, dan mudah diikuti.</p>
       <ul><li>1 Partner Quest, 1 venue</li><li>3–5 Node QR unik</li><li>Eksplorasi, observasi, atau pilihan sederhana</li><li>Quest Entry tabletop multiplex laser engraving</li><li>Node QR, 2 poster A3, dan 1 tent card</li><li>Survei, pemetaan, konfigurasi, instalasi, testing, onboarding, dan materi promosi digital sederhana</li></ul>
     </article>
     <article class="package-card featured">
-      <div class="package-level">02 / STORY-LED EXPERIENCE</div><h3>DISCOVERY</h3><div class="package-sub">Narrative Experience</div>
+      <figure class="package-visual"><img src="https://images.pexels.com/photos/35086543/pexels-photo-35086543.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900" alt="Arsitektur dan cerita yang membentuk karakter sebuah tempat" loading="lazy"></figure><div class="package-level">02 / NARRATIVE EXPERIENCE</div><h3>DISCOVER</h3><div class="package-sub">Narrative Experience</div>
       <div class="package-price">Rp3–5 juta</div>
       <p>Untuk menghubungkan cerita, identitas, sejarah, atau beberapa area menjadi satu pengalaman.</p>
       <ul><li>1 Partner Quest, beberapa area dalam satu venue</li><li>5–8 Node QR unik</li><li>Narasi tematik dan petunjuk kontekstual</li><li>Tantangan ringan dan penutup cerita</li><li>Quest Entry tabletop mahoni laser engraving</li><li>Node QR, 1 X-banner, 3–5 poster A3, 1–2 tabletop display, dan 2–3 tent card</li><li>Survei, penggalian cerita, desain narasi, instalasi, testing, dokumentasi sederhana, onboarding, dan materi promosi</li></ul>
     </article>
     <article class="package-card">
-      <div class="package-level">03 / BESPOKE EXPERIENCE</div><h3>SIGNATURE</h3><div class="package-sub">Immersive Experience</div>
+      <figure class="package-visual"><img src="https://images.pexels.com/photos/18356313/pexels-photo-18356313.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900" alt="Pengalaman ruang dan destinasi yang dirancang secara khusus" loading="lazy"></figure><div class="package-level">03 / IMMERSIVE EXPERIENCE</div><h3>IMMERSE</h3><div class="package-sub">Immersive Experience</div>
       <div class="package-price">Rp7,5–15 juta+</div>
       <p>Untuk pengalaman khusus dengan kebutuhan cerita, mekanisme, atau cakupan lokasi yang lebih kompleks.</p>
       <ul><li>1 Partner Quest custom</li><li>8+ nodes atau sesuai ruang lingkup</li><li>Satu atau beberapa area/lokasi</li><li>Custom storyline, challenge, karakter/NPC opsional, multi-stage atau branching bila relevan</li><li>Quest Entry tabletop dengan material dan finishing premium sesuai karakter venue</li><li>Node QR signage dan materi pendukung khusus sesuai kebutuhan pengalaman</li><li>Workshop konsep, playtesting, revisi, deployment, dokumentasi, dan pendampingan peluncuran</li></ul>
