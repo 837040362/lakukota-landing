@@ -8,6 +8,10 @@
     {
       "source": "/s/:token",
       "destination": "/s/index.html"
+    },
+    {
+      "source": "/partner/directory",
+      "destination": "/directory.html"
     }
   ]
 }
