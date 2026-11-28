@@ -49,15 +49,22 @@
 }
 .principle{
  position:relative;isolation:isolate;overflow:hidden;
+ padding:78px 0 82px;
+ border-top:1px solid rgba(255,230,129,.16);
+ border-bottom:1px solid rgba(255,255,255,.10);
  background:
-  radial-gradient(circle at 12% 85%,rgba(255,230,129,.12),transparent 25%),
-  linear-gradient(120deg,#101f4d 0%,#172d68 50%,#10204e 100%);
+  radial-gradient(ellipse at 88% 18%,rgba(83,106,168,.34),transparent 38%),
+  radial-gradient(ellipse at 8% 92%,rgba(255,230,129,.075),transparent 30%),
+  linear-gradient(118deg,#101d49 0%,#172d68 46%,#1b3478 72%,#10204e 100%);
 }
 .principle:after{
- content:"";position:absolute;z-index:-1;right:-90px;top:-180px;width:460px;height:460px;
- border:1px solid rgba(255,230,129,.18);border-radius:50%;
- box-shadow:0 0 0 35px rgba(255,230,129,.025),0 0 0 75px rgba(255,230,129,.02),0 0 0 115px rgba(255,230,129,.015);
+ content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;opacity:.22;
+ background:
+  linear-gradient(115deg,transparent 0 57%,rgba(255,255,255,.035) 57.1%,transparent 57.3%),
+  radial-gradient(ellipse at 78% 0%,rgba(255,255,255,.08),transparent 42%);
 }
+.principle-inner{align-items:start}
+.principle-inner>div:first-child{padding-top:4px}
 .closing{
  position:relative;isolation:isolate;overflow:hidden;
  background:linear-gradient(135deg,#203b88 0%,#294991 50%,#172b66 100%);
@@ -69,7 +76,7 @@
 @media(max-width:760px){
  .section-story:before{background-position:65% center;opacity:.08}
  .section-quest{background-position:58% center}
- .principle:after{right:-240px;top:-120px}
+ .principle:after{opacity:.18}
 }
 
 
